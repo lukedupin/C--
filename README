@@ -1,0 +1,12 @@
+Conversion compiler to C++
+
+Features:
+100% Fully compatible C++ code, libraries
+Customizable STL implementation with first class syntax
+Focused on serving the programmer
+No speed reduction from native C++ for basic operations
+Embraces the best parts of python
+Just in time functional programming with OO support
+Built to make IDE's lives easier
+Customizable style for company preferances
+Native multi language support

@@ -1,0 +1,52 @@
+  //Setup my variables
+init()
+{
+  var ticks;
+  var last_state;
+  var state;
+  var elapse;
+  var Run;
+}
+
+  //enables or disables my macro
+postEvent( Controller.RightStick.Released )
+{
+  Run = !Run; 
+  ticks = System.Tick;
+  state = 1;
+}
+
+  //Called after translation
+postEvent( Run )
+//postEvent( true )
+{
+    //Figureo out how much time has elapsed in thsi state
+  elapse = System.Tick - ticks;
+
+    //Figure out whats up with my states
+  last_state = state;
+  if ( state == 0 )
+  {
+      //Hold up my shield
+    Console.LT = 255;
+
+      //Wait for 30 seconds
+    if ( elapse > 30000)
+      state = 1;
+  }
+  else if ( state == 1 )
+  {
+    Console.RT = 255;
+    if ( elapse > 1500 )
+      state = 2;
+  }
+  else if ( state == 2 )
+  {
+    if ( elapse > 500 )
+      state = 0;
+  }
+
+    //Got a transition, update ticks
+  if ( last_state != state )
+    ticks = System.Tick;
+}
