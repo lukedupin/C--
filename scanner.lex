@@ -10,6 +10,15 @@
 
 %%
 
+#define RULE( reg, enu ) reg { \
+    lineNo = yylineno; \
+    JToken * s = new JToken; \
+    yylval.tokInfo = s; \
+    s->stringValue = reg; \
+    s->line = yylineno; \
+    return enu; \
+}
+
 [\(\)\[\]\{\},;:]                     {
                                         lineNo = yylineno;
                                         JToken * s = new JToken;
@@ -18,6 +27,8 @@
                                         s->line = yylineno;
                                         return yytext[0];
                                     }
+RULE( "if", IF )
+/*
 "if"                                {
                                         lineNo = yylineno;
                                         JToken * s = new JToken;
@@ -26,6 +37,7 @@
                                         s->line = yylineno;
                                         return IF;
                                     }
+                                    */
 "else"                              {
                                         lineNo = yylineno;
                                         JToken * s = new JToken;
@@ -255,7 +267,7 @@
                                         s->line = yylineno;
                                         return IDENT;
                                     }
-[+-]?([0-9]*)(\.([0-9]+))?)         {
+[+-]?([0-9]*)(\.([0-9]+))?          {
                                         lineNo = yylineno;
                                         JToken * s = new JToken;
                                         yylval.tokInfo = s;

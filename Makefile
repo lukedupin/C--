@@ -24,10 +24,10 @@ COMP = g++
 
 EXECUTABLE = c--
 
-$(EXECUTABLE):	 flex $(OBJECTS)
+$(EXECUTABLE):	 flex bison $(OBJECTS)
 		$(COMP) $(DEFINE) $(COMP_OPTS) lex.yy.c $(OBJECTS) $(LIBRARIES) -o $(EXECUTABLE)
 
-flex:	scanner.lex bison
+flex:	scanner.lex
 	flex $(FLEX_OPTS) scanner.lex
 
 bison:	parser.y
