@@ -1,10 +1,14 @@
 def data():
     return [
         {
-            "reg": "[\(\)\[\]\{\},;:]",
+            "reg": "[\(\)\[\],;:]",
             "str": "strdup(yytext)",
             "ret": "yytext[0]",
         },
+
+        {"raw": "{", "rule": "LEFT_CURLY"},
+        {"raw": "}", "rule": "RIGHT_CURLY"},
+
         {"rule": "IF"},
         {"rule": "ELSE"},
         {"rule": "VAR"},
@@ -33,29 +37,36 @@ def data():
         {"raw": "==", "rule": "EQ"},
         {"raw": ">", "rule": "GT"},
         {"raw": "<", "rule": "LT"},
-        {"reg": "[\!]", "rule": "NOT", "str": "!"},
+        {"reg": "[\!]", "rule": "NOT", "str": '"!"'},
 
         # Action
-        {"reg": "[\=]", "rule": "ASSIGN", "str": "="},
-        {"reg": "[.]", "rule": "DOT", "str":"."},
+        {"reg": "[\=]", "rule": "ASSIGN", "str": '"="'},
+        {"reg": "[.]", "rule": "DOT", "str": '"."'},
+
+        # Types
+        {"rule": "I8"},
+        {"rule": "I16"},
+        {"rule": "I32"},
+        {"rule": "I64"},
+        {"rule": "I128"},
 
         # Vars
         {
+            "rule": "IDENT",
             "reg": "[A-Za-z_][A-Za-z0-9_]*",
             "str": "strdup(yytext)",
-            "ret": "IDENT",
         },
         {
+            "rule": "NUMBER",
             "reg": "[+-]?([0-9]*)(\.([0-9]+))?",
             "str": "strdup(yytext)",
-            "ret": "NUMBER",
         },
 
         # White spacey stuff
         {"pure":"\"\\r\\n\" { lineNo++;}"},
         {"pure": "\"\\n\" { lineNo++;}"},
         {"pure": "\"\\r\" { lineNo++;}"},
-        {"pure": "\"//\".*\n { lineNo++;}"},
+        {"pure": "\"//\".*\\n { lineNo++;}"},
         {"pure": "\" \" {}"},
         {"pure": "\\t {}"},
     ]

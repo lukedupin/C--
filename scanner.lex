@@ -10,13 +10,29 @@
 
 %%
 
-[\(\)\[\]\{\},;:] {
+[\(\)\[\],;:] {
     lineNo = yylineno;
     JToken * s = new JToken;
     yylval.tokInfo = s;
     s->stringValue = strdup(yytext);
     s->line = yylineno;
     return yytext[0];
+}
+"{" {
+    lineNo = yylineno;
+    JToken * s = new JToken;
+    yylval.tokInfo = s;
+    s->stringValue = "{";
+    s->line = yylineno;
+    return LEFT_CURLY;
+}
+"}" {
+    lineNo = yylineno;
+    JToken * s = new JToken;
+    yylval.tokInfo = s;
+    s->stringValue = "}";
+    s->line = yylineno;
+    return RIGHT_CURLY;
 }
 "if" {
     lineNo = yylineno;
@@ -214,22 +230,65 @@
     lineNo = yylineno;
     JToken * s = new JToken;
     yylval.tokInfo = s;
-!    s->line = yylineno;
+    s->stringValue = "!";
+    s->line = yylineno;
     return NOT;
 }
 [\=] {
     lineNo = yylineno;
     JToken * s = new JToken;
     yylval.tokInfo = s;
-=    s->line = yylineno;
+    s->stringValue = "=";
+    s->line = yylineno;
     return ASSIGN;
 }
 [.] {
     lineNo = yylineno;
     JToken * s = new JToken;
     yylval.tokInfo = s;
-.    s->line = yylineno;
+    s->stringValue = ".";
+    s->line = yylineno;
     return DOT;
+}
+"i8" {
+    lineNo = yylineno;
+    JToken * s = new JToken;
+    yylval.tokInfo = s;
+    s->stringValue = "i8";
+    s->line = yylineno;
+    return I8;
+}
+"i16" {
+    lineNo = yylineno;
+    JToken * s = new JToken;
+    yylval.tokInfo = s;
+    s->stringValue = "i16";
+    s->line = yylineno;
+    return I16;
+}
+"i32" {
+    lineNo = yylineno;
+    JToken * s = new JToken;
+    yylval.tokInfo = s;
+    s->stringValue = "i32";
+    s->line = yylineno;
+    return I32;
+}
+"i64" {
+    lineNo = yylineno;
+    JToken * s = new JToken;
+    yylval.tokInfo = s;
+    s->stringValue = "i64";
+    s->line = yylineno;
+    return I64;
+}
+"i128" {
+    lineNo = yylineno;
+    JToken * s = new JToken;
+    yylval.tokInfo = s;
+    s->stringValue = "i128";
+    s->line = yylineno;
+    return I128;
 }
 [A-Za-z_][A-Za-z0-9_]* {
     lineNo = yylineno;
@@ -250,8 +309,7 @@
 "\r\n" { lineNo++;}
 "\n" { lineNo++;}
 "\r" { lineNo++;}
-"//".*
- { lineNo++;}
+"//".*\n { lineNo++;}
 " " {}
 \t {}
 . {

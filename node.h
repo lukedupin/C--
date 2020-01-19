@@ -1,10 +1,7 @@
 #ifndef __NODE_H__
 #define __NODE_H__
 
-#include <stdio.h>
-
-#include <string>
-#include <map>
+#include <sstream>
 #include <vector>
 
 #include "error.h"
@@ -18,7 +15,6 @@ class Node
     int _token = -1;
     int _lineNumber = 0;
     const char* _label = nullptr;
-    const char* _category = nullptr;
 
     public:
     std::vector<Node*> Children;
@@ -26,18 +22,17 @@ class Node
 
     public:
     // Init my node
-    Node( int tokenValue, int lineNo, const char * label, const char * category );
+    Node( int tokenValue, int lineNo, const char * label = nullptr );
 
     //Read only for my data
     int tokenType();
     int lineNumber();
     const char* label();
-    const char* category();
 
     //*** Common functions the node uses to call into the child object
 
     // generate code for this node
-    string codeGen( int depth = 0 );
+    bool codeGen( ostringstream* stream, int depth = 0 );
 
     // Detects errors in the code
     bool detectErrors( Error* err );
@@ -52,13 +47,16 @@ class Node
     virtual bool calculateErrors( Error* err );
 
     // Pre child code gen
-    virtual string codeGenPreChild( int depth );
+    virtual bool codeGenPreChild( ostringstream* stream, int depth );
 
     // Pre child code gen
-    virtual string codeGenPostChild( int depth );
+    virtual bool codeGenPostChild( ostringstream* stream, int depth );
+
+    // Return true if we are increasing scope depth
+    virtual bool increaseScopeDepth();
 
     // print out this node and anyone else
-    virtual void print( int depth = 0 );
+    virtual void print( int depth );
 };
 
 #endif

@@ -1,34 +1,3 @@
-var ned;
-var Pressed;
-
-event ( !Pressed ) 
-{ 
-  Controller.A = 1;
-}
-
-event ( ned >= 4 )
-{
-  var bob;
-  var Jed;
-
-  Jed = 0;
-
-    //Loop while jed is less than ned
-  while ( Jed < ned )
-  {
-    Jed = Jed * 2 + 1;
-    if ( Jed == 8 )
-      break;
-  }
-
-    //Fail, shouldn't be possible
-  if ( Jed < ned )
-    return;
-
-  bob = 5 + ned;
-  ned = 2;
-  if ( bob >= 8 )
-    ned = 917;//Controller = 8;
-  else
-    ned = 729;
+fn dogFunction() {
+  var ned = 79
 }

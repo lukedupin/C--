@@ -1,14 +1,14 @@
-#include <stdio.h>
-#include <stdarg.h>
-#include <string.h>
 #include "node.h"
+#include <helpers/token.h>
+#include <helpers/util.h>
+
+#include <iostream>
 
   //Define my node
-Node::Node( int token, int lineNo, const char * label, const char * category )
+Node::Node( int token, int lineNo, const char * label )
     : _token(token),
       _lineNumber(lineNo),
-      _label(label),
-      _category(category)
+      _label(label)
 {
 }
 
@@ -16,39 +16,43 @@ Node::Node( int token, int lineNo, const char * label, const char * category )
 int Node::lineNumber() { return _lineNumber; }
 int Node::tokenType() { return _token; }
 const char* Node::label() { return _label; }
-const char* Node::category() { return _category; }
 
   //Dump the code
-void Node::codeGen( int depth, bool siblings )
+bool Node::codeGen( ostringstream* stream, int depth )
 {
     //Pre child call
-    codeGenPreChild( depth );
+    codeGenPreChild( stream, depth );
 
     //Test the kids
+    auto c_depth = depth + (increaseScopeDepth()? 1: 0);
     for ( auto& node : Children )
-        node->codeGen( depth );
+        node->codeGen( stream, c_depth );
 
     //Post child call
-    codeGenPostChild( depth );
+    codeGenPostChild( stream, depth );
 
     //Test the sibling
     if ( Sibling != nullptr )
-        Sibling->codeGen( depth );
+        Sibling->codeGen( stream, depth );
+
+    return true;
 }
 
   //Detect errors
-void Node::detectErrors( Error* err )
+bool Node::detectErrors( Error* err )
 {
     //Pre child call
-    calculteErrors( err );
+    calculateErrors( err );
 
     //Test the kids
     for ( auto& node : Children )
-        node->calculteErrors( err );
+        node->detectErrors( err );
 
     //Test the sibling
     if ( Sibling != nullptr )
-        Sibling->calculteErrors( err );
+        Sibling->detectErrors( err );
+
+    return true;
 }
 
   //Print out my nodes
@@ -57,31 +61,43 @@ void Node::codePrint( int depth )
     //Pre child call
     print( depth );
 
-    //Test the kids
+    //Print the kids
+    auto c_depth = depth + (increaseScopeDepth()? 1: 0);
     for ( auto& node : Children )
-        node->print(depth);
+        node->codePrint( c_depth );
 
     //Test the sibling
     if ( Sibling != nullptr )
-        Sibling->print(depth);
+        Sibling->codePrint( depth );
 }
 
-bool Node::calculteErrors( Error* err )
+bool Node::calculateErrors( Error* err )
 {
     return true;
 }
 
-string Node::codeGenPreChild( int depth )
+bool Node::codeGenPreChild( ostringstream* stream, int depth )
 {
-    return string();
+    return true;
 }
 
-string Node::codeGenPostChild( int depth )
+bool Node::codeGenPostChild( ostringstream* stream, int depth )
 {
-    return string();
+    return true;
+}
+
+bool Node::increaseScopeDepth()
+{
+    return false;
 }
 
   //print out the children
 void Node::print( int depth )
 {
+    printIndent( depth );
+    if ( _label == nullptr )
+        cout << tokenStr( _token ) << " on line " << _lineNumber << endl;
+
+    else
+        cout << tokenStr( _token ) << " on line " << _lineNumber << " -> " << _label << endl;
 }

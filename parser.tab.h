@@ -49,40 +49,43 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    IF = 258,
-    ELSE = 259,
-    RETURN = 260,
-    WHILE = 261,
-    BREAK = 262,
-    STARTCURLY = 263,
-    INIT = 264,
-    EVENT = 265,
-    PRE_EVENT = 266,
-    POST_EVENT = 267,
-    IDENT = 268,
-    NUMBER = 269,
-    FLOAT = 270,
-    INT = 271,
-    VAR = 272,
-    DOT = 273,
-    VAR_EX = 274,
-    MUL = 275,
-    DIV = 276,
-    MOD = 277,
-    AND = 278,
-    ADD = 279,
-    SUBT = 280,
-    OR = 281,
-    GEQ = 282,
-    NEQ = 283,
-    LEQ = 284,
-    GREAT = 285,
-    LESS = 286,
-    EQ = 287,
-    NOT = 288,
-    ASSIGN = 289,
-    ASSIGN_CONST = 290,
-    ERROR = 291
+    LEFT_CURLY = 258,
+    RIGHT_CURLY = 259,
+    IF = 260,
+    ELSE = 261,
+    VAR = 262,
+    FN = 263,
+    CLASS = 264,
+    RETURN = 265,
+    WHILE = 266,
+    BREAK = 267,
+    CONTINUE = 268,
+    FALSE = 269,
+    TRUE = 270,
+    MUL = 271,
+    DIV = 272,
+    MOD = 273,
+    ADD = 274,
+    SUB = 275,
+    AND = 276,
+    OR = 277,
+    NEQ = 278,
+    LEQ = 279,
+    GEQ = 280,
+    EQ = 281,
+    GT = 282,
+    LT = 283,
+    NOT = 284,
+    ASSIGN = 285,
+    DOT = 286,
+    I8 = 287,
+    I16 = 288,
+    I32 = 289,
+    I64 = 290,
+    I128 = 291,
+    IDENT = 292,
+    NUMBER = 293,
+    ERROR = 294
   };
 #endif
 
@@ -90,12 +93,12 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 42 "parser.y"
+#line 32 "parser.y"
 
-	Node * nodeInfo;
-	JToken * tokInfo;
+    Node * nodeInfo;
+    JToken * tokInfo;
 
-#line 99 "parser.tab.h"
+#line 102 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

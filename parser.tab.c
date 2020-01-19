@@ -68,26 +68,16 @@
 /* First part of user prologue.  */
 #line 1 "parser.y"
 
-	//C includes
-	#include <stdio.h>
-  #include <stack>
+    //C includes
+    #include <stdio.h>
+    #include <stack>
 
-	//Custom includes
-	#include "j_token.h"
-	#include "node.h"
-  #include "program_node.h"
-  #include "dec_node.h"
-  #include "event_node.h"
-  #include "stm_node.h"
-  #include "type_node.h"
-  #include "exp_node.h"
-  #include "assign_node.h"
-  #include "conditional_node.h"
-  #include "variable_node.h"
-  #include "variable_ex_node.h"
-  #include "int_node.h"
+    //Custom includes
+    #include "j_token.h"
+    #include "node.h"
+    #include "program_node.h"
 
-	#ifdef CPLUSPLUS
+    #ifdef CPLUSPLUS
     extern int yylex();
     extern FILE* yyin;
     extern char* yytext;
@@ -96,9 +86,9 @@
     extern int lineNo;
     #endif
     void yyerror( const char *msg )
-	{
-		printf("ERROR Value: %s detected on line %d.\n", msg, lineNo );
-	}
+    {
+        printf("ERROR Value: %s detected on line %d.\n", msg, lineNo );
+    }
     int yywrap()
     {
         return 1;
@@ -107,7 +97,7 @@
       //Holds my entire program
     ProgramNode* ParseTree = new ProgramNode();
 
-#line 111 "parser.tab.c"
+#line 101 "parser.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -155,40 +145,43 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    IF = 258,
-    ELSE = 259,
-    RETURN = 260,
-    WHILE = 261,
-    BREAK = 262,
-    STARTCURLY = 263,
-    INIT = 264,
-    EVENT = 265,
-    PRE_EVENT = 266,
-    POST_EVENT = 267,
-    IDENT = 268,
-    NUMBER = 269,
-    FLOAT = 270,
-    INT = 271,
-    VAR = 272,
-    DOT = 273,
-    VAR_EX = 274,
-    MUL = 275,
-    DIV = 276,
-    MOD = 277,
-    AND = 278,
-    ADD = 279,
-    SUBT = 280,
-    OR = 281,
-    GEQ = 282,
-    NEQ = 283,
-    LEQ = 284,
-    GREAT = 285,
-    LESS = 286,
-    EQ = 287,
-    NOT = 288,
-    ASSIGN = 289,
-    ASSIGN_CONST = 290,
-    ERROR = 291
+    LEFT_CURLY = 258,
+    RIGHT_CURLY = 259,
+    IF = 260,
+    ELSE = 261,
+    VAR = 262,
+    FN = 263,
+    CLASS = 264,
+    RETURN = 265,
+    WHILE = 266,
+    BREAK = 267,
+    CONTINUE = 268,
+    FALSE = 269,
+    TRUE = 270,
+    MUL = 271,
+    DIV = 272,
+    MOD = 273,
+    ADD = 274,
+    SUB = 275,
+    AND = 276,
+    OR = 277,
+    NEQ = 278,
+    LEQ = 279,
+    GEQ = 280,
+    EQ = 281,
+    GT = 282,
+    LT = 283,
+    NOT = 284,
+    ASSIGN = 285,
+    DOT = 286,
+    I8 = 287,
+    I16 = 288,
+    I32 = 289,
+    I64 = 290,
+    I128 = 291,
+    IDENT = 292,
+    NUMBER = 293,
+    ERROR = 294
   };
 #endif
 
@@ -196,12 +189,12 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 42 "parser.y"
+#line 32 "parser.y"
 
-	Node * nodeInfo;
-	JToken * tokInfo;
+    Node * nodeInfo;
+    JToken * tokInfo;
 
-#line 205 "parser.tab.c"
+#line 198 "parser.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -518,21 +511,21 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  19
+#define YYFINAL  10
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   147
+#define YYLAST   117
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  41
+#define YYNTOKENS  43
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  30
+#define YYNNTS  28
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  72
+#define YYNRULES  63
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  123
+#define YYNSTATES  102
 
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   291
+#define YYMAXUTOK   294
 
 
 /* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
@@ -548,15 +541,15 @@ static const yytype_int8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-      38,    39,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,    37,
+      40,    41,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,    42,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,    40,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -573,21 +566,20 @@ static const yytype_int8 yytranslate[] =
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
       15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
       25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
-      35,    36
+      35,    36,    37,    38,    39
 };
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,    88,    88,    91,    92,    95,    96,    99,   105,   114,
-     121,   128,   135,   143,   151,   158,   165,   173,   174,   177,
-     184,   187,   188,   191,   200,   208,   213,   214,   215,   216,
-     217,   225,   233,   242,   252,   267,   284,   287,   293,   301,
-     307,   327,   332,   334,   339,   342,   349,   356,   363,   370,
-     377,   386,   391,   394,   401,   409,   416,   424,   429,   432,
-     439,   446,   453,   462,   463,   466,   473,   482,   483,   484,
-     487,   497,   505
+       0,   107,   107,   112,   115,   120,   123,   128,   135,   143,
+     150,   156,   162,   168,   171,   175,   184,   188,   196,   203,
+     207,   210,   213,   216,   219,   225,   233,   241,   245,   250,
+     256,   261,   267,   274,   278,   285,   289,   294,   299,   304,
+     309,   314,   320,   327,   331,   336,   342,   347,   353,   360,
+     364,   369,   374,   379,   385,   388,   392,   397,   403,   406,
+     409,   413,   419,   425
 };
 #endif
 
@@ -596,16 +588,15 @@ static const yytype_int16 yyrline[] =
    First, the terminals, then, starting at YYNTOKENS, nonterminals.  */
 static const char *const yytname[] =
 {
-  "$end", "error", "$undefined", "IF", "ELSE", "RETURN", "WHILE", "BREAK",
-  "STARTCURLY", "INIT", "EVENT", "PRE_EVENT", "POST_EVENT", "IDENT",
-  "NUMBER", "FLOAT", "INT", "VAR", "DOT", "VAR_EX", "MUL", "DIV", "MOD",
-  "AND", "ADD", "SUBT", "OR", "GEQ", "NEQ", "LEQ", "GREAT", "LESS", "EQ",
-  "NOT", "ASSIGN", "ASSIGN_CONST", "ERROR", "';'", "'('", "')'", "'}'",
+  "$end", "error", "$undefined", "LEFT_CURLY", "RIGHT_CURLY", "IF",
+  "ELSE", "VAR", "FN", "CLASS", "RETURN", "WHILE", "BREAK", "CONTINUE",
+  "FALSE", "TRUE", "MUL", "DIV", "MOD", "ADD", "SUB", "AND", "OR", "NEQ",
+  "LEQ", "GEQ", "EQ", "GT", "LT", "NOT", "ASSIGN", "DOT", "I8", "I16",
+  "I32", "I64", "I128", "IDENT", "NUMBER", "ERROR", "'('", "')'", "';'",
   "$accept", "program", "declist", "decl", "vardec", "fundec", "compound",
-  "locvdecs", "stmtlst", "stmt", "full", "noncond", "part", "expression",
-  "type_assign", "var", "simpexp", "relexp", "relop", "addexp", "addop",
-  "logop", "term", "mulop", "unary", "unaryop", "fact", "constant",
-  "brkstmt", "retstmt", YY_NULLPTR
+  "locvdecs", "stmtlst", "stmt", "noncond", "expression", "type_assign",
+  "var", "simpexp", "relexp", "relop", "addexp", "addop", "logop", "term",
+  "mulop", "unary", "unaryop", "fact", "constant", "brkstmt", "retstmt", YY_NULLPTR
 };
 #endif
 
@@ -617,12 +608,12 @@ static const yytype_int16 yytoknum[] =
        0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
      265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
      275,   276,   277,   278,   279,   280,   281,   282,   283,   284,
-     285,   286,   287,   288,   289,   290,   291,    59,    40,    41,
-     125
+     285,   286,   287,   288,   289,   290,   291,   292,   293,   294,
+      40,    41,    59
 };
 # endif
 
-#define YYPACT_NINF (-101)
+#define YYPACT_NINF (-43)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
@@ -636,19 +627,17 @@ static const yytype_int16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-     121,   -10,     6,    17,    18,  -101,  -101,    10,    24,  -101,
-     121,  -101,  -101,    50,    -2,    82,    82,    82,    37,  -101,
-    -101,    39,    74,  -101,  -101,  -101,  -101,    82,    45,    -5,
-      -1,  -101,    97,    80,  -101,    82,  -101,  -101,    47,    49,
-    -101,  -101,     2,  -101,    51,    74,    93,    85,  -101,  -101,
-      82,  -101,  -101,  -101,  -101,  -101,  -101,  -101,  -101,    82,
-      82,  -101,  -101,  -101,  -101,    82,    75,  -101,    74,    74,
-      70,    72,    73,    77,  -101,  -101,    88,  -101,    40,    76,
-      54,  -101,  -101,  -101,    98,  -101,  -101,  -101,  -101,  -101,
-      56,  -101,  -101,     9,    80,  -101,  -101,  -101,    82,  -101,
-      82,  -101,  -101,  -101,    79,  -101,  -101,  -101,    78,    95,
-     100,  -101,    82,    54,    54,  -101,  -101,   108,  -101,  -101,
-      54,  -101,  -101
+      38,   -25,   -20,    37,   -43,    38,   -43,   -43,    -7,     3,
+     -43,   -43,     4,    14,   -43,   -43,   -43,   -43,     4,   -43,
+      23,    55,   -43,    75,    43,   -43,     4,   -43,   -43,    62,
+      21,    53,    33,   -43,   -43,     4,   -43,   -43,   -43,   -43,
+     -43,   -43,   -43,   -43,     4,     4,   -43,   -43,   -43,   -43,
+       4,    49,   -43,    -2,   -43,   -43,   -43,   -43,   -43,    34,
+     -43,   -43,    59,    43,   -43,   -43,    41,    47,    52,    54,
+     -43,    90,   -43,    10,   100,    46,   -43,    63,   -43,   -43,
+       4,     4,   -43,     4,   -43,   -43,   -43,   102,   -43,   -43,
+     -43,    66,    67,    68,   -43,   -43,    46,    46,   104,   -43,
+      46,   -43
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -656,35 +645,33 @@ static const yytype_int8 yypact[] =
      means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       0,     0,     0,     0,     0,    38,    37,     0,     0,     2,
-       4,     5,     6,     0,     0,     0,     0,     0,     0,     1,
-       3,     0,     0,    39,    70,    66,    65,     0,     0,    68,
-      36,    42,    44,    52,    58,     0,    64,    69,     0,     0,
-       7,     8,     0,    12,     0,     0,     0,     0,    56,    55,
-       0,    53,    54,    48,    50,    45,    47,    46,    49,     0,
-       0,    59,    60,    61,    62,     0,    68,    63,     0,     0,
-       0,     0,     0,     0,    30,    16,    18,    28,     0,     0,
-      20,    21,    25,    22,     0,    26,    27,    67,     9,    40,
-       0,    34,    41,    43,    51,    57,    10,    11,     0,    72,
-       0,    71,    17,    14,     0,    15,    19,    29,     0,     0,
-       0,    13,     0,     0,     0,    35,    31,    21,    24,    33,
-       0,    23,    32
+       0,     0,     0,     0,     2,     4,     5,     6,     0,     0,
+       1,     3,     0,     0,    57,    56,    30,    61,     0,     7,
+      59,    27,    33,    35,    43,    49,     0,    55,    60,     0,
+       0,     0,     0,    47,    46,     0,    44,    45,    41,    36,
+      39,    40,    38,    37,     0,     0,    50,    51,    52,    53,
+       0,    59,    54,     0,     8,    58,    28,    29,    25,     0,
+      31,    32,    34,    42,    48,    12,     0,     0,     0,     0,
+      24,    14,    22,     0,     0,    16,    19,     0,    20,    21,
+       0,     0,    63,     0,    62,    13,    10,     0,    11,    15,
+      23,     0,     0,     0,     9,    26,     0,     0,     0,    18,
+       0,    17
 };
 
   /* YYPGOTO[NTERM-NUM].  */
-static const yytype_int16 yypgoto[] =
+static const yytype_int8 yypgoto[] =
 {
-    -101,  -101,   130,  -101,   -38,  -101,   -19,    65,   -14,    29,
-     -62,  -101,  -100,   -15,    53,   -29,  -101,    94,  -101,    86,
-    -101,  -101,    87,  -101,   -24,  -101,  -101,  -101,  -101,  -101
+     -43,   -43,   106,   -43,   -42,   -43,    83,    42,   -41,   -33,
+     -43,   -12,   -43,   -19,   -43,    79,   -43,    71,   -43,   -43,
+      72,   -43,   -22,   -43,   -43,   -43,   -43,   -43
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     8,     9,    10,    11,    12,    77,    78,    79,    80,
-      81,    82,    83,    84,    13,    29,    30,    31,    59,    32,
-      60,    50,    33,    65,    34,    35,    36,    37,    85,    86
+      -1,     3,     4,     5,     6,     7,    72,    73,    74,    75,
+      76,    77,    59,    20,    21,    22,    44,    23,    45,    35,
+      24,    50,    25,    26,    27,    28,    78,    79
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -692,85 +679,75 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-      28,    38,    39,    43,    76,    70,    66,    71,    72,    73,
-      42,    67,    44,    46,   119,    23,    24,     5,     6,     7,
-     122,    66,    48,    18,    19,    49,    88,    25,    14,    47,
-      66,    66,    91,    51,    52,    26,    66,    22,    76,    74,
-      27,    95,    75,    70,    15,    71,    72,    73,    42,    96,
-      97,   117,   118,    23,    24,    16,    17,    70,   121,    71,
-      72,    73,    42,    21,   104,    25,   106,    23,    24,    23,
-      24,     5,     6,    26,    40,    44,    41,    74,    27,    25,
-     103,    25,    42,   109,    45,   110,    68,    26,    69,    26,
-      87,    74,    27,    46,    27,    23,    24,   115,    23,    24,
-      61,    62,    63,     5,     6,     7,    89,    25,    98,    99,
-      25,   100,   120,    64,   101,    26,   105,   112,    26,   111,
-      27,    51,    52,    90,    53,    54,    55,    56,    57,    58,
-       1,     2,     3,     4,   113,   107,     5,     6,     7,   114,
-      20,   102,   116,   108,    92,    93,     0,    94
+      19,    53,    65,    66,    52,     1,    30,    51,    67,    68,
+      69,    71,     8,    53,    86,    66,    51,     9,    14,    58,
+      67,    68,    69,    12,    14,    51,    51,    15,    64,    71,
+      14,    51,    87,    15,    89,    16,    17,    10,    18,    15,
+      70,    16,    17,    13,    18,     1,     2,    16,    17,    53,
+      18,    66,    70,    31,    32,    29,    67,    68,    69,    46,
+      47,    48,    55,    98,    99,    53,    14,   101,    91,    92,
+      60,    93,    49,    14,    80,    15,    33,    34,    36,    37,
+      32,    81,    15,    16,    17,    56,    18,    57,    70,    82,
+      16,    17,    83,    18,    36,    37,    84,     1,    38,    39,
+      40,    41,    42,    43,    88,    90,    94,    95,    96,    97,
+     100,    11,    54,    85,    61,    62,     0,    63
 };
 
 static const yytype_int8 yycheck[] =
 {
-      15,    16,    17,    22,    42,     3,    35,     5,     6,     7,
-       8,    35,    27,    18,   114,    13,    14,    15,    16,    17,
-     120,    50,    23,    13,     0,    26,    45,    25,    38,    34,
-      59,    60,    47,    24,    25,    33,    65,    39,    76,    37,
-      38,    65,    40,     3,    38,     5,     6,     7,     8,    68,
-      69,   113,   114,    13,    14,    38,    38,     3,   120,     5,
-       6,     7,     8,    13,    78,    25,    80,    13,    14,    13,
-      14,    15,    16,    33,    37,    90,    37,    37,    38,    25,
-      40,    25,     8,    98,    39,   100,    39,    33,    39,    33,
-      39,    37,    38,    18,    38,    13,    14,   112,    13,    14,
-      20,    21,    22,    15,    16,    17,    13,    25,    38,    37,
-      25,    38,     4,    33,    37,    33,    40,    39,    33,    40,
-      38,    24,    25,    38,    27,    28,    29,    30,    31,    32,
-       9,    10,    11,    12,    39,    37,    15,    16,    17,    39,
-      10,    76,   113,    90,    50,    59,    -1,    60
+      12,     3,     4,     5,    26,     7,    18,    26,    10,    11,
+      12,    53,    37,     3,     4,     5,    35,    37,    20,    31,
+      10,    11,    12,    30,    20,    44,    45,    29,    50,    71,
+      20,    50,    73,    29,    75,    37,    38,     0,    40,    29,
+      42,    37,    38,    40,    40,     7,     8,    37,    38,     3,
+      40,     5,    42,    30,    31,    41,    10,    11,    12,    16,
+      17,    18,    41,    96,    97,     3,    20,   100,    80,    81,
+      37,    83,    29,    20,    40,    29,    21,    22,    19,    20,
+      31,    40,    29,    37,    38,    32,    40,    34,    42,    42,
+      37,    38,    40,    40,    19,    20,    42,     7,    23,    24,
+      25,    26,    27,    28,     4,    42,     4,    41,    41,    41,
+       6,     5,    29,    71,    35,    44,    -1,    45
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,     9,    10,    11,    12,    15,    16,    17,    42,    43,
-      44,    45,    46,    55,    38,    38,    38,    38,    13,     0,
-      43,    13,    39,    13,    14,    25,    33,    38,    54,    56,
-      57,    58,    60,    63,    65,    66,    67,    68,    54,    54,
-      37,    37,     8,    47,    54,    39,    18,    34,    23,    26,
-      62,    24,    25,    27,    28,    29,    30,    31,    32,    59,
-      61,    20,    21,    22,    33,    64,    56,    65,    39,    39,
-       3,     5,     6,     7,    37,    40,    45,    47,    48,    49,
-      50,    51,    52,    53,    54,    69,    70,    39,    47,    13,
-      38,    54,    58,    60,    63,    65,    47,    47,    38,    37,
-      38,    37,    48,    40,    49,    40,    49,    37,    55,    54,
-      54,    40,    39,    39,    39,    54,    50,    51,    51,    53,
-       4,    51,    53
+       0,     7,     8,    44,    45,    46,    47,    48,    37,    37,
+       0,    45,    30,    40,    20,    29,    37,    38,    40,    54,
+      56,    57,    58,    60,    63,    65,    66,    67,    68,    41,
+      54,    30,    31,    21,    22,    62,    19,    20,    23,    24,
+      25,    26,    27,    28,    59,    61,    16,    17,    18,    29,
+      64,    56,    65,     3,    49,    41,    32,    34,    54,    55,
+      37,    58,    60,    63,    65,     4,     5,    10,    11,    12,
+      42,    47,    49,    50,    51,    52,    53,    54,    69,    70,
+      40,    40,    42,    40,    42,    50,     4,    51,     4,    51,
+      42,    54,    54,    54,     4,    41,    41,    41,    52,    52,
+       6,    52
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_int8 yyr1[] =
 {
-       0,    41,    42,    43,    43,    44,    44,    45,    45,    46,
-      46,    46,    46,    47,    47,    47,    47,    48,    48,    49,
-      49,    50,    50,    51,    51,    51,    52,    52,    52,    52,
-      52,    53,    53,    53,    54,    54,    54,    55,    55,    56,
-      56,    57,    57,    58,    58,    59,    59,    59,    59,    59,
-      59,    60,    60,    61,    61,    62,    62,    63,    63,    64,
-      64,    64,    64,    65,    65,    66,    66,    67,    67,    67,
-      68,    69,    70
+       0,    43,    44,    45,    45,    46,    46,    47,    48,    49,
+      49,    49,    49,    50,    50,    51,    51,    52,    52,    52,
+      53,    53,    53,    53,    53,    54,    54,    54,    55,    55,
+      56,    56,    57,    57,    58,    58,    59,    59,    59,    59,
+      59,    59,    60,    60,    61,    61,    62,    62,    63,    63,
+      64,    64,    64,    64,    65,    65,    66,    66,    67,    67,
+      67,    68,    69,    70
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_int8 yyr2[] =
 {
-       0,     2,     1,     2,     1,     1,     1,     3,     3,     5,
-       5,     5,     4,     4,     3,     3,     2,     2,     1,     2,
-       1,     1,     1,     7,     5,     1,     1,     1,     1,     2,
-       1,     5,     7,     5,     3,     6,     1,     1,     1,     1,
-       3,     3,     1,     3,     1,     1,     1,     1,     1,     1,
-       1,     3,     1,     1,     1,     1,     1,     3,     1,     1,
-       1,     1,     1,     2,     1,     1,     1,     3,     1,     1,
-       1,     2,     2
+       0,     2,     1,     2,     1,     1,     1,     4,     5,     4,
+       3,     3,     2,     2,     1,     2,     1,     7,     5,     1,
+       1,     1,     1,     2,     1,     3,     6,     1,     1,     1,
+       1,     3,     3,     1,     3,     1,     1,     1,     1,     1,
+       1,     1,     3,     1,     1,     1,     1,     1,     3,     1,
+       1,     1,     1,     1,     2,     1,     1,     1,     3,     1,
+       1,     1,     2,     2
 };
 
 
@@ -1466,730 +1443,487 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 88 "parser.y"
-                                                                { ParseTree->setSibling( (yyvsp[0].nodeInfo) );     }
-#line 1472 "parser.tab.c"
+#line 108 "parser.y"
+                { ParseTree->Sibling =  (yyvsp[0].nodeInfo); }
+#line 1449 "parser.tab.c"
     break;
 
   case 3:
-#line 91 "parser.y"
-                                                                { (yyvsp[-1].nodeInfo)->setSibling((yyvsp[0].nodeInfo)); }
-#line 1478 "parser.tab.c"
+#line 113 "parser.y"
+                { (yyvsp[-1].nodeInfo)->Sibling = (yyvsp[0].nodeInfo); }
+#line 1455 "parser.tab.c"
     break;
 
   case 4:
-#line 92 "parser.y"
-                                                                { (yyval.nodeInfo) = (yyvsp[0].nodeInfo);            }
-#line 1484 "parser.tab.c"
+#line 116 "parser.y"
+                { (yyval.nodeInfo) = (yyvsp[0].nodeInfo); }
+#line 1461 "parser.tab.c"
     break;
 
   case 5:
-#line 95 "parser.y"
-                                                                { (yyval.nodeInfo) = (yyvsp[0].nodeInfo); }
-#line 1490 "parser.tab.c"
+#line 121 "parser.y"
+                { (yyval.nodeInfo) = (yyvsp[0].nodeInfo); }
+#line 1467 "parser.tab.c"
     break;
 
   case 6:
-#line 96 "parser.y"
-                                                                { (yyval.nodeInfo) = (yyvsp[0].nodeInfo); }
-#line 1496 "parser.tab.c"
+#line 124 "parser.y"
+                { (yyval.nodeInfo) = (yyvsp[0].nodeInfo); }
+#line 1473 "parser.tab.c"
     break;
 
   case 7:
-#line 99 "parser.y"
-                                                                {
-                                                                    (yyval.nodeInfo) = new DecNode( IDENT,
-                                                                                      lineNo,//line number
-                                                                                      (yyvsp[-1].tokInfo)->stringValue//label
-                                                                                 );
-                                                                }
-#line 1507 "parser.tab.c"
+#line 129 "parser.y"
+                {
+                    (yyval.nodeInfo) = new Node( IDENT, lineNo, (yyvsp[-2].tokInfo)->stringValue );
+                    (yyval.nodeInfo)->Children.push_back( (yyvsp[0].nodeInfo) );
+                }
+#line 1482 "parser.tab.c"
     break;
 
   case 8:
-#line 105 "parser.y"
-                                                                {
-                                                                    (yyval.nodeInfo) = new DecNode(IDENT,
-                                                                                     lineNo,//line number
-                                                                                     (yyvsp[-1].tokInfo)->stringValue//label
-                                                                                 );
-                                                                    (yyval.nodeInfo)->setChild( 0, (yyvsp[-2].nodeInfo) );
-                                                                }
-#line 1519 "parser.tab.c"
+#line 136 "parser.y"
+                {
+                    (yyval.nodeInfo) = new Node( FN, (yyvsp[-3].tokInfo)->line, (yyvsp[-3].tokInfo)->stringValue );
+                    //$$->Children.push_back( $4 );
+                    (yyval.nodeInfo)->Children.push_back( (yyvsp[0].nodeInfo));
+                }
+#line 1492 "parser.tab.c"
     break;
 
   case 9:
-#line 114 "parser.y"
-                                                                {
-                                                                      (yyval.nodeInfo) = new EventNode( EVENT,
-                                                                                        (yyvsp[-2].nodeInfo)->getLineNo()//line number
-                                                                                      );
-                                                                    (yyval.nodeInfo)->setChild(0, (yyvsp[-2].nodeInfo));
-                                                                    (yyval.nodeInfo)->setChild(1, (yyvsp[0].nodeInfo));
-                                                                }
-#line 1531 "parser.tab.c"
+#line 144 "parser.y"
+                {
+                    (yyval.nodeInfo) = new Node( LEFT_CURLY, (yyvsp[-3].tokInfo)->line );
+                    (yyval.nodeInfo)->Children.push_back( (yyvsp[-2].nodeInfo));
+                    (yyval.nodeInfo)->Children.push_back( (yyvsp[-1].nodeInfo));
+                }
+#line 1502 "parser.tab.c"
     break;
 
   case 10:
-#line 121 "parser.y"
-                                                                {
-                                                                      (yyval.nodeInfo) = new EventNode( PRE_EVENT,
-                                                                                        (yyvsp[-2].nodeInfo)->getLineNo()//line number
-                                                                                      );
-                                                                    (yyval.nodeInfo)->setChild(0, (yyvsp[-2].nodeInfo));
-                                                                    (yyval.nodeInfo)->setChild(1, (yyvsp[0].nodeInfo));
-                                                                }
-#line 1543 "parser.tab.c"
+#line 151 "parser.y"
+                {
+                    (yyval.nodeInfo) = new Node( LEFT_CURLY, (yyvsp[-2].tokInfo)->line );
+                    (yyval.nodeInfo)->Children.push_back( (yyvsp[-1].nodeInfo));
+                }
+#line 1511 "parser.tab.c"
     break;
 
   case 11:
-#line 128 "parser.y"
-                                                                {
-                                                                      (yyval.nodeInfo) = new EventNode( POST_EVENT,
-                                                                                        (yyvsp[-2].nodeInfo)->getLineNo()//line number
-                                                                                      );
-                                                                    (yyval.nodeInfo)->setChild(0, (yyvsp[-2].nodeInfo));
-                                                                    (yyval.nodeInfo)->setChild(1, (yyvsp[0].nodeInfo));
-                                                                }
-#line 1555 "parser.tab.c"
+#line 157 "parser.y"
+                {
+                    (yyval.nodeInfo) = new Node( LEFT_CURLY, (yyvsp[-2].tokInfo)->line );
+                    (yyval.nodeInfo)->Children.push_back( (yyvsp[-1].nodeInfo));
+                }
+#line 1520 "parser.tab.c"
     break;
 
   case 12:
-#line 135 "parser.y"
-                                                                {
-                                                                      (yyval.nodeInfo) = new EventNode( INIT,
-                                                                                        (yyvsp[-3].tokInfo)->line//line number
-                                                                                      );
-                                                                    (yyval.nodeInfo)->setChild(1, (yyvsp[0].nodeInfo));
-                                                                }
-#line 1566 "parser.tab.c"
+#line 163 "parser.y"
+                {
+                    (yyval.nodeInfo) = new Node( LEFT_CURLY, (yyvsp[-1].tokInfo)->line );
+                }
+#line 1528 "parser.tab.c"
     break;
 
   case 13:
-#line 143 "parser.y"
-                                                                {
-                                                                    (yyval.nodeInfo) = new StmNode( STARTCURLY,
-                                                                                   (yyvsp[-3].tokInfo)->line,//line number
-                                                                                   "Compound"//category
-                                                                                 );
-                                                                    (yyval.nodeInfo)->setChild(0, (yyvsp[-2].nodeInfo));
-                                                                    (yyval.nodeInfo)->setChild(1, (yyvsp[-1].nodeInfo));
-                                                                }
-#line 1579 "parser.tab.c"
+#line 169 "parser.y"
+                { (yyvsp[-1].nodeInfo)->Sibling = (yyvsp[0].nodeInfo); }
+#line 1534 "parser.tab.c"
     break;
 
   case 14:
-#line 151 "parser.y"
-                                                                {
-                                                                    (yyval.nodeInfo) = new StmNode( STARTCURLY,
-                                                                                   (yyvsp[-2].tokInfo)->line,//line number
-                                                                                   "Compound"//category
-                                                                                 );
-                                                                    (yyval.nodeInfo)->setChild(0, (yyvsp[-1].nodeInfo));
-                                                                }
-#line 1591 "parser.tab.c"
+#line 172 "parser.y"
+                { (yyval.nodeInfo) = (yyvsp[0].nodeInfo); }
+#line 1540 "parser.tab.c"
     break;
 
   case 15:
-#line 158 "parser.y"
-                                                                {
-                                                                    (yyval.nodeInfo) = new StmNode( STARTCURLY,
-                                                                                   (yyvsp[-2].tokInfo)->line,//line number
-                                                                                   "Compound"//category
-                                                                                 );
-                                                                    (yyval.nodeInfo)->setChild(1, (yyvsp[-1].nodeInfo));
-                                                                }
-#line 1603 "parser.tab.c"
+#line 176 "parser.y"
+                {
+                      if ((yyvsp[-1].nodeInfo) != NULL)
+                          (yyvsp[-1].nodeInfo)->Sibling = (yyvsp[0].nodeInfo);
+                      else
+                          (yyval.nodeInfo) = (yyvsp[0].nodeInfo);
+
+                }
+#line 1552 "parser.tab.c"
     break;
 
   case 16:
-#line 165 "parser.y"
-                                                                {
-                                                                    (yyval.nodeInfo) = new StmNode( STARTCURLY,
-                                                                                   (yyvsp[-1].tokInfo)->line,//line number
-                                                                                   "Compound"//category
-                                                                                 );
-                                                                }
-#line 1614 "parser.tab.c"
+#line 185 "parser.y"
+                { (yyval.nodeInfo) = (yyvsp[0].nodeInfo); }
+#line 1558 "parser.tab.c"
     break;
 
   case 17:
-#line 173 "parser.y"
-                                                                { (yyvsp[-1].nodeInfo)->setSibling((yyvsp[0].nodeInfo)); }
-#line 1620 "parser.tab.c"
+#line 189 "parser.y"
+                {
+                    (yyval.nodeInfo) = new Node( IF, (yyvsp[-6].tokInfo)->line, "If" );
+                    (yyval.nodeInfo)->Children.push_back( (yyvsp[-4].nodeInfo));
+                    (yyval.nodeInfo)->Children.push_back( (yyvsp[-2].nodeInfo));
+                    (yyval.nodeInfo)->Children.push_back( (yyvsp[0].nodeInfo));
+                }
+#line 1569 "parser.tab.c"
     break;
 
   case 18:
-#line 174 "parser.y"
-                                                                { (yyval.nodeInfo) = (yyvsp[0].nodeInfo); }
-#line 1626 "parser.tab.c"
+#line 197 "parser.y"
+                {
+                    (yyval.nodeInfo) = new Node( WHILE, (yyvsp[-4].tokInfo)->line, "While" );
+                    (yyval.nodeInfo)->Children.push_back( (yyvsp[-2].nodeInfo));
+                    (yyval.nodeInfo)->Children.push_back( (yyvsp[0].nodeInfo));
+                }
+#line 1579 "parser.tab.c"
     break;
 
   case 19:
-#line 177 "parser.y"
-                                                                {
-                                                                  if ((yyvsp[-1].nodeInfo) != NULL)
-                                                                      (yyvsp[-1].nodeInfo)->setSibling((yyvsp[0].nodeInfo));
-                                                                  else
-                                                                      (yyval.nodeInfo) = (yyvsp[0].nodeInfo);
-
-                                                                }
-#line 1638 "parser.tab.c"
+#line 204 "parser.y"
+                { (yyval.nodeInfo) = (yyvsp[0].nodeInfo); }
+#line 1585 "parser.tab.c"
     break;
 
   case 20:
-#line 184 "parser.y"
-                                                                { (yyval.nodeInfo) = (yyvsp[0].nodeInfo); }
-#line 1644 "parser.tab.c"
+#line 208 "parser.y"
+                { (yyval.nodeInfo) = (yyvsp[0].nodeInfo); }
+#line 1591 "parser.tab.c"
     break;
 
   case 21:
-#line 187 "parser.y"
-                                                                { (yyval.nodeInfo) = (yyvsp[0].nodeInfo); }
-#line 1650 "parser.tab.c"
+#line 211 "parser.y"
+                { (yyval.nodeInfo) = (yyvsp[0].nodeInfo); }
+#line 1597 "parser.tab.c"
     break;
 
   case 22:
-#line 188 "parser.y"
-                                                                { (yyval.nodeInfo) = (yyvsp[0].nodeInfo); }
-#line 1656 "parser.tab.c"
+#line 214 "parser.y"
+                { (yyval.nodeInfo) = (yyvsp[0].nodeInfo); }
+#line 1603 "parser.tab.c"
     break;
 
   case 23:
-#line 191 "parser.y"
-                                                                {
-                                                                    (yyval.nodeInfo) = new ConditionalNode( IF,
-                                                                                   (yyvsp[-6].tokInfo)->line,//line number
-                                                                                   "If"//category
-                                                                                 );
-                                                                    (yyval.nodeInfo)->setChild(0, (yyvsp[-4].nodeInfo));
-                                                                    (yyval.nodeInfo)->setChild(1, (yyvsp[-2].nodeInfo));
-                                                                    (yyval.nodeInfo)->setChild(2, (yyvsp[0].nodeInfo));
-                                                                }
-#line 1670 "parser.tab.c"
+#line 217 "parser.y"
+                { (yyval.nodeInfo) = (yyvsp[-1].nodeInfo); }
+#line 1609 "parser.tab.c"
     break;
 
   case 24:
-#line 200 "parser.y"
-                                                                {
-                                                                    (yyval.nodeInfo) = new ConditionalNode( WHILE,
-                                                                                   (yyvsp[-4].tokInfo)->line,//line number
-                                                                                   "While"//category
-                                                                                 );
-                                                                    (yyval.nodeInfo)->setChild(0, (yyvsp[-2].nodeInfo));
-                                                                    (yyval.nodeInfo)->setChild(1, (yyvsp[0].nodeInfo));
-                                                                }
-#line 1683 "parser.tab.c"
+#line 220 "parser.y"
+                {
+                    (yyval.nodeInfo) = new Node( 0, lineNo, "Empty" );
+                }
+#line 1617 "parser.tab.c"
     break;
 
   case 25:
-#line 208 "parser.y"
-                                                                {
-                                                                    (yyval.nodeInfo) = (yyvsp[0].nodeInfo);
-                                                                }
-#line 1691 "parser.tab.c"
+#line 226 "parser.y"
+                {
+                    //Create my node
+                    (yyval.nodeInfo) = new Node( ASSIGN, (yyvsp[-2].nodeInfo)->lineNumber(), (yyvsp[-1].tokInfo)->stringValue );
+                    (yyval.nodeInfo)->Children.push_back( (yyvsp[-2].nodeInfo));
+                    (yyval.nodeInfo)->Children.push_back( (yyvsp[0].nodeInfo));
+                }
+#line 1628 "parser.tab.c"
     break;
 
   case 26:
-#line 213 "parser.y"
-                                                                { (yyval.nodeInfo) = (yyvsp[0].nodeInfo);   }
-#line 1697 "parser.tab.c"
+#line 234 "parser.y"
+                {
+                    (yyval.nodeInfo) = new Node( ASSIGN, (yyvsp[-5].nodeInfo)->lineNumber(), (yyvsp[-4].tokInfo)->stringValue );
+                    (yyval.nodeInfo)->Children.push_back( (yyvsp[-5].nodeInfo));
+                    (yyval.nodeInfo)->Children.push_back( (yyvsp[-1].nodeInfo));
+                    (yyval.nodeInfo)->Children.push_back( (yyvsp[-3].nodeInfo));
+                }
+#line 1639 "parser.tab.c"
     break;
 
   case 27:
-#line 214 "parser.y"
-                                                                { (yyval.nodeInfo) = (yyvsp[0].nodeInfo);   }
-#line 1703 "parser.tab.c"
+#line 242 "parser.y"
+                { (yyval.nodeInfo) = (yyvsp[0].nodeInfo); }
+#line 1645 "parser.tab.c"
     break;
 
   case 28:
-#line 215 "parser.y"
-                                                                { (yyval.nodeInfo) = (yyvsp[0].nodeInfo);   }
-#line 1709 "parser.tab.c"
+#line 246 "parser.y"
+                {
+                      (yyval.nodeInfo) = new Node( I8, (yyvsp[0].tokInfo)->line, "i8" );
+                }
+#line 1653 "parser.tab.c"
     break;
 
   case 29:
-#line 216 "parser.y"
-                                                                { (yyval.nodeInfo) = (yyvsp[-1].nodeInfo);   }
-#line 1715 "parser.tab.c"
+#line 251 "parser.y"
+                {
+                      (yyval.nodeInfo) = new Node( I32, (yyvsp[0].tokInfo)->line, "i32" );
+                }
+#line 1661 "parser.tab.c"
     break;
 
   case 30:
-#line 217 "parser.y"
-                                                                {
-                                                                    (yyval.nodeInfo) = new StmNode( 0,
-                                                                                   lineNo,//line number
-                                                                                   "Empty"//category
-                                                                                 );
-                                                                }
-#line 1726 "parser.tab.c"
+#line 257 "parser.y"
+                {
+                    (yyval.nodeInfo) = new Node( IDENT, (yyvsp[0].tokInfo)->line, (yyvsp[0].tokInfo)->stringValue );
+                }
+#line 1669 "parser.tab.c"
     break;
 
   case 31:
-#line 225 "parser.y"
-                                                                {
-                                                                    (yyval.nodeInfo) = new ConditionalNode( IF,
-                                                                                   (yyvsp[-4].tokInfo)->line,//line number
-                                                                                   "If"//category
-                                                                                 );
-                                                                    (yyval.nodeInfo)->setChild(0, (yyvsp[-2].nodeInfo));
-                                                                    (yyval.nodeInfo)->setChild(1, (yyvsp[0].nodeInfo));
-                                                                }
-#line 1739 "parser.tab.c"
+#line 262 "parser.y"
+                {
+                    (yyval.nodeInfo) = new Node( IDENT, (yyvsp[-2].nodeInfo)->lineNumber(), (yyvsp[0].tokInfo)->stringValue );
+                }
+#line 1677 "parser.tab.c"
     break;
 
   case 32:
-#line 233 "parser.y"
-                                                                {
-                                                                    (yyval.nodeInfo) = new ConditionalNode( IF,
-                                                                                   (yyvsp[-6].tokInfo)->line,//line number
-                                                                                   "If"//category
-                                                                                 );
-                                                                    (yyval.nodeInfo)->setChild(0, (yyvsp[-4].nodeInfo));
-                                                                    (yyval.nodeInfo)->setChild(1, (yyvsp[-2].nodeInfo));
-                                                                    (yyval.nodeInfo)->setChild(2, (yyvsp[0].nodeInfo));
-                                                                }
-#line 1753 "parser.tab.c"
+#line 268 "parser.y"
+                {
+                    (yyval.nodeInfo) = (yyvsp[-1].nodeInfo);
+                    (yyval.nodeInfo)->Children.push_back( (yyvsp[-2].nodeInfo));
+                    (yyval.nodeInfo)->Children.push_back( (yyvsp[0].nodeInfo));
+                }
+#line 1687 "parser.tab.c"
     break;
 
   case 33:
-#line 242 "parser.y"
-                                                                {
-                                                                    (yyval.nodeInfo) = new ConditionalNode( WHILE,
-                                                                                   (yyvsp[-4].tokInfo)->line,//line number
-                                                                                   "While"//category
-                                                                                 );
-                                                                    (yyval.nodeInfo)->setChild(0, (yyvsp[-2].nodeInfo));
-                                                                    (yyval.nodeInfo)->setChild(1, (yyvsp[0].nodeInfo));
-                                                                }
-#line 1766 "parser.tab.c"
+#line 275 "parser.y"
+                { (yyval.nodeInfo) = (yyvsp[0].nodeInfo); }
+#line 1693 "parser.tab.c"
     break;
 
   case 34:
-#line 252 "parser.y"
-                                                                {
-                                                                      //If we are loading a constant, set that we are
-                                                                    int id = ASSIGN;
-                                                                    if ( (yyvsp[0].nodeInfo)->getTokenType() == NUMBER )
-                                                                      id = ASSIGN_CONST;
-
-                                                                      //Create my node
-                                                                    (yyval.nodeInfo) = new AssignNode( id,
-                                                                                   (yyvsp[-2].nodeInfo)->getLineNo(),//line number
-                                                                                   (yyvsp[-1].tokInfo)->stringValue,//label
-                                                                                   "Assign: "//category
-                                                                                 );
-                                                                    (yyval.nodeInfo)->setChild(0, (yyvsp[-2].nodeInfo));
-                                                                    (yyval.nodeInfo)->setChild(1, (yyvsp[0].nodeInfo));
-                                                                }
-#line 1786 "parser.tab.c"
+#line 279 "parser.y"
+                {
+                    (yyval.nodeInfo) = (yyvsp[-1].nodeInfo);
+                    (yyval.nodeInfo)->Children.push_back( (yyvsp[-2].nodeInfo));
+                    (yyval.nodeInfo)->Children.push_back( (yyvsp[0].nodeInfo));
+                }
+#line 1703 "parser.tab.c"
     break;
 
   case 35:
-#line 267 "parser.y"
-                                                                {
-                                                                      //If we are loading a constant, set that we are
-                                                                    int id = ASSIGN;
-                                                                    if ( (yyvsp[0].nodeInfo)->getTokenType() == NUMBER )
-                                                                      id = ASSIGN_CONST;
-
-                                                                      //Create my node
-                                                                    (yyval.nodeInfo) = new AssignNode( id,
-                                                                                   (yyvsp[-5].nodeInfo)->getLineNo(),//line number
-                                                                                   (yyvsp[-4].tokInfo)->stringValue,//label
-                                                                                   "Assign Int: "//category
-                                                                                 );
-                                                                    (yyval.nodeInfo)->setChild(0, (yyvsp[-5].nodeInfo));
-                                                                    (yyval.nodeInfo)->setChild(1, (yyvsp[0].nodeInfo));
-                                                                    (yyval.nodeInfo)->setChild(2, (yyvsp[-2].nodeInfo));
-                                                                }
-#line 1807 "parser.tab.c"
+#line 286 "parser.y"
+                { (yyval.nodeInfo) = (yyvsp[0].nodeInfo); }
+#line 1709 "parser.tab.c"
     break;
 
   case 36:
-#line 284 "parser.y"
-                                                                { (yyval.nodeInfo) = (yyvsp[0].nodeInfo); }
-#line 1813 "parser.tab.c"
+#line 290 "parser.y"
+                {
+                    (yyval.nodeInfo) = new Node( LEQ, lineNo, (yyvsp[0].tokInfo)->stringValue );
+                }
+#line 1717 "parser.tab.c"
     break;
 
   case 37:
-#line 287 "parser.y"
-                                                                { 
-                                                                  (yyval.nodeInfo) = new TypeNode( INT,
-                                                                                     (yyvsp[0].tokInfo)->line,
-                                                                                     "int",
-                                                                                     "Type: " ); 
-                                                                }
-#line 1824 "parser.tab.c"
+#line 295 "parser.y"
+                {
+                    (yyval.nodeInfo) = new Node( LT, lineNo, (yyvsp[0].tokInfo)->stringValue );
+                }
+#line 1725 "parser.tab.c"
     break;
 
   case 38:
-#line 293 "parser.y"
-                                                                { 
-                                                                  (yyval.nodeInfo) = new TypeNode( FLOAT,
-                                                                                     (yyvsp[0].tokInfo)->line,
-                                                                                     "float",
-                                                                                     "Type: " ); 
-                                                                }
-#line 1835 "parser.tab.c"
+#line 300 "parser.y"
+                {
+                    (yyval.nodeInfo) = new Node( GT, lineNo, (yyvsp[0].tokInfo)->stringValue );
+                }
+#line 1733 "parser.tab.c"
     break;
 
   case 39:
-#line 301 "parser.y"
-                                                                {
-                                                                    (yyval.nodeInfo) = new VariableNode( IDENT,
-                                                                                   (yyvsp[0].tokInfo)->line,//line number
-                                                                                   (yyvsp[0].tokInfo)->stringValue//label
-                                                                                 );
-                                                                }
-#line 1846 "parser.tab.c"
+#line 305 "parser.y"
+                {
+                    (yyval.nodeInfo) = new Node( GEQ, lineNo, (yyvsp[0].tokInfo)->stringValue );
+                }
+#line 1741 "parser.tab.c"
     break;
 
   case 40:
-#line 307 "parser.y"
-                                                                {
-                                                                    //Convert my variable node, to a VariableExNode 
-                                                                  if ( (yyvsp[-2].nodeInfo)->getTokenType() != VAR_EX )
-                                                                  {
-                                                                    (yyval.nodeInfo) = new VariableExNode( VAR_EX, 
-                                                                                             (yyvsp[-2].nodeInfo)->getLineNo() );
-                                                                    reinterpret_cast<VariableExNode*>((yyval.nodeInfo))->addVariable(
-                                                                          reinterpret_cast<VariableNode*>((yyvsp[-2].nodeInfo)) );
-                                                                  }
-
-                                                                    //Add a new variable
-                                                                  reinterpret_cast<VariableExNode*>((yyval.nodeInfo))->addVariable(
-                                                                                   new VariableNode( IDENT,
-                                                                                      (yyvsp[0].tokInfo)->line,//line number
-                                                                                      (yyvsp[0].tokInfo)->stringValue//label
-                                                                                    ) );
-                                                                }
-#line 1868 "parser.tab.c"
+#line 310 "parser.y"
+                {
+                    (yyval.nodeInfo) = new Node( EQ, lineNo, (yyvsp[0].tokInfo)->stringValue );
+                }
+#line 1749 "parser.tab.c"
     break;
 
   case 41:
-#line 327 "parser.y"
-                                                                {
-                                                                    (yyval.nodeInfo) = (yyvsp[-1].nodeInfo);
-                                                                    (yyval.nodeInfo)->setChild(0, (yyvsp[-2].nodeInfo));
-                                                                    (yyval.nodeInfo)->setChild(1, (yyvsp[0].nodeInfo));
-                                                                }
-#line 1878 "parser.tab.c"
+#line 315 "parser.y"
+                {
+                    (yyval.nodeInfo) = new Node( NEQ, lineNo, (yyvsp[0].tokInfo)->stringValue );
+                }
+#line 1757 "parser.tab.c"
     break;
 
   case 42:
-#line 332 "parser.y"
-                                                                { (yyval.nodeInfo) = (yyvsp[0].nodeInfo); }
-#line 1884 "parser.tab.c"
+#line 321 "parser.y"
+                {
+                    (yyval.nodeInfo) = (yyvsp[-1].nodeInfo);
+                    (yyval.nodeInfo)->Children.push_back( (yyvsp[-2].nodeInfo));
+                    (yyval.nodeInfo)->Children.push_back( (yyvsp[0].nodeInfo));
+                }
+#line 1767 "parser.tab.c"
     break;
 
   case 43:
-#line 334 "parser.y"
-                                                                {
-                                                                    (yyval.nodeInfo) = (yyvsp[-1].nodeInfo);
-                                                                    (yyval.nodeInfo)->setChild(0, (yyvsp[-2].nodeInfo));
-                                                                    (yyval.nodeInfo)->setChild(1, (yyvsp[0].nodeInfo));
-                                                                }
-#line 1894 "parser.tab.c"
+#line 328 "parser.y"
+                { (yyval.nodeInfo) = (yyvsp[0].nodeInfo); }
+#line 1773 "parser.tab.c"
     break;
 
   case 44:
-#line 339 "parser.y"
-                                                                { (yyval.nodeInfo) = (yyvsp[0].nodeInfo); }
-#line 1900 "parser.tab.c"
+#line 332 "parser.y"
+                {
+                    (yyval.nodeInfo) = new Node( ADD, lineNo, (yyvsp[0].tokInfo)->stringValue );
+                }
+#line 1781 "parser.tab.c"
     break;
 
   case 45:
-#line 342 "parser.y"
-                                                                {
-                                                                    (yyval.nodeInfo) = new ExpNode( LEQ,
-                                                                                   lineNo,//line number
-                                                                                   (yyvsp[0].tokInfo)->stringValue,//label
-                                                                                   "Op: "//category
-                                                                                 );
-                                                                }
-#line 1912 "parser.tab.c"
+#line 337 "parser.y"
+                {
+                    (yyval.nodeInfo) = new Node( SUB, lineNo, (yyvsp[0].tokInfo)->stringValue );
+                }
+#line 1789 "parser.tab.c"
     break;
 
   case 46:
-#line 349 "parser.y"
-                                                                {
-                                                                    (yyval.nodeInfo) = new ExpNode( LESS,
-                                                                                   lineNo,//line number
-                                                                                   (yyvsp[0].tokInfo)->stringValue,//label
-                                                                                   "Op: "//category
-                                                                                 );
-                                                                }
-#line 1924 "parser.tab.c"
+#line 343 "parser.y"
+                {
+                    (yyval.nodeInfo) = new Node( OR, lineNo, (yyvsp[0].tokInfo)->stringValue );
+                }
+#line 1797 "parser.tab.c"
     break;
 
   case 47:
-#line 356 "parser.y"
-                                                                {
-                                                                    (yyval.nodeInfo) = new ExpNode( GREAT,
-                                                                                   lineNo,//line number
-                                                                                   (yyvsp[0].tokInfo)->stringValue,//label
-                                                                                   "Op: "//category
-                                                                                 );
-                                                                }
-#line 1936 "parser.tab.c"
+#line 348 "parser.y"
+                {
+                    (yyval.nodeInfo) = new Node( AND, lineNo, (yyvsp[0].tokInfo)->stringValue );
+                }
+#line 1805 "parser.tab.c"
     break;
 
   case 48:
-#line 363 "parser.y"
-                                                                {
-                                                                    (yyval.nodeInfo) = new ExpNode( GEQ,
-                                                                                   lineNo,//line number
-                                                                                   (yyvsp[0].tokInfo)->stringValue,//label
-                                                                                   "Op: "//category
-                                                                                 );
-                                                                }
-#line 1948 "parser.tab.c"
+#line 354 "parser.y"
+                {
+                    (yyval.nodeInfo) = (yyvsp[-1].nodeInfo);
+                    (yyval.nodeInfo)->Children.push_back( (yyvsp[-2].nodeInfo));
+                    (yyval.nodeInfo)->Children.push_back( (yyvsp[0].nodeInfo));
+                }
+#line 1815 "parser.tab.c"
     break;
 
   case 49:
-#line 370 "parser.y"
-                                                                {
-                                                                    (yyval.nodeInfo) = new ExpNode( EQ,
-                                                                                   lineNo,//line number
-                                                                                   (yyvsp[0].tokInfo)->stringValue,//label
-                                                                                   "Op: "//category
-                                                                                 );
-                                                                }
-#line 1960 "parser.tab.c"
+#line 361 "parser.y"
+                { (yyval.nodeInfo) = (yyvsp[0].nodeInfo); }
+#line 1821 "parser.tab.c"
     break;
 
   case 50:
-#line 377 "parser.y"
-                                                                {
-                                                                    (yyval.nodeInfo) = new ExpNode( NEQ,
-                                                                                   lineNo,//line number
-                                                                                   (yyvsp[0].tokInfo)->stringValue,//label
-                                                                                   "Op: "//category
-                                                                                 );
-                                                                }
-#line 1972 "parser.tab.c"
+#line 365 "parser.y"
+                {
+                    (yyval.nodeInfo) = new Node( MUL, lineNo, (yyvsp[0].tokInfo)->stringValue );
+                }
+#line 1829 "parser.tab.c"
     break;
 
   case 51:
-#line 386 "parser.y"
-                                                                {
-                                                                    (yyval.nodeInfo) = (yyvsp[-1].nodeInfo);
-                                                                    (yyval.nodeInfo)->setChild(0, (yyvsp[-2].nodeInfo));
-                                                                    (yyval.nodeInfo)->setChild(1, (yyvsp[0].nodeInfo));
-                                                                }
-#line 1982 "parser.tab.c"
+#line 370 "parser.y"
+                {
+                    (yyval.nodeInfo) = new Node( DIV, lineNo, (yyvsp[0].tokInfo)->stringValue );
+                }
+#line 1837 "parser.tab.c"
     break;
 
   case 52:
-#line 391 "parser.y"
-                                                                { (yyval.nodeInfo) = (yyvsp[0].nodeInfo); }
-#line 1988 "parser.tab.c"
+#line 375 "parser.y"
+                {
+                    (yyval.nodeInfo) = new Node( MOD, lineNo, (yyvsp[0].tokInfo)->stringValue );
+                }
+#line 1845 "parser.tab.c"
     break;
 
   case 53:
-#line 394 "parser.y"
-                                                                {
-                                                                    (yyval.nodeInfo) = new ExpNode( ADD,
-                                                                                   lineNo,//line number
-                                                                                   (yyvsp[0].tokInfo)->stringValue,//label
-                                                                                   "Op: "//category
-                                                                                 );
-                                                                }
-#line 2000 "parser.tab.c"
+#line 380 "parser.y"
+                {
+                    (yyval.nodeInfo) = new Node( NOT, lineNo, (yyvsp[0].tokInfo)->stringValue );
+                }
+#line 1853 "parser.tab.c"
     break;
 
   case 54:
-#line 401 "parser.y"
-                                                                {
-                                                                    (yyval.nodeInfo) = new ExpNode( SUBT,
-                                                                                   lineNo,//line number
-                                                                                   (yyvsp[0].tokInfo)->stringValue,//label
-                                                                                   "Op: "//category
-                                                                                 );
-                                                                }
-#line 2012 "parser.tab.c"
+#line 386 "parser.y"
+                { (yyvsp[-1].nodeInfo)->Children.push_back((yyvsp[0].nodeInfo)); }
+#line 1859 "parser.tab.c"
     break;
 
   case 55:
-#line 409 "parser.y"
-                                                                {
-                                                                    (yyval.nodeInfo) = new ExpNode( OR,
-                                                                                   lineNo,//line number
-                                                                                   (yyvsp[0].tokInfo)->stringValue,//label
-                                                                                   "Op: "//category
-                                                                                 );
-                                                                }
-#line 2024 "parser.tab.c"
+#line 389 "parser.y"
+                { (yyval.nodeInfo) = (yyvsp[0].nodeInfo); }
+#line 1865 "parser.tab.c"
     break;
 
   case 56:
-#line 416 "parser.y"
-                                                                {
-                                                                    (yyval.nodeInfo) = new ExpNode( AND,
-                                                                                   lineNo,//line number
-                                                                                   (yyvsp[0].tokInfo)->stringValue,//label
-                                                                                   "Op: "//category
-                                                                                 );
-                                                                }
-#line 2036 "parser.tab.c"
+#line 393 "parser.y"
+                {
+                    (yyval.nodeInfo) = new Node( NOT, lineNo, (yyvsp[0].tokInfo)->stringValue );
+                }
+#line 1873 "parser.tab.c"
     break;
 
   case 57:
-#line 424 "parser.y"
-                                                                {
-                                                                    (yyval.nodeInfo) = (yyvsp[-1].nodeInfo);
-                                                                    (yyval.nodeInfo)->setChild(0, (yyvsp[-2].nodeInfo));
-                                                                    (yyval.nodeInfo)->setChild(1, (yyvsp[0].nodeInfo));
-                                                                }
-#line 2046 "parser.tab.c"
+#line 398 "parser.y"
+                {
+                    (yyval.nodeInfo) = new Node( SUB, lineNo, (yyvsp[0].tokInfo)->stringValue );
+                }
+#line 1881 "parser.tab.c"
     break;
 
   case 58:
-#line 429 "parser.y"
-                                                                { (yyval.nodeInfo) = (yyvsp[0].nodeInfo); }
-#line 2052 "parser.tab.c"
+#line 404 "parser.y"
+                { (yyval.nodeInfo) = (yyvsp[-1].nodeInfo); }
+#line 1887 "parser.tab.c"
     break;
 
   case 59:
-#line 432 "parser.y"
-                                                                {
-                                                                    (yyval.nodeInfo) = new ExpNode( MUL,
-                                                                                   lineNo,//line number
-                                                                                   (yyvsp[0].tokInfo)->stringValue,//label
-                                                                                   "Op: "//category
-                                                                                 );
-                                                                }
-#line 2064 "parser.tab.c"
+#line 407 "parser.y"
+                { (yyval.nodeInfo) = (yyvsp[0].nodeInfo); }
+#line 1893 "parser.tab.c"
     break;
 
   case 60:
-#line 439 "parser.y"
-                                                                {
-                                                                    (yyval.nodeInfo) = new ExpNode( DIV,
-                                                                                   lineNo,//line number
-                                                                                   (yyvsp[0].tokInfo)->stringValue,//label
-                                                                                   "Op: "//category
-                                                                                 );
-                                                                }
-#line 2076 "parser.tab.c"
+#line 410 "parser.y"
+                { (yyval.nodeInfo) = (yyvsp[0].nodeInfo); }
+#line 1899 "parser.tab.c"
     break;
 
   case 61:
-#line 446 "parser.y"
-                                                                {
-                                                                    (yyval.nodeInfo) = new ExpNode( MOD,
-                                                                                   lineNo,//line number
-                                                                                   (yyvsp[0].tokInfo)->stringValue,//label
-                                                                                   "Op: "//category
-                                                                                 );
-                                                                }
-#line 2088 "parser.tab.c"
+#line 414 "parser.y"
+                {
+                    (yyval.nodeInfo) = new Node( NUMBER, lineNo, (yyvsp[0].tokInfo)->stringValue );
+                }
+#line 1907 "parser.tab.c"
     break;
 
   case 62:
-#line 453 "parser.y"
-                                                                {
-                                                                    (yyval.nodeInfo) = new ExpNode( NOT,
-                                                                                   lineNo,//line number
-                                                                                   (yyvsp[0].tokInfo)->stringValue,//label
-                                                                                   "Op: "//category
-                                                                                 );
-                                                                }
-#line 2100 "parser.tab.c"
+#line 420 "parser.y"
+                {
+                    (yyval.nodeInfo) = new Node( BREAK, (yyvsp[-1].tokInfo)->line, "Break" );
+                }
+#line 1915 "parser.tab.c"
     break;
 
   case 63:
-#line 462 "parser.y"
-                                                                { (yyvsp[-1].nodeInfo)->setChild(0,(yyvsp[0].nodeInfo)); }
-#line 2106 "parser.tab.c"
-    break;
-
-  case 64:
-#line 463 "parser.y"
-                                                                { (yyval.nodeInfo) = (yyvsp[0].nodeInfo); }
-#line 2112 "parser.tab.c"
-    break;
-
-  case 65:
-#line 466 "parser.y"
-                                                                {
-                                                                    (yyval.nodeInfo) = new ExpNode( NOT,
-                                                                                   lineNo,//line number
-                                                                                   (yyvsp[0].tokInfo)->stringValue,//label
-                                                                                   "Op: "//category
-                                                                                 );
-                                                                }
-#line 2124 "parser.tab.c"
-    break;
-
-  case 66:
-#line 473 "parser.y"
-                                                                {
-                                                                    (yyval.nodeInfo) = new ExpNode( SUBT,
-                                                                                   lineNo,//line number
-                                                                                   (yyvsp[0].tokInfo)->stringValue,//label
-                                                                                   "Op: "//category
-                                                                                 );
-                                                                }
-#line 2136 "parser.tab.c"
-    break;
-
-  case 67:
-#line 482 "parser.y"
-                                                                { (yyval.nodeInfo) = (yyvsp[-1].nodeInfo); }
-#line 2142 "parser.tab.c"
-    break;
-
-  case 68:
-#line 483 "parser.y"
-                                                                { (yyval.nodeInfo) = (yyvsp[0].nodeInfo); }
-#line 2148 "parser.tab.c"
-    break;
-
-  case 69:
-#line 484 "parser.y"
-                                                                { (yyval.nodeInfo) = (yyvsp[0].nodeInfo); }
-#line 2154 "parser.tab.c"
-    break;
-
-  case 70:
-#line 487 "parser.y"
-                                                                {
-                                                                    (yyval.nodeInfo) = new IntNode( NUMBER,
-                                                                                   lineNo,//line number
-                                                                                   (yyvsp[0].tokInfo)->stringValue,//label
-                                                                                   (yyvsp[0].tokInfo)->numericValue,
-                                                                                   "Const: "//category
-                                                                                 );
-                                                                }
-#line 2167 "parser.tab.c"
-    break;
-
-  case 71:
-#line 497 "parser.y"
-                                                                {
-                                                                    (yyval.nodeInfo) = new StmNode( BREAK,
-                                                                                   (yyvsp[-1].tokInfo)->line,//line number
-                                                                                   "Break"//category
-                                                                                 );
-                                                                }
-#line 2178 "parser.tab.c"
-    break;
-
-  case 72:
-#line 505 "parser.y"
-                                                                {
-                                                                    (yyval.nodeInfo) = new StmNode( RETURN,
-                                                                                   (yyvsp[-1].tokInfo)->line,//line number
-                                                                                   "Return"//category
-                                                                                 );
-                                                                }
-#line 2189 "parser.tab.c"
+#line 426 "parser.y"
+                {
+                    (yyval.nodeInfo) = new Node( RETURN, (yyvsp[-1].tokInfo)->line, "Return" );
+                }
+#line 1923 "parser.tab.c"
     break;
 
 
-#line 2193 "parser.tab.c"
+#line 1927 "parser.tab.c"
 
       default: break;
     }
@@ -2421,7 +2155,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 512 "parser.y"
+#line 430 "parser.y"
 
 
 #include "main.c"

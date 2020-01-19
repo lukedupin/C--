@@ -4,6 +4,10 @@
 
 #include "node.h"
 
+#include <iostream>
+
+using namespace std;
+
 #define kmCommandSwitches "dpsjo:v"
 
 extern int ourGetopt( int, char **, const char*);
@@ -29,7 +33,7 @@ int main( int argc, char * argv[])
         print_tree = true;
       break;
       case 'o':
-        ParseTree->setCodeOutput( fopen(optarg, "w") );
+        //ParseTree->setCodeOutput( fopen(optarg, "w") );
         optind++;
       break;
       case '?':
@@ -54,26 +58,26 @@ int main( int argc, char * argv[])
 
     //Parse out my try
   yyparse();
-  if (ParseTree != NULL) //No parse errors
+  if (ParseTree != nullptr) //No parse errors
   {
       //Detect any and all errors
-    ParseTree->codeDetectErrors();
-  
+			Error err;
+    	ParseTree->detectErrors( &err );
+
       //Print out the parse tree
     if (print_tree)
-      ParseTree->print();
+      ParseTree->codePrint();
 
       //Dump out the number of errors and warnings
     printf("Number of warnings: 0\n");
-    printf("Number of errors: %d\n\n", Node::getErrorCount() );
+    //printf("Number of errors: %d\n\n", err.count() );
 
-    if (Node::getErrorCount() != 0)
-        return 0; // arbitrary value
+    //if ( err.count() != 0) return 0; // arbitrary value
 
       //Dump the ASM
-    ParseTree->codeGen();
+			ostringstream stream;
+    	ParseTree->codeGen( &stream );
 
-      //Write the program to a file
-    ParseTree->writeProgram();
+			cout << stream.str();
   }
 }

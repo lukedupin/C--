@@ -1,22 +1,12 @@
 %{
     //C includes
     #include <stdio.h>
-  #include <stack>
+    #include <stack>
 
     //Custom includes
     #include "j_token.h"
     #include "node.h"
-  #include "program_node.h"
-  #include "dec_node.h"
-  #include "event_node.h"
-  #include "stm_node.h"
-  #include "type_node.h"
-  #include "exp_node.h"
-  #include "assign_node.h"
-  #include "conditional_node.h"
-  #include "variable_node.h"
-  #include "variable_ex_node.h"
-  #include "int_node.h"
+    #include "program_node.h"
 
     #ifdef CPLUSPLUS
     extern int yylex();
@@ -45,6 +35,8 @@
 }
 
 //Token list
+%token <tokInfo> LEFT_CURLY
+%token <tokInfo> RIGHT_CURLY
 %token <tokInfo> IF
 %token <tokInfo> ELSE
 %token <tokInfo> VAR
@@ -72,6 +64,13 @@
 %token <tokInfo> NOT
 %token <tokInfo> ASSIGN
 %token <tokInfo> DOT
+%token <tokInfo> I8
+%token <tokInfo> I16
+%token <tokInfo> I32
+%token <tokInfo> I64
+%token <tokInfo> I128
+%token <tokInfo> IDENT
+%token <tokInfo> NUMBER
 %token <tokInfo> ERROR
 
 //Setup the symbol tree
@@ -106,12 +105,12 @@
 %%
 // Productions
 program     :   declist
-                { ParseTree->setSibling( $1 ); }
+                { ParseTree->Sibling =  $1; }
             ;
 
 // Collection of delcarations
 declist     :   decl declist
-                { $1->setSibling($2); }
+                { $1->Sibling = $2; }
 
             |   decl
                 { $$ = $1; }
@@ -126,356 +125,306 @@ decl        :   vardec
             ;
 
 // Declare variables
-vardec      :   VAR IDENT ';'
+vardec      :   VAR IDENT ASSIGN expression
                 {
-                    $$ = new DecNode( IDENT, lineNo, $2->stringValue );
-                }
-
-            |   type_assign IDENT ';'
-                {
-                    $$ = new DecNode(IDENT, lineNo, $2->stringValue );
-                    $$->setChild( 0, $1 );
+                    $$ = new Node( IDENT, lineNo, $2->stringValue );
+                    $$->Children.push_back( $4 );
                 }
             ;
 
-fundec      :   FN '(' expression ')' compound
+fundec      :   FN IDENT '(' ')' compound
                 {
-                    $$ = new EventNode( FN, $3->getLineNo() );
-                    $$->setChild(0, $3);
-                    $$->setChild(1, $5);
-                }
-
-            |   PRE_EVENT '(' expression ')' compound
-				{
-                	$$ = new EventNode( PRE_EVENT, $3->getLineNo() );
-                    $$->setChild(0, $3);
-                    $$->setChild(1, $5);
-                }
-
-            |   POST_EVENT '(' expression ')' compound
-				{
-                	$$ = new EventNode( POST_EVENT, $3->getLineNo() );
-                    $$->setChild(0, $3);
-                    $$->setChild(1, $5);
-                }
-
-            |   INIT '(' ')' compound
-				{
-                  	$$ = new EventNode( INIT, $1->line );
-                    $$->setChild(1, $4);
+                    $$ = new Node( FN, $2->line, $2->stringValue );
+                    //$$->Children.push_back( $4 );
+                    $$->Children.push_back( $5);
                 }
             ;
 
-compound    :   STARTCURLY locvdecs stmtlst '}'
-				{
-                    $$ = new StmNode( STARTCURLY, $1->line, "Compound" );
-                    $$->setChild(0, $2);
-                    $$->setChild(1, $3);
+compound    :   LEFT_CURLY locvdecs stmtlst RIGHT_CURLY
+                {
+                    $$ = new Node( LEFT_CURLY, $1->line );
+                    $$->Children.push_back( $2);
+                    $$->Children.push_back( $3);
                 }
 
-            |   STARTCURLY locvdecs '}'
-				{
-                    $$ = new StmNode( STARTCURLY, $1->line, "Compound" );
-                    $$->setChild(0, $2);
+            |   LEFT_CURLY locvdecs RIGHT_CURLY
+                {
+                    $$ = new Node( LEFT_CURLY, $1->line );
+                    $$->Children.push_back( $2);
                 }
 
-            |   STARTCURLY stmtlst  '}'
-				{
-                    $$ = new StmNode( STARTCURLY, $1->line, "Compound" );
-                    $$->setChild(1, $2);
+            |   LEFT_CURLY stmtlst  RIGHT_CURLY
+                {
+                    $$ = new Node( LEFT_CURLY, $1->line );
+                    $$->Children.push_back( $2);
                 }
 
-            |   STARTCURLY '}'
-				{
-                    $$ = new StmNode( STARTCURLY, $1->line, "Compound" );
+            |   LEFT_CURLY RIGHT_CURLY
+                {
+                    $$ = new Node( LEFT_CURLY, $1->line );
                 }
             ;
 
 locvdecs    :   vardec locvdecs
-				{ $1->setSibling($2); }
+                { $1->Sibling = $2; }
 
             |   vardec
-				{ $$ = $1; }
+                { $$ = $1; }
             ;
 
 stmtlst     :   stmt stmtlst
-				{
-                  	if ($1 != NULL)
-                      	$1->setSibling($2);
-                  	else
-                      	$$ = $2;
+                {
+                      if ($1 != NULL)
+                          $1->Sibling = $2;
+                      else
+                          $$ = $2;
 
                 }
 
             |   stmt
-				{ $$ = $1; }
+                { $$ = $1; }
             ;
 
 stmt        :   IF '(' expression ')' stmt ELSE stmt
-				{
-                    $$ = new ConditionalNode( IF, $1->line, "If" );
-                    $$->setChild(0, $3);
-                    $$->setChild(1, $5);
-                    $$->setChild(2, $7);
+                {
+                    $$ = new Node( IF, $1->line, "If" );
+                    $$->Children.push_back( $3);
+                    $$->Children.push_back( $5);
+                    $$->Children.push_back( $7);
                 }
 
             |   WHILE '(' expression ')' stmt
-				{
-                    $$ = new ConditionalNode( WHILE, $1->line, "While" );
-                    $$->setChild(0, $3);
-                    $$->setChild(1, $5);
+                {
+                    $$ = new Node( WHILE, $1->line, "While" );
+                    $$->Children.push_back( $3);
+                    $$->Children.push_back( $5);
                 }
 
             |   noncond
-				{ $$ = $1; }
+                { $$ = $1; }
             ;
 
 noncond     :   brkstmt
-				{ $$ = $1; }
+                { $$ = $1; }
 
             |   retstmt
-				{ $$ = $1; }
+                { $$ = $1; }
 
             |   compound
-				{ $$ = $1; }
+                { $$ = $1; }
 
             |   expression ';'
-				{ $$ = $1; }
+                { $$ = $1; }
 
             |   ';'
-				{
-                    $$ = new StmNode( 0, lineNo, "Empty" );
+                {
+                    $$ = new Node( 0, lineNo, "Empty" );
                 }
             ;
 
 expression  :   var ASSIGN expression
-				{
-                    //If we are loading a constant, set that we are
-                    int id = ASSIGN;
-                    if ( $3->getTokenType() == NUMBER )
-                      id = ASSIGN_CONST;
-
-                      //Create my node
-                    $$ = new AssignNode( id, $1->getLineNo(), $2->stringValue, "Assign: " );
-                    $$->setChild(0, $1);
-                    $$->setChild(1, $3);
+                {
+                    //Create my node
+                    $$ = new Node( ASSIGN, $1->lineNumber(), $2->stringValue );
+                    $$->Children.push_back( $1);
+                    $$->Children.push_back( $3);
                 }
 
-            |   var ASSIGN '(' type_assign ')' expression
-				{
-                  	//If we are loading a constant, set that we are
-                    int id = ASSIGN;
-                    if ( $6->getTokenType() == NUMBER )
-                      id = ASSIGN_CONST;
-
-                      //Create my node
-                    $$ = new AssignNode( id, $1->getLineNo(), $2->stringValue, "Assign Int: " );
-                    $$->setChild(0, $1);
-                    $$->setChild(1, $6);
-                    $$->setChild(2, $4);
+            |   var ASSIGN type_assign '(' expression ')'
+                {
+                    $$ = new Node( ASSIGN, $1->lineNumber(), $2->stringValue );
+                    $$->Children.push_back( $1);
+                    $$->Children.push_back( $5);
+                    $$->Children.push_back( $3);
                 }
 
             |   simpexp
-				{ $$ = $1; }
+                { $$ = $1; }
             ;
 
-type_assign :   INT
-				{
-                  	$$ = new TypeNode( INT, $1->line, "int", "Type: " );
+type_assign :   I8
+                {
+                      $$ = new Node( I8, $1->line, "i8" );
                 }
 
-            |   FLOAT
-				{
-                  	$$ = new TypeNode( FLOAT, $1->line, "float", "Type: " );
+            |   I32
+                {
+                      $$ = new Node( I32, $1->line, "i32" );
                 }
             ;
 
 var         :   IDENT
-				{
-                    $$ = new VariableNode( IDENT, $1->line, $1->stringValue );
+                {
+                    $$ = new Node( IDENT, $1->line, $1->stringValue );
                 }
 
             |   var DOT IDENT
-				{
-                    //Convert my variable node, to a VariableExNode
-                  	if ( $1->getTokenType() != VAR_EX )
-                  	{
-                    	$$ = new VariableExNode( VAR_EX,
-                                             $1->getLineNo() );
-                    	reinterpret_cast<VariableExNode*>($$)->addVariable(
-                          reinterpret_cast<VariableNode*>($1) );
-                  	}
-
-                    //Add a new variable
-                  	reinterpret_cast<VariableExNode*>($$)->addVariable(
-                                   new VariableNode( IDENT,
-                                      $3->line,//line number
-                                      $3->stringValue//label
-                                    ) );
+                {
+                    $$ = new Node( IDENT, $1->lineNumber(), $3->stringValue );
                 }
             ;
 
 simpexp     :   simpexp logop relexp
-				{
+                {
                     $$ = $2;
-                    $$->setChild(0, $1);
-                    $$->setChild(1, $3);
+                    $$->Children.push_back( $1);
+                    $$->Children.push_back( $3);
                 }
 
             |   relexp
-				{ $$ = $1; }
+                { $$ = $1; }
             ;
 
 relexp      :   addexp relop addexp
-				{
+                {
                     $$ = $2;
-                    $$->setChild(0, $1);
-                    $$->setChild(1, $3);
+                    $$->Children.push_back( $1);
+                    $$->Children.push_back( $3);
                 }
 
             |   addexp
-				{ $$ = $1; }
+                { $$ = $1; }
             ;
 
 relop       :   LEQ
-				{
-                    $$ = new ExpNode( LEQ, lineNo, $1->stringValue, "Op: " );
+                {
+                    $$ = new Node( LEQ, lineNo, $1->stringValue );
                 }
 
-            |   LESS
-				{
-                    $$ = new ExpNode( LESS, lineNo, $1->stringValue, "Op: " );
+            |   LT
+                {
+                    $$ = new Node( LT, lineNo, $1->stringValue );
                 }
 
-            |   GREAT
-				{
-                    $$ = new ExpNode( GREAT, lineNo, $1->stringValue, "Op: " );
+            |   GT
+                {
+                    $$ = new Node( GT, lineNo, $1->stringValue );
                 }
 
             |   GEQ
-				{
-                    $$ = new ExpNode( GEQ, lineNo, $1->stringValue, "Op: " );
+                {
+                    $$ = new Node( GEQ, lineNo, $1->stringValue );
                 }
 
             |   EQ
-				{
-                    $$ = new ExpNode( EQ, lineNo, $1->stringValue, "Op: " );
+                {
+                    $$ = new Node( EQ, lineNo, $1->stringValue );
                 }
 
             |   NEQ
-				{
-                    $$ = new ExpNode( NEQ, lineNo, $1->stringValue, "Op: " );
+                {
+                    $$ = new Node( NEQ, lineNo, $1->stringValue );
                 }
             ;
 
 addexp      :   addexp addop term
-				{
+                {
                     $$ = $2;
-                    $$->setChild(0, $1);
-                    $$->setChild(1, $3);
+                    $$->Children.push_back( $1);
+                    $$->Children.push_back( $3);
                 }
 
             |   term
-				{ $$ = $1; }
+                { $$ = $1; }
             ;
 
 addop       :   ADD
-				{
-                    $$ = new ExpNode( ADD, lineNo, $1->stringValue, "Op: " );
+                {
+                    $$ = new Node( ADD, lineNo, $1->stringValue );
                 }
 
-            |   SUBT
-				{
-                    $$ = new ExpNode( SUBT, lineNo, $1->stringValue, "Op: " );
+            |   SUB
+                {
+                    $$ = new Node( SUB, lineNo, $1->stringValue );
                 }
             ;
 
 logop       :   OR
-				{
-                    $$ = new ExpNode( OR, lineNo, $1->stringValue, "Op: " );
+                {
+                    $$ = new Node( OR, lineNo, $1->stringValue );
                 }
 
             |   AND
-				{
-                    $$ = new ExpNode( AND, lineNo, $1->stringValue, "Op: " );
+                {
+                    $$ = new Node( AND, lineNo, $1->stringValue );
                 }
             ;
 
 term        :   term mulop unary
-				{
+                {
                     $$ = $2;
-                    $$->setChild(0, $1);
-                    $$->setChild(1, $3);
+                    $$->Children.push_back( $1);
+                    $$->Children.push_back( $3);
                 }
 
             |   unary
-				{ $$ = $1; }
+                { $$ = $1; }
             ;
 
 mulop       :   MUL
-				{
-                    $$ = new ExpNode( MUL, lineNo, $1->stringValue, "Op: " );
+                {
+                    $$ = new Node( MUL, lineNo, $1->stringValue );
                 }
 
             |   DIV
-				{
-                    $$ = new ExpNode( DIV, lineNo, $1->stringValue, "Op: " );
+                {
+                    $$ = new Node( DIV, lineNo, $1->stringValue );
                 }
 
             |   MOD
-				{
-                    $$ = new ExpNode( MOD, lineNo, $1->stringValue, "Op: " );
+                {
+                    $$ = new Node( MOD, lineNo, $1->stringValue );
                 }
 
             |   NOT
-				{
-                    $$ = new ExpNode( NOT, lineNo, $1->stringValue, "Op: " );
+                {
+                    $$ = new Node( NOT, lineNo, $1->stringValue );
                 }
             ;
 
 unary       :   unaryop unary
-				{ $1->setChild(0,$2); }
+                { $1->Children.push_back($2); }
 
             |   fact
-				{ $$ = $1; }
+                { $$ = $1; }
             ;
 
 unaryop     :   NOT
-				{
-                    $$ = new ExpNode( NOT, lineNo, $1->stringValue, "Op: " );
+                {
+                    $$ = new Node( NOT, lineNo, $1->stringValue );
                 }
 
-            |   SUBT
-				{
-                    $$ = new ExpNode( SUBT, lineNo, $1->stringValue, "Op: " );
+            |   SUB
+                {
+                    $$ = new Node( SUB, lineNo, $1->stringValue );
                 }
             ;
 
 fact        :   '(' expression ')'
-				{ $$ = $2; }
+                { $$ = $2; }
 
             |   var
-				{ $$ = $1; }
+                { $$ = $1; }
 
             |   constant
-				{ $$ = $1; }
+                { $$ = $1; }
             ;
 
 constant    :   NUMBER
-				{
-                    $$ = new IntNode( NUMBER, lineNo, $1->stringValue, $1->numericValue, "Const: " );
+                {
+                    $$ = new Node( NUMBER, lineNo, $1->stringValue );
                 }
             ;
 
 brkstmt     :   BREAK ';'
-				{
-                    $$ = new StmNode( BREAK, $1->line, "Break" );
+                {
+                    $$ = new Node( BREAK, $1->line, "Break" );
                 }
             ;
 
 retstmt     :   RETURN ';'
-				{
-                    $$ = new StmNode( RETURN, $1->line, "Return" );
+                {
+                    $$ = new Node( RETURN, $1->line, "Return" );
                 }
             ;
 %%
