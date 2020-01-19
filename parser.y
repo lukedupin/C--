@@ -45,15 +45,36 @@
 }
 
 //Token list
-%token <tokInfo> FUNC CLASS
-%token <tokInfo> IF ELSE RETURN WHILE BREAK
-%token <tokInfo> IDENT NUMBER F32 I32 VAR DOT VAR_EX
-%token <tokInfo> MUL DIV MOD AND
-%token <tokInfo> ADD SUBT OR
-%token <tokInfo> GEQ NEQ LEQ GREAT LESS EQ NOT ASSIGN ASSIGN_CONST
+%token <tokInfo> IF
+%token <tokInfo> ELSE
+%token <tokInfo> VAR
+%token <tokInfo> FN
+%token <tokInfo> CLASS
+%token <tokInfo> RETURN
+%token <tokInfo> WHILE
+%token <tokInfo> BREAK
+%token <tokInfo> CONTINUE
+%token <tokInfo> FALSE
+%token <tokInfo> TRUE
+%token <tokInfo> MUL
+%token <tokInfo> DIV
+%token <tokInfo> MOD
+%token <tokInfo> ADD
+%token <tokInfo> SUB
+%token <tokInfo> AND
+%token <tokInfo> OR
+%token <tokInfo> NEQ
+%token <tokInfo> LEQ
+%token <tokInfo> GEQ
+%token <tokInfo> EQ
+%token <tokInfo> GT
+%token <tokInfo> LT
+%token <tokInfo> NOT
+%token <tokInfo> ASSIGN
+%token <tokInfo> DOT
 %token <tokInfo> ERROR
 
-
+//Setup the symbol tree
 %type <nodeInfo> program
 %type <nodeInfo> declist
 %type <nodeInfo> decl

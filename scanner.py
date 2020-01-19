@@ -33,22 +33,22 @@ def data():
         {"raw": "==", "rule": "EQ"},
         {"raw": ">", "rule": "GT"},
         {"raw": "<", "rule": "LT"},
-        {"reg": "[\!]", "rule": "NOT"},
+        {"reg": "[\!]", "rule": "NOT", "str": "!"},
 
         # Action
-        {"raw": "[\=]", "rule": "ASSIGN"},
-        {"raw": "[.]", "rule": "DOT"},
+        {"reg": "[\=]", "rule": "ASSIGN", "str": "="},
+        {"reg": "[.]", "rule": "DOT", "str":"."},
 
         # Vars
         {
             "reg": "[A-Za-z_][A-Za-z0-9_]*",
             "str": "strdup(yytext)",
-            "reg": "IDENT",
+            "ret": "IDENT",
         },
         {
             "reg": "[+-]?([0-9]*)(\.([0-9]+))?",
             "str": "strdup(yytext)",
-            "reg": "NUMBER",
+            "ret": "NUMBER",
         },
 
         # White spacey stuff
