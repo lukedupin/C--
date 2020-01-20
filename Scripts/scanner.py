@@ -28,6 +28,10 @@ def data():
         {"raw": "+", "rule": "ADD"},
         {"raw": "-", "rule": "SUB"},
 
+        # Arrows
+        {"raw": "->", "rule": "ARROW_RIGHT"},
+        {"raw": "<-", "rule": "ARROW_LEFT"},
+
         # Logic
         {"raw": "&&", "rule": "AND"},
         {"raw": "||", "rule": "OR"},

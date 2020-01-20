@@ -53,6 +53,8 @@
 %token <tokInfo> MOD
 %token <tokInfo> ADD
 %token <tokInfo> SUB
+%token <tokInfo> ARROW_RIGHT
+%token <tokInfo> ARROW_LEFT
 %token <tokInfo> AND
 %token <tokInfo> OR
 %token <tokInfo> NEQ
@@ -77,8 +79,9 @@
 %type <nodeInfo> program
 %type <nodeInfo> declist
 %type <nodeInfo> decl
-%type <nodeInfo> vardec
-%type <nodeInfo> fundec
+%type <nodeInfo> var_dec
+%type <nodeInfo> fn_dec
+%type <nodeInfo> class_dec
 %type <nodeInfo> compound
 %type <nodeInfo> locvdecs
 %type <nodeInfo> stmtlst
@@ -100,7 +103,7 @@
 %type <nodeInfo> constant
 %type <nodeInfo> brkstmt
 %type <nodeInfo> retstmt
-%type <nodeInfo> type_assign
+%type <tokInfo> type_assign
 
 %%
 // Productions
@@ -117,26 +120,30 @@ declist     :   decl declist
             ;
 
 // Declaration of class, functions etc
-decl        :   vardec
-                { $$ = $1; }
-
-            |   fundec
+decl        :   var_dec
+            |   fn_dec
                 { $$ = $1; }
             ;
 
 // Declare variables
-vardec      :   VAR IDENT ASSIGN expression
+var_dec      :   VAR IDENT ASSIGN expression
                 {
                     $$ = new Node( IDENT, $2->line, $2->stringValue );
                     $$->Children.push_back( $4 );
                 }
             ;
 
-fundec      :   FN IDENT '(' ')' compound
+fn_dec      :   FN IDENT '(' ')' compound
+                {
+                    $$ = new Node( FN, $IDENT->line, $IDENT->stringValue );
+                    //$$->Children.push_back( $4 );
+                    $$->Children.push_back( $compound );
+                }
+            |   FN IDENT '(' ')' compound ARROW_RIGHT type_assign
+            |   FN IDENT '(' ')' compound ARROW_RIGHT IDENT
                 {
                     $$ = new Node( FN, $2->line, $2->stringValue );
-                    //$$->Children.push_back( $4 );
-                    $$->Children.push_back( $5);
+                    $$->Children.push_back( $compound);
                 }
             ;
 
@@ -165,10 +172,10 @@ compound    :   LEFT_CURLY locvdecs stmtlst RIGHT_CURLY
                 }
             ;
 
-locvdecs    :   vardec locvdecs
+locvdecs    :   var_dec locvdecs
                 { $1->Sibling = $2; }
 
-            |   vardec
+            |   var_dec
                 { $$ = $1; }
             ;
 
@@ -243,13 +250,9 @@ expression  :   var ASSIGN expression
             ;
 
 type_assign :   I8
-                {
-                      $$ = new Node( I8, $1->line, "i8" );
-                }
-
             |   I32
                 {
-                      $$ = new Node( I32, $1->line, "i32" );
+                      $$ = $1;
                 }
             ;
 

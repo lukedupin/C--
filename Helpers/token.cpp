@@ -61,6 +61,12 @@ const char* tokenStr( int token )
         case SUB:
             return "SUB";
 
+        case ARROW_RIGHT:
+            return "ARROW_RIGHT";
+
+        case ARROW_LEFT:
+            return "ARROW_LEFT";
+
         case AND:
             return "AND";
 

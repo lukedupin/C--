@@ -162,6 +162,22 @@
     s->line = yylineno;
     return SUB;
 }
+"->" {
+    lineNo = yylineno;
+    LexToken * s = new LexToken;
+    yylval.tokInfo = s;
+    s->stringValue = "->";
+    s->line = yylineno;
+    return ARROW_RIGHT;
+}
+"<-" {
+    lineNo = yylineno;
+    LexToken * s = new LexToken;
+    yylval.tokInfo = s;
+    s->stringValue = "<-";
+    s->line = yylineno;
+    return ARROW_LEFT;
+}
 "&&" {
     lineNo = yylineno;
     LexToken * s = new LexToken;
