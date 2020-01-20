@@ -1,7 +1,7 @@
-#include "token.h"
-#include "node.h"
-#include "j_token.h"
-#include "parser.tab.h"
+#include <token.h>
+#include <node.h>
+#include <lex_token.h>
+#include <parser.tab.h>
 
 const char* tokenStr( int token )
 {

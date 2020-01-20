@@ -2,9 +2,9 @@
 %option yylineno
 %{
     #include <stdio.h>
-    #include "j_token.h"
-    #include "node.h"
-    #include "parser.tab.h"
+    #include <lex_token.h>
+    #include <node.h>
+    #include <parser.tab.h>
     int lineNo;
 %}
 
@@ -12,7 +12,7 @@
 
 [\(\)\[\],;:] {
     lineNo = yylineno;
-    JToken * s = new JToken;
+    LexToken * s = new LexToken;
     yylval.tokInfo = s;
     s->stringValue = strdup(yytext);
     s->line = yylineno;
@@ -20,7 +20,7 @@
 }
 "{" {
     lineNo = yylineno;
-    JToken * s = new JToken;
+    LexToken * s = new LexToken;
     yylval.tokInfo = s;
     s->stringValue = "{";
     s->line = yylineno;
@@ -28,7 +28,7 @@
 }
 "}" {
     lineNo = yylineno;
-    JToken * s = new JToken;
+    LexToken * s = new LexToken;
     yylval.tokInfo = s;
     s->stringValue = "}";
     s->line = yylineno;
@@ -36,7 +36,7 @@
 }
 "if" {
     lineNo = yylineno;
-    JToken * s = new JToken;
+    LexToken * s = new LexToken;
     yylval.tokInfo = s;
     s->stringValue = "if";
     s->line = yylineno;
@@ -44,7 +44,7 @@
 }
 "else" {
     lineNo = yylineno;
-    JToken * s = new JToken;
+    LexToken * s = new LexToken;
     yylval.tokInfo = s;
     s->stringValue = "else";
     s->line = yylineno;
@@ -52,7 +52,7 @@
 }
 "var" {
     lineNo = yylineno;
-    JToken * s = new JToken;
+    LexToken * s = new LexToken;
     yylval.tokInfo = s;
     s->stringValue = "var";
     s->line = yylineno;
@@ -60,7 +60,7 @@
 }
 "fn" {
     lineNo = yylineno;
-    JToken * s = new JToken;
+    LexToken * s = new LexToken;
     yylval.tokInfo = s;
     s->stringValue = "fn";
     s->line = yylineno;
@@ -68,7 +68,7 @@
 }
 "class" {
     lineNo = yylineno;
-    JToken * s = new JToken;
+    LexToken * s = new LexToken;
     yylval.tokInfo = s;
     s->stringValue = "class";
     s->line = yylineno;
@@ -76,7 +76,7 @@
 }
 "return" {
     lineNo = yylineno;
-    JToken * s = new JToken;
+    LexToken * s = new LexToken;
     yylval.tokInfo = s;
     s->stringValue = "return";
     s->line = yylineno;
@@ -84,7 +84,7 @@
 }
 "while" {
     lineNo = yylineno;
-    JToken * s = new JToken;
+    LexToken * s = new LexToken;
     yylval.tokInfo = s;
     s->stringValue = "while";
     s->line = yylineno;
@@ -92,7 +92,7 @@
 }
 "break" {
     lineNo = yylineno;
-    JToken * s = new JToken;
+    LexToken * s = new LexToken;
     yylval.tokInfo = s;
     s->stringValue = "break";
     s->line = yylineno;
@@ -100,7 +100,7 @@
 }
 "continue" {
     lineNo = yylineno;
-    JToken * s = new JToken;
+    LexToken * s = new LexToken;
     yylval.tokInfo = s;
     s->stringValue = "continue";
     s->line = yylineno;
@@ -108,7 +108,7 @@
 }
 "false" {
     lineNo = yylineno;
-    JToken * s = new JToken;
+    LexToken * s = new LexToken;
     yylval.tokInfo = s;
     s->stringValue = "false";
     s->line = yylineno;
@@ -116,7 +116,7 @@
 }
 "true" {
     lineNo = yylineno;
-    JToken * s = new JToken;
+    LexToken * s = new LexToken;
     yylval.tokInfo = s;
     s->stringValue = "true";
     s->line = yylineno;
@@ -124,7 +124,7 @@
 }
 "*" {
     lineNo = yylineno;
-    JToken * s = new JToken;
+    LexToken * s = new LexToken;
     yylval.tokInfo = s;
     s->stringValue = "*";
     s->line = yylineno;
@@ -132,7 +132,7 @@
 }
 "/" {
     lineNo = yylineno;
-    JToken * s = new JToken;
+    LexToken * s = new LexToken;
     yylval.tokInfo = s;
     s->stringValue = "/";
     s->line = yylineno;
@@ -140,7 +140,7 @@
 }
 "%" {
     lineNo = yylineno;
-    JToken * s = new JToken;
+    LexToken * s = new LexToken;
     yylval.tokInfo = s;
     s->stringValue = "%";
     s->line = yylineno;
@@ -148,7 +148,7 @@
 }
 "+" {
     lineNo = yylineno;
-    JToken * s = new JToken;
+    LexToken * s = new LexToken;
     yylval.tokInfo = s;
     s->stringValue = "+";
     s->line = yylineno;
@@ -156,7 +156,7 @@
 }
 "-" {
     lineNo = yylineno;
-    JToken * s = new JToken;
+    LexToken * s = new LexToken;
     yylval.tokInfo = s;
     s->stringValue = "-";
     s->line = yylineno;
@@ -164,7 +164,7 @@
 }
 "&&" {
     lineNo = yylineno;
-    JToken * s = new JToken;
+    LexToken * s = new LexToken;
     yylval.tokInfo = s;
     s->stringValue = "&&";
     s->line = yylineno;
@@ -172,7 +172,7 @@
 }
 "||" {
     lineNo = yylineno;
-    JToken * s = new JToken;
+    LexToken * s = new LexToken;
     yylval.tokInfo = s;
     s->stringValue = "||";
     s->line = yylineno;
@@ -180,7 +180,7 @@
 }
 "!=" {
     lineNo = yylineno;
-    JToken * s = new JToken;
+    LexToken * s = new LexToken;
     yylval.tokInfo = s;
     s->stringValue = "!=";
     s->line = yylineno;
@@ -188,7 +188,7 @@
 }
 "<=" {
     lineNo = yylineno;
-    JToken * s = new JToken;
+    LexToken * s = new LexToken;
     yylval.tokInfo = s;
     s->stringValue = "<=";
     s->line = yylineno;
@@ -196,7 +196,7 @@
 }
 ">=" {
     lineNo = yylineno;
-    JToken * s = new JToken;
+    LexToken * s = new LexToken;
     yylval.tokInfo = s;
     s->stringValue = ">=";
     s->line = yylineno;
@@ -204,7 +204,7 @@
 }
 "==" {
     lineNo = yylineno;
-    JToken * s = new JToken;
+    LexToken * s = new LexToken;
     yylval.tokInfo = s;
     s->stringValue = "==";
     s->line = yylineno;
@@ -212,7 +212,7 @@
 }
 ">" {
     lineNo = yylineno;
-    JToken * s = new JToken;
+    LexToken * s = new LexToken;
     yylval.tokInfo = s;
     s->stringValue = ">";
     s->line = yylineno;
@@ -220,7 +220,7 @@
 }
 "<" {
     lineNo = yylineno;
-    JToken * s = new JToken;
+    LexToken * s = new LexToken;
     yylval.tokInfo = s;
     s->stringValue = "<";
     s->line = yylineno;
@@ -228,7 +228,7 @@
 }
 [\!] {
     lineNo = yylineno;
-    JToken * s = new JToken;
+    LexToken * s = new LexToken;
     yylval.tokInfo = s;
     s->stringValue = "!";
     s->line = yylineno;
@@ -236,7 +236,7 @@
 }
 [\=] {
     lineNo = yylineno;
-    JToken * s = new JToken;
+    LexToken * s = new LexToken;
     yylval.tokInfo = s;
     s->stringValue = "=";
     s->line = yylineno;
@@ -244,7 +244,7 @@
 }
 [.] {
     lineNo = yylineno;
-    JToken * s = new JToken;
+    LexToken * s = new LexToken;
     yylval.tokInfo = s;
     s->stringValue = ".";
     s->line = yylineno;
@@ -252,7 +252,7 @@
 }
 "i8" {
     lineNo = yylineno;
-    JToken * s = new JToken;
+    LexToken * s = new LexToken;
     yylval.tokInfo = s;
     s->stringValue = "i8";
     s->line = yylineno;
@@ -260,7 +260,7 @@
 }
 "i16" {
     lineNo = yylineno;
-    JToken * s = new JToken;
+    LexToken * s = new LexToken;
     yylval.tokInfo = s;
     s->stringValue = "i16";
     s->line = yylineno;
@@ -268,7 +268,7 @@
 }
 "i32" {
     lineNo = yylineno;
-    JToken * s = new JToken;
+    LexToken * s = new LexToken;
     yylval.tokInfo = s;
     s->stringValue = "i32";
     s->line = yylineno;
@@ -276,7 +276,7 @@
 }
 "i64" {
     lineNo = yylineno;
-    JToken * s = new JToken;
+    LexToken * s = new LexToken;
     yylval.tokInfo = s;
     s->stringValue = "i64";
     s->line = yylineno;
@@ -284,7 +284,7 @@
 }
 "i128" {
     lineNo = yylineno;
-    JToken * s = new JToken;
+    LexToken * s = new LexToken;
     yylval.tokInfo = s;
     s->stringValue = "i128";
     s->line = yylineno;
@@ -292,7 +292,7 @@
 }
 [A-Za-z_][A-Za-z0-9_]* {
     lineNo = yylineno;
-    JToken * s = new JToken;
+    LexToken * s = new LexToken;
     yylval.tokInfo = s;
     s->stringValue = strdup(yytext);
     s->line = yylineno;
@@ -300,7 +300,7 @@
 }
 [+-]?([0-9]*)(\.([0-9]+))? {
     lineNo = yylineno;
-    JToken * s = new JToken;
+    LexToken * s = new LexToken;
     yylval.tokInfo = s;
     s->stringValue = strdup(yytext);
     s->line = yylineno;
@@ -314,7 +314,7 @@
 \t {}
 . {
     lineNo = yylineno;
-    JToken * s = new JToken;
+    LexToken * s = new LexToken;
     yylval.tokInfo = s;
     s->stringValue = yytext;
     s->line = yylineno;

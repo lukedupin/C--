@@ -6,16 +6,16 @@ import re
 rules = []
 
 # Open the scanner.lex
-file = open("scanner.lex", "w")
+file = open("../Parser/scanner.lex", "w")
 
 # Write out the heard
 file.write('%option noyywrap\n')
 file.write('%option yylineno\n')
 file.write('%{\n')
 file.write('    #include <stdio.h>\n')
-file.write('    #include "j_token.h"\n')
-file.write('    #include "node.h"\n')
-file.write('    #include "parser.tab.h"\n')
+file.write('    #include <lex_token.h>\n')
+file.write('    #include <node.h>\n')
+file.write('    #include <parser.tab.h>\n')
 file.write('    int lineNo;\n')
 file.write('%}\n')
 file.write('\n')
@@ -44,7 +44,7 @@ for entry in data():
             sv = '"%s"' % entry['raw']
             file.write('"%s" {\n' %  entry['raw'])
             file.write('    lineNo = yylineno;\n')
-            file.write('    JToken * s = new JToken;\n')
+            file.write('    LexToken * s = new LexToken;\n')
             file.write('    yylval.tokInfo = s;\n')
             file.write('    s->stringValue = %s;\n' % (sv if "str" not in entry else entry['str']))
             file.write('    s->line = yylineno;\n')
@@ -54,7 +54,7 @@ for entry in data():
             sv = '"%s"' % entry['reg']
             file.write('%s {\n' %  entry['reg'])
             file.write('    lineNo = yylineno;\n')
-            file.write('    JToken * s = new JToken;\n')
+            file.write('    LexToken * s = new LexToken;\n')
             file.write('    yylval.tokInfo = s;\n')
             file.write('    s->stringValue = %s;\n' % (sv if "str" not in entry else entry['str']))
             file.write('    s->line = yylineno;\n')
@@ -64,7 +64,7 @@ for entry in data():
             sv = '"%s"' % rule.lower()
             file.write('"%s" {\n' %  rule.lower())
             file.write('    lineNo = yylineno;\n')
-            file.write('    JToken * s = new JToken;\n')
+            file.write('    LexToken * s = new LexToken;\n')
             file.write('    yylval.tokInfo = s;\n')
             file.write('    s->stringValue = %s;\n' % (sv if "str" not in entry else entry['str']))
             file.write('    s->line = yylineno;\n')
@@ -74,7 +74,7 @@ for entry in data():
     else:
         file.write('%s {\n' % entry['reg'])
         file.write('    lineNo = yylineno;\n')
-        file.write('    JToken * s = new JToken;\n')
+        file.write('    LexToken * s = new LexToken;\n')
         file.write('    yylval.tokInfo = s;\n')
         file.write('    s->stringValue = %s;\n' % entry['str'])
         file.write('    s->line = yylineno;\n')
@@ -86,7 +86,7 @@ for entry in data():
 rules.append("ERROR")
 file.write('. {\n')
 file.write('    lineNo = yylineno;\n')
-file.write('    JToken * s = new JToken;\n')
+file.write('    LexToken * s = new LexToken;\n')
 file.write('    yylval.tokInfo = s;\n')
 file.write('    s->stringValue = yytext;\n')
 file.write('    s->line = yylineno;\n')
@@ -101,7 +101,7 @@ print("Wrote to scanner.lex %d rules" % (rule_count + 1))
 
 # Update the parser.y
 parser = []
-file = open("parser.y", "r")
+file = open("../Parser/parser.y", "r")
 
 found = False
 for line in file.readlines():
@@ -120,13 +120,13 @@ for line in file.readlines():
 file.close()
 
 # Write out the parser
-file = open("parser.y", "w")
+file = open("../Parser/parser.y", "w")
 for line in parser:
     file.write(line)
 file.close()
 
 # Write out a conversion for my rules
-file = open("helpers/token.h", "w")
+file = open("../Helpers/token.h", "w")
 file.write('''#ifndef TOKEN_H
 
 const char* tokenStr( int token );
@@ -136,11 +136,11 @@ const char* tokenStr( int token );
 file.close()
 
 # Write out the token helper cpp
-file = open("helpers/token.cpp", "w")
-file.write('''#include "token.h"
-#include "node.h"
-#include "j_token.h"
-#include "parser.tab.h"
+file = open("../Helpers/token.cpp", "w")
+file.write('''#include <token.h>
+#include <node.h>
+#include <lex_token.h>
+#include <parser.tab.h>
 
 const char* tokenStr( int token )
 {

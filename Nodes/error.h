@@ -3,6 +3,8 @@
 
 class Error
 {
+    public:
+    int count();
 };
 
 #endif

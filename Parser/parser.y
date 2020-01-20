@@ -4,9 +4,9 @@
     #include <stack>
 
     //Custom includes
-    #include "j_token.h"
-    #include "node.h"
-    #include "program_node.h"
+    #include "lex_token.h"
+    #include <node.h>
+    #include <program_node.h>
 
     #ifdef CPLUSPLUS
     extern int yylex();
@@ -31,7 +31,7 @@
 
 %union {
     Node * nodeInfo;
-    JToken * tokInfo;
+    LexToken * tokInfo;
 }
 
 //Token list
@@ -127,7 +127,7 @@ decl        :   vardec
 // Declare variables
 vardec      :   VAR IDENT ASSIGN expression
                 {
-                    $$ = new Node( IDENT, lineNo, $2->stringValue );
+                    $$ = new Node( IDENT, $2->line, $2->stringValue );
                     $$->Children.push_back( $4 );
                 }
             ;
@@ -288,32 +288,32 @@ relexp      :   addexp relop addexp
 
 relop       :   LEQ
                 {
-                    $$ = new Node( LEQ, lineNo, $1->stringValue );
+                    $$ = new Node( LEQ, $1->line, $1->stringValue );
                 }
 
             |   LT
                 {
-                    $$ = new Node( LT, lineNo, $1->stringValue );
+                    $$ = new Node( LT, $1->line, $1->stringValue );
                 }
 
             |   GT
                 {
-                    $$ = new Node( GT, lineNo, $1->stringValue );
+                    $$ = new Node( GT, $1->line, $1->stringValue );
                 }
 
             |   GEQ
                 {
-                    $$ = new Node( GEQ, lineNo, $1->stringValue );
+                    $$ = new Node( GEQ, $1->line, $1->stringValue );
                 }
 
             |   EQ
                 {
-                    $$ = new Node( EQ, lineNo, $1->stringValue );
+                    $$ = new Node( EQ, $1->line, $1->stringValue );
                 }
 
             |   NEQ
                 {
-                    $$ = new Node( NEQ, lineNo, $1->stringValue );
+                    $$ = new Node( NEQ, $1->line, $1->stringValue );
                 }
             ;
 
@@ -330,23 +330,23 @@ addexp      :   addexp addop term
 
 addop       :   ADD
                 {
-                    $$ = new Node( ADD, lineNo, $1->stringValue );
+                    $$ = new Node( ADD, $1->line, $1->stringValue );
                 }
 
             |   SUB
                 {
-                    $$ = new Node( SUB, lineNo, $1->stringValue );
+                    $$ = new Node( SUB, $1->line, $1->stringValue );
                 }
             ;
 
 logop       :   OR
                 {
-                    $$ = new Node( OR, lineNo, $1->stringValue );
+                    $$ = new Node( OR, $1->line, $1->stringValue );
                 }
 
             |   AND
                 {
-                    $$ = new Node( AND, lineNo, $1->stringValue );
+                    $$ = new Node( AND, $1->line, $1->stringValue );
                 }
             ;
 
@@ -363,22 +363,22 @@ term        :   term mulop unary
 
 mulop       :   MUL
                 {
-                    $$ = new Node( MUL, lineNo, $1->stringValue );
+                    $$ = new Node( MUL, $1->line, $1->stringValue );
                 }
 
             |   DIV
                 {
-                    $$ = new Node( DIV, lineNo, $1->stringValue );
+                    $$ = new Node( DIV, $1->line, $1->stringValue );
                 }
 
             |   MOD
                 {
-                    $$ = new Node( MOD, lineNo, $1->stringValue );
+                    $$ = new Node( MOD, $1->line, $1->stringValue );
                 }
 
             |   NOT
                 {
-                    $$ = new Node( NOT, lineNo, $1->stringValue );
+                    $$ = new Node( NOT, $1->line, $1->stringValue );
                 }
             ;
 
@@ -391,12 +391,12 @@ unary       :   unaryop unary
 
 unaryop     :   NOT
                 {
-                    $$ = new Node( NOT, lineNo, $1->stringValue );
+                    $$ = new Node( NOT, $1->line, $1->stringValue );
                 }
 
             |   SUB
                 {
-                    $$ = new Node( SUB, lineNo, $1->stringValue );
+                    $$ = new Node( SUB, $1->line, $1->stringValue );
                 }
             ;
 
@@ -412,7 +412,7 @@ fact        :   '(' expression ')'
 
 constant    :   NUMBER
                 {
-                    $$ = new Node( NUMBER, lineNo, $1->stringValue );
+                    $$ = new Node( NUMBER, $1->line, $1->stringValue );
                 }
             ;
 
@@ -429,4 +429,12 @@ retstmt     :   RETURN ';'
             ;
 %%
 
-#include "main.c"
+//The actual main
+int qt_main( int argc, char** argv, ProgramNode** parse_tree, FILE** yyin, int* yydebug );
+
+
+//Pass through main
+int main( int argc, char** argv )
+{
+  return qt_main( argc, argv, &ParseTree, &yyin, &yydebug );
+}

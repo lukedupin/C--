@@ -1,11 +1,9 @@
 #include "node.h"
-#include <helpers/token.h>
-#include <helpers/util.h>
-
-#include <iostream>
+#include <Helpers/token.h>
+#include <Helpers/util.h>
 
   //Define my node
-Node::Node( int token, int lineNo, const char * label )
+Node::Node( int token, int lineNo, QString label )
     : _token(token),
       _lineNumber(lineNo),
       _label(label)
@@ -15,10 +13,10 @@ Node::Node( int token, int lineNo, const char * label )
 //Get some info
 int Node::lineNumber() { return _lineNumber; }
 int Node::tokenType() { return _token; }
-const char* Node::label() { return _label; }
+QString Node::label() { return _label; }
 
   //Dump the code
-bool Node::codeGen( ostringstream* stream, int depth )
+bool Node::codeGen( QTextStream* stream, int depth )
 {
     //Pre child call
     codeGenPreChild( stream, depth );
@@ -73,16 +71,21 @@ void Node::codePrint( int depth )
 
 bool Node::calculateErrors( Error* err )
 {
+    Q_UNUSED(err)
     return true;
 }
 
-bool Node::codeGenPreChild( ostringstream* stream, int depth )
+bool Node::codeGenPreChild( QTextStream* stream, int depth )
 {
+    Q_UNUSED(stream)
+    Q_UNUSED(depth)
     return true;
 }
 
-bool Node::codeGenPostChild( ostringstream* stream, int depth )
+bool Node::codeGenPostChild( QTextStream* stream, int depth )
 {
+    Q_UNUSED(stream)
+    Q_UNUSED(depth)
     return true;
 }
 
@@ -94,10 +97,7 @@ bool Node::increaseScopeDepth()
   //print out the children
 void Node::print( int depth )
 {
-    printIndent( depth );
-    if ( _label == nullptr )
-        cout << tokenStr( _token ) << " on line " << _lineNumber << endl;
-
-    else
-        cout << tokenStr( _token ) << " on line " << _lineNumber << " -> " << _label << endl;
+    QString padding;
+    padding.resize( depth * 4, ' ');
+    qDebug( "%s%s on line %d -> %s", padding.toUtf8().data(), tokenStr( _token ), _lineNumber, _label.toUtf8().data() );
 }

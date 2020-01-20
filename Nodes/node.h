@@ -1,12 +1,10 @@
 #ifndef __NODE_H__
 #define __NODE_H__
 
-#include <sstream>
-#include <vector>
+#include <QTextStream>
+#include <QVector>
 
 #include "error.h"
-
-using namespace std;
 
 class Node
 {
@@ -14,25 +12,25 @@ class Node
     //Facts about this node
     int _token = -1;
     int _lineNumber = 0;
-    const char* _label = nullptr;
+    QString _label;
 
     public:
-    std::vector<Node*> Children;
+    QVector<Node*> Children;
     Node* Sibling = nullptr;
 
     public:
     // Init my node
-    Node( int tokenValue, int lineNo, const char * label = nullptr );
+    Node( int tokenValue, int lineNo, QString label = QString() );
 
     //Read only for my data
     int tokenType();
     int lineNumber();
-    const char* label();
+    QString label();
 
     //*** Common functions the node uses to call into the child object
 
     // generate code for this node
-    bool codeGen( ostringstream* stream, int depth = 0 );
+    bool codeGen( QTextStream* stream, int depth = 0 );
 
     // Detects errors in the code
     bool detectErrors( Error* err );
@@ -47,10 +45,10 @@ class Node
     virtual bool calculateErrors( Error* err );
 
     // Pre child code gen
-    virtual bool codeGenPreChild( ostringstream* stream, int depth );
+    virtual bool codeGenPreChild( QTextStream* stream, int depth );
 
     // Pre child code gen
-    virtual bool codeGenPostChild( ostringstream* stream, int depth );
+    virtual bool codeGenPostChild( QTextStream* stream, int depth );
 
     // Return true if we are increasing scope depth
     virtual bool increaseScopeDepth();
