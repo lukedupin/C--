@@ -11,15 +11,25 @@ def data():
 
         {"rule": "IF"},
         {"rule": "ELSE"},
+        {"rule": "ELIF"},
         {"rule": "VAR"},
         {"rule": "FN"},
         {"rule": "CLASS"},
         {"rule": "RETURN"},
         {"rule": "WHILE"},
+        {"rule": "DO"},
         {"rule": "BREAK"},
         {"rule": "CONTINUE"},
+        {"rule": "FIRST"},
+        {"rule": "LAST"},
         {"rule": "FALSE"},
         {"rule": "TRUE"},
+
+        # In place mutation
+        {"raw": "+=", "rule": "ADD_ASSIGN"},
+        {"raw": "-=", "rule": "SUB_ASSIGN"},
+        {"raw": "*=", "rule": "MUL_ASSIGN"},
+        {"raw": "/=", "rule": "DIV_ASSIGN"},
 
         # Ops
         {"raw": "*", "rule": "MUL"},

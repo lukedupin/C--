@@ -55,6 +55,15 @@
     s->stringValue = "else";
     return ELSE;
 }
+"elif" {
+    lineNo = yylineno;
+    LexToken * s = new LexToken;
+    yylval.tokInfo = s;
+    s->code = ELIF;
+    s->line = yylineno;
+    s->stringValue = "elif";
+    return ELIF;
+}
 "var" {
     lineNo = yylineno;
     LexToken * s = new LexToken;
@@ -100,6 +109,15 @@
     s->stringValue = "while";
     return WHILE;
 }
+"do" {
+    lineNo = yylineno;
+    LexToken * s = new LexToken;
+    yylval.tokInfo = s;
+    s->code = DO;
+    s->line = yylineno;
+    s->stringValue = "do";
+    return DO;
+}
 "break" {
     lineNo = yylineno;
     LexToken * s = new LexToken;
@@ -118,6 +136,24 @@
     s->stringValue = "continue";
     return CONTINUE;
 }
+"first" {
+    lineNo = yylineno;
+    LexToken * s = new LexToken;
+    yylval.tokInfo = s;
+    s->code = FIRST;
+    s->line = yylineno;
+    s->stringValue = "first";
+    return FIRST;
+}
+"last" {
+    lineNo = yylineno;
+    LexToken * s = new LexToken;
+    yylval.tokInfo = s;
+    s->code = LAST;
+    s->line = yylineno;
+    s->stringValue = "last";
+    return LAST;
+}
 "false" {
     lineNo = yylineno;
     LexToken * s = new LexToken;
@@ -135,6 +171,42 @@
     s->line = yylineno;
     s->stringValue = "true";
     return TRUE;
+}
+"+=" {
+    lineNo = yylineno;
+    LexToken * s = new LexToken;
+    yylval.tokInfo = s;
+    s->code = ADD_ASSIGN;
+    s->line = yylineno;
+    s->stringValue = "+=";
+    return ADD_ASSIGN;
+}
+"-=" {
+    lineNo = yylineno;
+    LexToken * s = new LexToken;
+    yylval.tokInfo = s;
+    s->code = SUB_ASSIGN;
+    s->line = yylineno;
+    s->stringValue = "-=";
+    return SUB_ASSIGN;
+}
+"*=" {
+    lineNo = yylineno;
+    LexToken * s = new LexToken;
+    yylval.tokInfo = s;
+    s->code = MUL_ASSIGN;
+    s->line = yylineno;
+    s->stringValue = "*=";
+    return MUL_ASSIGN;
+}
+"/=" {
+    lineNo = yylineno;
+    LexToken * s = new LexToken;
+    yylval.tokInfo = s;
+    s->code = DIV_ASSIGN;
+    s->line = yylineno;
+    s->stringValue = "/=";
+    return DIV_ASSIGN;
 }
 "*" {
     lineNo = yylineno;

@@ -29,6 +29,8 @@
     ProgramNode* ParseTree = new ProgramNode();
 %}
 
+%define parse.error verbose
+
 %union {
     Node * nodeInfo;
     LexToken * tokInfo;
@@ -39,15 +41,23 @@
 %token <tokInfo> RIGHT_CURLY
 %token <tokInfo> IF
 %token <tokInfo> ELSE
+%token <tokInfo> ELIF
 %token <tokInfo> VAR
 %token <tokInfo> FN
 %token <tokInfo> CLASS
 %token <tokInfo> RETURN
 %token <tokInfo> WHILE
+%token <tokInfo> DO
 %token <tokInfo> BREAK
 %token <tokInfo> CONTINUE
+%token <tokInfo> FIRST
+%token <tokInfo> LAST
 %token <tokInfo> FALSE
 %token <tokInfo> TRUE
+%token <tokInfo> ADD_ASSIGN
+%token <tokInfo> SUB_ASSIGN
+%token <tokInfo> MUL_ASSIGN
+%token <tokInfo> DIV_ASSIGN
 %token <tokInfo> MUL
 %token <tokInfo> DIV
 %token <tokInfo> MOD
@@ -94,8 +104,7 @@
 %type <nodeInfo> param_list
 %type <nodeInfo> param
 %type <nodeInfo> class_dec
-%type <nodeInfo> compound
-%type <nodeInfo> locvdecs
+%type <nodeInfo> block
 %type <nodeInfo> stmtlst
 %type <nodeInfo> stmt
 %type <nodeInfo> noncond
@@ -139,61 +148,62 @@ decl        :   var_dec
             ;
 
 // Declare variables
-var_dec      :  VAR IDENT ASSIGN expression
+var_dec      :  VAR IDENT ASSIGN expression ';'
                 {
-                    $$ = new Node( IDENT, $2->line, $2->stringValue );
-                    $$->Children.push_back( $4 );
+                    $$ = new Node( IDENT, $IDENT->line, $IDENT->stringValue );
+                    $$->Children.push_back( $expression );
                 }
             ;
 
-fn_dec      :   FN IDENT '(' ')' compound
+fn_dec      :   FN IDENT '(' ')' block
                 {
                     $$ = new Node( FN, $IDENT->line, $IDENT->stringValue );
                     //$$->Children.push_back( $4 );
-                    $$->Children.push_back( $compound );
+                    $$->Children.push_back( $block );
                 }
-            |   FN IDENT '(' ')' ARROW_RIGHT primative_type compound
+            |   FN IDENT '(' ')' ARROW_RIGHT primative_type block
                 {
                     $$ = new Node( FN, $2->line, $2->stringValue );
-                    $$->Children.push_back( $compound);
+                    $$->Children.push_back( $block);
                 }
-            |   FN IDENT '(' ')' ARROW_RIGHT IDENT compound
+            |   FN IDENT '(' ')' ARROW_RIGHT IDENT block
                 {
                     $$ = new Node( FN, $2->line, $2->stringValue );
-                    $$->Children.push_back( $compound);
+                    $$->Children.push_back( $block);
                 }
-            |   FN IDENT '(' ')' ARROW_RIGHT '(' param_list ')' compound
+            |   FN IDENT '(' ')' ARROW_RIGHT '(' param_list ')' block
                 {
                     $$ = new Node( FN, $2->line, $2->stringValue );
-                    $$->Children.push_back( $compound);
+                    $block->Children.push_front( $7 );
+                    $$->Children.push_back( $block);
                 }
 
-            |   FN IDENT '(' param_list ')' compound
+            |   FN IDENT '(' param_list ')' block
                 {
                     $$ = new Node( FN, $IDENT->line, $IDENT->stringValue );
-                    $compound->Children.push_front( $4 );
-                    $$->Children.push_back( $compound );
+                    $block->Children.push_front( $4 );
+                    $$->Children.push_back( $block );
                 }
-            |   FN IDENT '(' param_list ')' ARROW_RIGHT primative_type compound
+            |   FN IDENT '(' param_list ')' ARROW_RIGHT primative_type block
                 {
                     $$ = new Node( FN, $2->line, $2->stringValue );
-                    $compound->Children.push_front( $4 );
-                    $$->Children.push_back( $compound);
+                    $block->Children.push_front( $4 );
+                    $$->Children.push_back( $block);
                 }
-            |   FN IDENT '(' param_list ')' ARROW_RIGHT IDENT compound
+            |   FN IDENT '(' param_list ')' ARROW_RIGHT IDENT block
                 {
                     $$ = new Node( FN, $2->line, $2->stringValue );
-                    $compound->Children.push_front( $4 );
-                    $$->Children.push_back( $compound);
+                    $block->Children.push_front( $4 );
+                    $$->Children.push_back( $block);
                 }
-            |   FN IDENT '(' param_list ')' ARROW_RIGHT '(' param_list ')' compound
+            |   FN IDENT '(' param_list ')' ARROW_RIGHT '(' param_list ')' block
                 {
                     $$ = new Node( FN, $2->line, $2->stringValue );
-                    $compound->Children.push_front( $4 );
-                    $$->Children.push_back( $compound);
+                    $block->Children.push_front( $8 );
+                    $block->Children.push_front( $4 );
+                    $$->Children.push_back( $block);
                 }
             ;
-
 
 param_list  :   param ',' param_list
                 {
@@ -215,20 +225,7 @@ param       :   IDENT ':' primative_type
                 }
             ;
 
-compound    :   LEFT_CURLY locvdecs stmtlst RIGHT_CURLY
-                {
-                    $$ = new Node( LEFT_CURLY, $1->line );
-                    $$->Children.push_back( $2);
-                    $$->Children.push_back( $3);
-                }
-
-            |   LEFT_CURLY locvdecs RIGHT_CURLY
-                {
-                    $$ = new Node( LEFT_CURLY, $1->line );
-                    $$->Children.push_back( $2);
-                }
-
-            |   LEFT_CURLY stmtlst  RIGHT_CURLY
+block    :   LEFT_CURLY stmtlst  RIGHT_CURLY
                 {
                     $$ = new Node( LEFT_CURLY, $1->line );
                     $$->Children.push_back( $2);
@@ -238,13 +235,6 @@ compound    :   LEFT_CURLY locvdecs stmtlst RIGHT_CURLY
                 {
                     $$ = new Node( LEFT_CURLY, $1->line );
                 }
-            ;
-
-locvdecs    :   var_dec locvdecs
-                { $1->Sibling = $2; }
-
-            |   var_dec
-                { $$ = $1; }
             ;
 
 stmtlst     :   stmt stmtlst
@@ -259,20 +249,37 @@ stmtlst     :   stmt stmtlst
                 { $$ = $1; }
             ;
 
-stmt        :   IF '(' expression ')' stmt ELSE stmt
+stmt        :   IF '(' expression ')' block
                 {
                     $$ = new Node( IF, $1->line, "If" );
                     $$->Children.push_back( $3);
                     $$->Children.push_back( $5);
-                    $$->Children.push_back( $7);
                 }
 
-            |   WHILE '(' expression ')' stmt
+            |   IF '(' expression ')' block ELSE stmt
+                {
+                    $$ = new Node( IF, $1->line, "If" );
+                    $$->Children.push_back( $expression);
+                    $$->Children.push_back( $5 );
+                    $$->Sibling = $7;
+                }
+
+            |   WHILE '(' expression ')' block
                 {
                     $$ = new Node( WHILE, $1->line, "While" );
                     $$->Children.push_back( $3);
                     $$->Children.push_back( $5);
                 }
+
+            |   DO '(' expression ')' block
+                {
+                    $$ = new Node( WHILE, $1->line, "do" );
+                    $$->Children.push_back( $3);
+                    $$->Children.push_back( $5);
+                }
+
+            |   var_dec
+                { $$ = $1; }
 
             |   noncond
                 { $$ = $1; }
@@ -284,7 +291,7 @@ noncond     :   brkstmt
             |   retstmt
                 { $$ = $1; }
 
-            |   compound
+            |   block
                 { $$ = $1; }
 
             |   expression ';'
@@ -299,20 +306,38 @@ noncond     :   brkstmt
 expression  :   var ASSIGN expression
                 {
                     //Create my node
-                    $$ = new Node( ASSIGN, $1->lineNumber(), $2->stringValue );
+                    $$ = new Node( $2->code, $1->lineNumber(), $2->stringValue );
                     $$->Children.push_back( $1);
                     $$->Children.push_back( $3);
                 }
 
-                /*
-            |   var ASSIGN primative_type '(' expression ')'
+            |   var ADD_ASSIGN expression
                 {
-                    $$ = new Node( ASSIGN, $1->lineNumber(), $2->stringValue );
+                    $$ = new Node( $2->code, $1->lineNumber(), $2->stringValue );
                     $$->Children.push_back( $1);
-                    $$->Children.push_back( $5);
                     $$->Children.push_back( $3);
                 }
-                */
+
+            |   var SUB_ASSIGN expression
+                {
+                    $$ = new Node( $2->code, $1->lineNumber(), $2->stringValue );
+                    $$->Children.push_back( $1);
+                    $$->Children.push_back( $3);
+                }
+
+            |   var MUL_ASSIGN expression
+                {
+                    $$ = new Node( $2->code, $1->lineNumber(), $2->stringValue );
+                    $$->Children.push_back( $1);
+                    $$->Children.push_back( $3);
+                }
+
+            |   var DIV_ASSIGN expression
+                {
+                    $$ = new Node( $2->code, $1->lineNumber(), $2->stringValue );
+                    $$->Children.push_back( $1);
+                    $$->Children.push_back( $3);
+                }
 
             |   simpexp
                 { $$ = $1; }
@@ -497,6 +522,14 @@ constant    :   NUMBER
             |   NUMBER ':' primative_type
                 {
                     $$ = new Node( NUMBER, $1->line, $1->stringValue );
+                }
+            |   TRUE
+                {
+                    $$ = new Node( $1->code, $1->line, $1->stringValue );
+                }
+            |   FALSE
+                {
+                    $$ = new Node( $1->code, $1->line, $1->stringValue );
                 }
             ;
 

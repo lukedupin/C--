@@ -19,6 +19,9 @@ const char* tokenStr( int token )
         case ELSE:
             return "ELSE";
 
+        case ELIF:
+            return "ELIF";
+
         case VAR:
             return "VAR";
 
@@ -34,17 +37,38 @@ const char* tokenStr( int token )
         case WHILE:
             return "WHILE";
 
+        case DO:
+            return "DO";
+
         case BREAK:
             return "BREAK";
 
         case CONTINUE:
             return "CONTINUE";
 
+        case FIRST:
+            return "FIRST";
+
+        case LAST:
+            return "LAST";
+
         case FALSE:
             return "FALSE";
 
         case TRUE:
             return "TRUE";
+
+        case ADD_ASSIGN:
+            return "ADD_ASSIGN";
+
+        case SUB_ASSIGN:
+            return "SUB_ASSIGN";
+
+        case MUL_ASSIGN:
+            return "MUL_ASSIGN";
+
+        case DIV_ASSIGN:
+            return "DIV_ASSIGN";
 
         case MUL:
             return "MUL";

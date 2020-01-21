@@ -30,31 +30,31 @@ class Node
     //*** Common functions the node uses to call into the child object
 
     // generate code for this node
-    bool codeGen( QTextStream* stream, int depth = 0 );
+    bool codeGen( QTextStream* stream, QVector<Node*>* stack = nullptr, int scope_depth = 0 );
 
     // Detects errors in the code
-    bool detectErrors( Error* err );
+    bool detectErrors( Error* err, QVector<Node*>* stack = nullptr );
 
     //Dup the symbol tree for debug
-    void codePrint( int depth = 0 );
+    void codePrint( QVector<Node*>* stack = nullptr, int scope_depth = 0 );
 
     //*** Child specific implementions
     protected:
 
     //Detect errors
-    virtual bool calculateErrors( Error* err );
+    virtual bool calculateErrors( Error* err, QVector<Node*>* stack = nullptr );
 
     // Pre child code gen
-    virtual bool codeGenPreChild( QTextStream* stream, int depth );
+    virtual bool codeGenPreChild( QTextStream* stream, QVector<Node*>* stack, int scope_depth );
 
     // Pre child code gen
-    virtual bool codeGenPostChild( QTextStream* stream, int depth );
+    virtual bool codeGenPostChild( QTextStream* stream, QVector<Node*>* stack, int scope_depth );
 
     // Return true if we are increasing scope depth
     virtual bool increaseScopeDepth();
 
     // print out this node and anyone else
-    virtual void print( int depth );
+    virtual void print( int scope_depth );
 };
 
 #endif

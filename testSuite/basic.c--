@@ -1,4 +1,14 @@
+var _global = 32;
+
 fn dogFunction( a: i32, b: f32 ) {
   var ned = 79;
-  ned = 3;
+
+  if ( true ) {
+    a = 32;
+  }
+  else if ( ned >= 32 ) {
+    b = ned * 2;
+  }
+  else
+    ned -= 10;
 }
