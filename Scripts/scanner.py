@@ -53,6 +53,16 @@ def data():
         {"rule": "I32"},
         {"rule": "I64"},
         {"rule": "I128"},
+        {"rule": "U8"},
+        {"rule": "U16"},
+        {"rule": "U32"},
+        {"rule": "U64"},
+        {"rule": "U128"},
+        {"rule": "F32"},
+        {"rule": "F64"},
+        {"rule": "STR"},
+        {"rule": "VEC"},
+        {"rule": "HASH"},
 
         # Vars
         {

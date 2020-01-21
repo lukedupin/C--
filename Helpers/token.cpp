@@ -115,6 +115,36 @@ const char* tokenStr( int token )
         case I128:
             return "I128";
 
+        case U8:
+            return "U8";
+
+        case U16:
+            return "U16";
+
+        case U32:
+            return "U32";
+
+        case U64:
+            return "U64";
+
+        case U128:
+            return "U128";
+
+        case F32:
+            return "F32";
+
+        case F64:
+            return "F64";
+
+        case STR:
+            return "STR";
+
+        case VEC:
+            return "VEC";
+
+        case HASH:
+            return "HASH";
+
         case IDENT:
             return "IDENT";
 

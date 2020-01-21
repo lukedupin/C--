@@ -71,6 +71,16 @@
 %token <tokInfo> I32
 %token <tokInfo> I64
 %token <tokInfo> I128
+%token <tokInfo> U8
+%token <tokInfo> U16
+%token <tokInfo> U32
+%token <tokInfo> U64
+%token <tokInfo> U128
+%token <tokInfo> F32
+%token <tokInfo> F64
+%token <tokInfo> STR
+%token <tokInfo> VEC
+%token <tokInfo> HASH
 %token <tokInfo> IDENT
 %token <tokInfo> NUMBER
 %token <tokInfo> ERROR
@@ -103,7 +113,7 @@
 %type <nodeInfo> constant
 %type <nodeInfo> brkstmt
 %type <nodeInfo> retstmt
-%type <tokInfo> type_assign
+%type <tokInfo> primative_type
 
 %%
 // Productions
@@ -139,8 +149,13 @@ fn_dec      :   FN IDENT '(' ')' compound
                     //$$->Children.push_back( $4 );
                     $$->Children.push_back( $compound );
                 }
-            |   FN IDENT '(' ')' compound ARROW_RIGHT type_assign
-            |   FN IDENT '(' ')' compound ARROW_RIGHT IDENT
+            |   FN IDENT '(' ')' ARROW_RIGHT primative_type compound
+            |   FN IDENT '(' ')' ARROW_RIGHT IDENT compound
+                {
+                    $$ = new Node( FN, $2->line, $2->stringValue );
+                    $$->Children.push_back( $compound);
+                }
+            |   FN IDENT '(' ')' ARROW_RIGHT '(' params_list ')' compound
                 {
                     $$ = new Node( FN, $2->line, $2->stringValue );
                     $$->Children.push_back( $compound);
@@ -237,7 +252,7 @@ expression  :   var ASSIGN expression
                     $$->Children.push_back( $3);
                 }
 
-            |   var ASSIGN type_assign '(' expression ')'
+            |   var ASSIGN primative_type '(' expression ')'
                 {
                     $$ = new Node( ASSIGN, $1->lineNumber(), $2->stringValue );
                     $$->Children.push_back( $1);
@@ -249,8 +264,16 @@ expression  :   var ASSIGN expression
                 { $$ = $1; }
             ;
 
-type_assign :   I8
+primative_type :   I8
+            |   I16
             |   I32
+            |   I64
+            |   I128
+            |   F32
+            |   F64
+            |   STR
+            |   VEC
+            |   HASH
                 {
                       $$ = $1;
                 }
@@ -414,6 +437,11 @@ fact        :   '(' expression ')'
             ;
 
 constant    :   NUMBER
+                {
+                    $$ = new Node( NUMBER, $1->line, $1->stringValue );
+                }
+            |   NUMBER ':'
+            :   NUMBER
                 {
                     $$ = new Node( NUMBER, $1->line, $1->stringValue );
                 }

@@ -306,6 +306,86 @@
     s->line = yylineno;
     return I128;
 }
+"u8" {
+    lineNo = yylineno;
+    LexToken * s = new LexToken;
+    yylval.tokInfo = s;
+    s->stringValue = "u8";
+    s->line = yylineno;
+    return U8;
+}
+"u16" {
+    lineNo = yylineno;
+    LexToken * s = new LexToken;
+    yylval.tokInfo = s;
+    s->stringValue = "u16";
+    s->line = yylineno;
+    return U16;
+}
+"u32" {
+    lineNo = yylineno;
+    LexToken * s = new LexToken;
+    yylval.tokInfo = s;
+    s->stringValue = "u32";
+    s->line = yylineno;
+    return U32;
+}
+"u64" {
+    lineNo = yylineno;
+    LexToken * s = new LexToken;
+    yylval.tokInfo = s;
+    s->stringValue = "u64";
+    s->line = yylineno;
+    return U64;
+}
+"u128" {
+    lineNo = yylineno;
+    LexToken * s = new LexToken;
+    yylval.tokInfo = s;
+    s->stringValue = "u128";
+    s->line = yylineno;
+    return U128;
+}
+"f32" {
+    lineNo = yylineno;
+    LexToken * s = new LexToken;
+    yylval.tokInfo = s;
+    s->stringValue = "f32";
+    s->line = yylineno;
+    return F32;
+}
+"f64" {
+    lineNo = yylineno;
+    LexToken * s = new LexToken;
+    yylval.tokInfo = s;
+    s->stringValue = "f64";
+    s->line = yylineno;
+    return F64;
+}
+"str" {
+    lineNo = yylineno;
+    LexToken * s = new LexToken;
+    yylval.tokInfo = s;
+    s->stringValue = "str";
+    s->line = yylineno;
+    return STR;
+}
+"vec" {
+    lineNo = yylineno;
+    LexToken * s = new LexToken;
+    yylval.tokInfo = s;
+    s->stringValue = "vec";
+    s->line = yylineno;
+    return VEC;
+}
+"hash" {
+    lineNo = yylineno;
+    LexToken * s = new LexToken;
+    yylval.tokInfo = s;
+    s->stringValue = "hash";
+    s->line = yylineno;
+    return HASH;
+}
 [A-Za-z_][A-Za-z0-9_]* {
     lineNo = yylineno;
     LexToken * s = new LexToken;
