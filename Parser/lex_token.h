@@ -3,6 +3,7 @@
 
 struct LexToken
 {
+    int code;
     const char * stringValue;
     int line;
 };

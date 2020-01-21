@@ -46,8 +46,9 @@ for entry in data():
             file.write('    lineNo = yylineno;\n')
             file.write('    LexToken * s = new LexToken;\n')
             file.write('    yylval.tokInfo = s;\n')
-            file.write('    s->stringValue = %s;\n' % (sv if "str" not in entry else entry['str']))
+            file.write('    s->code = %s;\n' % rule if "ret" not in entry else entry['ret'])
             file.write('    s->line = yylineno;\n')
+            file.write('    s->stringValue = %s;\n' % (sv if "str" not in entry else entry['str']))
             file.write('    return %s;\n' % rule if "ret" not in entry else entry['ret'])
 
         elif "reg" in entry:
@@ -56,8 +57,9 @@ for entry in data():
             file.write('    lineNo = yylineno;\n')
             file.write('    LexToken * s = new LexToken;\n')
             file.write('    yylval.tokInfo = s;\n')
-            file.write('    s->stringValue = %s;\n' % (sv if "str" not in entry else entry['str']))
+            file.write('    s->code = %s;\n' % rule if "ret" not in entry else entry['ret'])
             file.write('    s->line = yylineno;\n')
+            file.write('    s->stringValue = %s;\n' % (sv if "str" not in entry else entry['str']))
             file.write('    return %s;\n' % rule if "ret" not in entry else entry['ret'])
 
         else:
@@ -66,8 +68,9 @@ for entry in data():
             file.write('    lineNo = yylineno;\n')
             file.write('    LexToken * s = new LexToken;\n')
             file.write('    yylval.tokInfo = s;\n')
-            file.write('    s->stringValue = %s;\n' % (sv if "str" not in entry else entry['str']))
+            file.write('    s->code = %s;\n' % rule if "ret" not in entry else entry['ret'])
             file.write('    s->line = yylineno;\n')
+            file.write('    s->stringValue = %s;\n' % (sv if "str" not in entry else entry['str']))
             file.write('    return %s;\n' % rule if "ret" not in entry else entry['ret'])
 
     # None rule based rule, raw chars or something?
@@ -76,8 +79,9 @@ for entry in data():
         file.write('    lineNo = yylineno;\n')
         file.write('    LexToken * s = new LexToken;\n')
         file.write('    yylval.tokInfo = s;\n')
-        file.write('    s->stringValue = %s;\n' % entry['str'])
+        file.write('    s->code = %s;\n' % entry['ret'])
         file.write('    s->line = yylineno;\n')
+        file.write('    s->stringValue = %s;\n' % entry['str'])
         file.write('    return %s;\n' % entry['ret'])
 
     file.write('}\n')
@@ -88,8 +92,9 @@ file.write('. {\n')
 file.write('    lineNo = yylineno;\n')
 file.write('    LexToken * s = new LexToken;\n')
 file.write('    yylval.tokInfo = s;\n')
-file.write('    s->stringValue = yytext;\n')
+file.write('    s->code = ERROR;\n')
 file.write('    s->line = yylineno;\n')
+file.write('    s->stringValue = yytext;\n')
 file.write('    return ERROR;\n')
 file.write('}\n')
 file.write('\n')

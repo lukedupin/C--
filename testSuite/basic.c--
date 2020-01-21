@@ -1,3 +1,4 @@
-fn dogFunction() {
-  var ned = 79
+fn dogFunction( a: i32, b: f32 ) {
+  var ned = 79;
+  ned = 3;
 }

@@ -91,6 +91,8 @@
 %type <nodeInfo> decl
 %type <nodeInfo> var_dec
 %type <nodeInfo> fn_dec
+%type <nodeInfo> param_list
+%type <nodeInfo> param
 %type <nodeInfo> class_dec
 %type <nodeInfo> compound
 %type <nodeInfo> locvdecs
@@ -131,12 +133,13 @@ declist     :   decl declist
 
 // Declaration of class, functions etc
 decl        :   var_dec
+                { $$ = $1; }
             |   fn_dec
                 { $$ = $1; }
             ;
 
 // Declare variables
-var_dec      :   VAR IDENT ASSIGN expression
+var_dec      :  VAR IDENT ASSIGN expression
                 {
                     $$ = new Node( IDENT, $2->line, $2->stringValue );
                     $$->Children.push_back( $4 );
@@ -150,15 +153,65 @@ fn_dec      :   FN IDENT '(' ')' compound
                     $$->Children.push_back( $compound );
                 }
             |   FN IDENT '(' ')' ARROW_RIGHT primative_type compound
+                {
+                    $$ = new Node( FN, $2->line, $2->stringValue );
+                    $$->Children.push_back( $compound);
+                }
             |   FN IDENT '(' ')' ARROW_RIGHT IDENT compound
                 {
                     $$ = new Node( FN, $2->line, $2->stringValue );
                     $$->Children.push_back( $compound);
                 }
-            |   FN IDENT '(' ')' ARROW_RIGHT '(' params_list ')' compound
+            |   FN IDENT '(' ')' ARROW_RIGHT '(' param_list ')' compound
                 {
                     $$ = new Node( FN, $2->line, $2->stringValue );
                     $$->Children.push_back( $compound);
+                }
+
+            |   FN IDENT '(' param_list ')' compound
+                {
+                    $$ = new Node( FN, $IDENT->line, $IDENT->stringValue );
+                    $compound->Children.push_front( $4 );
+                    $$->Children.push_back( $compound );
+                }
+            |   FN IDENT '(' param_list ')' ARROW_RIGHT primative_type compound
+                {
+                    $$ = new Node( FN, $2->line, $2->stringValue );
+                    $compound->Children.push_front( $4 );
+                    $$->Children.push_back( $compound);
+                }
+            |   FN IDENT '(' param_list ')' ARROW_RIGHT IDENT compound
+                {
+                    $$ = new Node( FN, $2->line, $2->stringValue );
+                    $compound->Children.push_front( $4 );
+                    $$->Children.push_back( $compound);
+                }
+            |   FN IDENT '(' param_list ')' ARROW_RIGHT '(' param_list ')' compound
+                {
+                    $$ = new Node( FN, $2->line, $2->stringValue );
+                    $compound->Children.push_front( $4 );
+                    $$->Children.push_back( $compound);
+                }
+            ;
+
+
+param_list  :   param ',' param_list
+                {
+                  $1->Sibling = $3;
+                }
+            |   param
+                {
+                  $$ = $1;
+                }
+            ;
+
+param       :   IDENT ':' primative_type
+                {
+                    $$ = new Node( $3->code, $1->line, $1->stringValue );
+                }
+            |   IDENT ':' IDENT
+                {
+                    $$ = new Node( $3->code, $1->line, $1->stringValue );
                 }
             ;
 
@@ -200,7 +253,6 @@ stmtlst     :   stmt stmtlst
                           $1->Sibling = $2;
                       else
                           $$ = $2;
-
                 }
 
             |   stmt
@@ -252,6 +304,7 @@ expression  :   var ASSIGN expression
                     $$->Children.push_back( $3);
                 }
 
+                /*
             |   var ASSIGN primative_type '(' expression ')'
                 {
                     $$ = new Node( ASSIGN, $1->lineNumber(), $2->stringValue );
@@ -259,6 +312,7 @@ expression  :   var ASSIGN expression
                     $$->Children.push_back( $5);
                     $$->Children.push_back( $3);
                 }
+                */
 
             |   simpexp
                 { $$ = $1; }
@@ -440,8 +494,7 @@ constant    :   NUMBER
                 {
                     $$ = new Node( NUMBER, $1->line, $1->stringValue );
                 }
-            |   NUMBER ':'
-            :   NUMBER
+            |   NUMBER ':' primative_type
                 {
                     $$ = new Node( NUMBER, $1->line, $1->stringValue );
                 }
