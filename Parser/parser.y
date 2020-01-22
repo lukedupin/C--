@@ -54,11 +54,14 @@
 %token <tokInfo> DEFAULT
 %token <tokInfo> DO
 %token <tokInfo> BREAK
+%token <tokInfo> FOR
+%token <tokInfo> FOREACH
 %token <tokInfo> CONTINUE
 %token <tokInfo> FIRST
 %token <tokInfo> LAST
 %token <tokInfo> FALSE
 %token <tokInfo> TRUE
+%token <tokInfo> SELF
 %token <tokInfo> ADD_ASSIGN
 %token <tokInfo> SUB_ASSIGN
 %token <tokInfo> MUL_ASSIGN
@@ -105,12 +108,19 @@
 %type <nodeInfo> program
 %type <nodeInfo> declist
 %type <nodeInfo> decl
-%type <nodeInfo> var_dec
+%type <nodeInfo> let_dec
 %type <nodeInfo> fn_dec
+%type <nodeInfo> fn_ret_parm
+%type <nodeInfo> meth_dec
 %type <nodeInfo> param_list
 %type <nodeInfo> param
 %type <nodeInfo> class_dec
+%type <nodeInfo> class_block
+%type <nodeInfo> class_body
+%type <nodeInfo> class_def
 %type <nodeInfo> block
+%type <nodeInfo> switch_block
+%type <nodeInfo> match_block
 %type <nodeInfo> stmtlst
 %type <nodeInfo> stmt
 %type <nodeInfo> noncond
@@ -150,68 +160,121 @@ declist     :   decl declist
             ;
 
 // Declaration of class, functions etc
-decl        :   var_dec
+decl        :   let_dec
                 { $$ = $1; }
             |   fn_dec
+                { $$ = $1; }
+            |   class_dec
                 { $$ = $1; }
             ;
 
 // Declare variables
-var_dec      :  LET IDENT ASSIGN expression ';'
+let_dec      :  LET IDENT ASSIGN expression ';'
                 {
                     $$ = new Node( IDENT, $IDENT->line, $IDENT->stringValue );
                     $$->Children.push_back( $expression );
                 }
             ;
 
-fn_dec      :   FN IDENT '(' ')' block
+class_dec   :   CLASS IDENT class_block
                 {
-                    $$ = new Node( FN, $IDENT->line, $IDENT->stringValue );
-                    //$$->Children.push_back( $4 );
-                    $$->Children.push_back( $block );
+                    $$ = new Node( $1->code, $1->line, $IDENT->stringValue );
+                    if ( $class_block != nullptr )
+                        $$->Children.push_back( $class_block );
                 }
-            |   FN IDENT '(' ')' ARROW_RIGHT primative_type block
+            ;
+
+class_block :   LEFT_CURLY class_body RIGHT_CURLY
+                {
+                    $$ = $class_body;
+                }
+            |   LEFT_CURLY RIGHT_CURLY
+                {
+                    $$ = nullptr;
+                }
+            ;
+
+class_body  :   class_def class_body
+                { $1->Sibling = $2; }
+            |   class_def
+                { $$ = $1; }
+            ;
+
+class_def   :   let_dec
+                { $$ = $1; }
+            |   meth_dec
+                { $$ = $1; }
+            |   class_dec
+                { $$ = $1; }
+            ;
+
+meth_dec    :   FN IDENT '(' fn_ret_parm block
                 {
                     $$ = new Node( FN, $2->line, $2->stringValue );
-                    $$->Children.push_back( $block);
-                }
-            |   FN IDENT '(' ')' ARROW_RIGHT IDENT block
-                {
-                    $$ = new Node( FN, $2->line, $2->stringValue );
-                    $$->Children.push_back( $block);
-                }
-            |   FN IDENT '(' ')' ARROW_RIGHT '(' param_list ')' block
-                {
-                    $$ = new Node( FN, $2->line, $2->stringValue );
-                    $block->Children.push_front( $7 );
+                    if ( $fn_ret_parm != nullptr )
+                        $block->Children.push_front( $fn_ret_parm );
                     $$->Children.push_back( $block);
                 }
 
-            |   FN IDENT '(' param_list ')' block
-                {
-                    $$ = new Node( FN, $IDENT->line, $IDENT->stringValue );
-                    $block->Children.push_front( $4 );
-                    $$->Children.push_back( $block );
-                }
-            |   FN IDENT '(' param_list ')' ARROW_RIGHT primative_type block
+            |   FN IDENT '(' param_list fn_ret_parm block
                 {
                     $$ = new Node( FN, $2->line, $2->stringValue );
-                    $block->Children.push_front( $4 );
+                    $block->Children.push_front( $param_list );
+                    if ( $fn_ret_parm != nullptr )
+                        $block->Children.push_front( $fn_ret_parm );
                     $$->Children.push_back( $block);
                 }
-            |   FN IDENT '(' param_list ')' ARROW_RIGHT IDENT block
+
+            |   FN IDENT '(' SELF fn_ret_parm block
                 {
                     $$ = new Node( FN, $2->line, $2->stringValue );
-                    $block->Children.push_front( $4 );
+                    $block->Children.push_front( new Node( SELF, $SELF->line, $SELF->stringValue ));
+                    if ( $fn_ret_parm != nullptr )
+                        $block->Children.push_front( $fn_ret_parm );
                     $$->Children.push_back( $block);
                 }
-            |   FN IDENT '(' param_list ')' ARROW_RIGHT '(' param_list ')' block
+
+            |   FN IDENT '(' SELF ',' param_list fn_ret_parm block
                 {
                     $$ = new Node( FN, $2->line, $2->stringValue );
-                    $block->Children.push_front( $8 );
-                    $block->Children.push_front( $4 );
+                    $block->Children.push_front( new Node( SELF, $SELF->line, $SELF->stringValue ));
+                    $block->Children.push_front( $param_list );
+                    if ( $fn_ret_parm != nullptr )
+                        $block->Children.push_front( $fn_ret_parm );
                     $$->Children.push_back( $block);
                 }
+            ;
+
+fn_dec      :   FN IDENT '(' fn_ret_parm block
+                {
+                    $$ = new Node( FN, $2->line, $2->stringValue );
+                    if ( $fn_ret_parm != nullptr )
+                        $block->Children.push_front( $fn_ret_parm );
+                    $$->Children.push_back( $block);
+                }
+
+            |   FN IDENT '(' param_list fn_ret_parm block
+                {
+                    $$ = new Node( FN, $2->line, $2->stringValue );
+                    $block->Children.push_front( $param_list );
+                    if ( $fn_ret_parm != nullptr )
+                        $block->Children.push_front( $fn_ret_parm );
+                    $$->Children.push_back( $block);
+                }
+            ;
+
+fn_ret_parm :   ')' ARROW_RIGHT primative_type
+                { $$ = new Node( $3->code, $3->line, $3->stringValue ); }
+
+            |   ')' ARROW_RIGHT IDENT
+                { $$ = new Node( $3->code, $3->line, $3->stringValue ); }
+
+            |   ')' ARROW_RIGHT '(' param_list ')'
+                { $$ = $4; }
+
+            |   ')'
+                { $$ = nullptr; }
+
             ;
 
 param_list  :   param ',' param_list
@@ -236,13 +299,25 @@ param       :   IDENT ':' primative_type
 
 block    :   LEFT_CURLY stmtlst  RIGHT_CURLY
                 {
-                    $$ = new Node( LEFT_CURLY, $1->line );
+                    $$ = new Node( $1->code, $1->line );
                     $$->Children.push_back( $2);
                 }
 
             |   LEFT_CURLY RIGHT_CURLY
                 {
-                    $$ = new Node( LEFT_CURLY, $1->line );
+                    $$ = new Node( $1->code, $1->line );
+                }
+            ;
+
+switch_block :  LEFT_CURLY RIGHT_CURLY
+                {
+                    $$ = new Node( $1->code, $1->line );
+                }
+            ;
+
+match_block :   LEFT_CURLY RIGHT_CURLY
+                {
+                    $$ = new Node( $1->code, $1->line );
                 }
             ;
 
@@ -285,11 +360,16 @@ stmt        :   IF '(' expression ')' block
                     $$->Children.push_back( $5);
                 }
 
-                FOREACH '(' IDENT IN expression ')' block
+            |   FOREACH '(' IDENT IN expression ')' block
                 {
+                    auto iter = new Node( $IN->code, $IN->line, $IN->stringValue );
+                    iter->Children.push_back( new Node( $IDENT->code, $IDENT->line, $IDENT->stringValue ));
+                    iter->Children.push_back( $expression );
+
+                    //Add the foreach node
                     $$ = new Node( $1->code, $1->line, $1->stringValue );
-                    $$->Children.push_back( $3);
-                    $$->Children.push_back( $5);
+                    $$->Children.push_back( iter );
+                    $$->Children.push_back( $block);
                 }
 
             |   DO '(' expression ')' block
@@ -313,7 +393,7 @@ stmt        :   IF '(' expression ')' block
                     $$->Children.push_back( $5);
                 }
 
-            |   var_dec
+            |   let_dec
                 { $$ = $1; }
 
             |   noncond
@@ -394,13 +474,23 @@ primative_type :   I8
             ;
 
 var         :   IDENT
-                {
-                    $$ = new Node( IDENT, $1->line, $1->stringValue );
-                }
+                { $$ = new Node( $1->code, $1->line, $1->stringValue ); }
 
             |   var DOT IDENT
                 {
-                    $$ = new Node( IDENT, $1->lineNumber(), $3->stringValue );
+                    $$ = new Node( $2->code, $2->line, $2->stringValue );
+                    $$->Children.push_back( $1 );
+                    $$->Children.push_back( new Node( $3->code, $3->line, $3->stringValue ) );
+                }
+
+            |   SELF
+                { $$ = new Node( $1->code, $1->line, $1->stringValue ); }
+
+            |   SELF DOT IDENT
+                {
+                    $$ = new Node( $2->code, $2->line, $2->stringValue );
+                    $$->Children.push_back( new Node( $1->code, $1->line, $1->stringValue ) );
+                    $$->Children.push_back( new Node( $3->code, $3->line, $3->stringValue ) );
                 }
             ;
 
@@ -604,14 +694,16 @@ str_literal :   STRING_DBL
             ;
 
 brkstmt     :   BREAK ';'
-                {
-                    $$ = new Node( BREAK, $1->line, "Break" );
-                }
+                { $$ = new Node( $1->code, $1->line, $1->stringValue ); }
             ;
 
 retstmt     :   RETURN ';'
+                { $$ = new Node( $1->code, $1->line, $1->stringValue ); }
+
+            |   RETURN expression ';'
                 {
-                    $$ = new Node( RETURN, $1->line, "Return" );
+                    $$ = new Node( $1->code, $1->line, $1->stringValue );
+                    $$->Children.push_back( $expression );
                 }
             ;
 %%

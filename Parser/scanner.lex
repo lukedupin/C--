@@ -172,6 +172,24 @@
     s->stringValue = "break";
     return BREAK;
 }
+"for" {
+    lineNo = yylineno;
+    LexToken * s = new LexToken;
+    yylval.tokInfo = s;
+    s->code = FOR;
+    s->line = yylineno;
+    s->stringValue = "for";
+    return FOR;
+}
+"foreach" {
+    lineNo = yylineno;
+    LexToken * s = new LexToken;
+    yylval.tokInfo = s;
+    s->code = FOREACH;
+    s->line = yylineno;
+    s->stringValue = "foreach";
+    return FOREACH;
+}
 "continue" {
     lineNo = yylineno;
     LexToken * s = new LexToken;
@@ -216,6 +234,15 @@
     s->line = yylineno;
     s->stringValue = "true";
     return TRUE;
+}
+"self" {
+    lineNo = yylineno;
+    LexToken * s = new LexToken;
+    yylval.tokInfo = s;
+    s->code = SELF;
+    s->line = yylineno;
+    s->stringValue = "self";
+    return SELF;
 }
 "+=" {
     lineNo = yylineno;

@@ -24,11 +24,14 @@ def data():
         {"rule": "DEFAULT"},
         {"rule": "DO"},
         {"rule": "BREAK"},
+        {"rule": "FOR"},
+        {"rule": "FOREACH"},
         {"rule": "CONTINUE"},
         {"rule": "FIRST"},
         {"rule": "LAST"},
         {"rule": "FALSE"},
         {"rule": "TRUE"},
+        {"rule": "SELF"},
 
         # In place mutation
         {"raw": "+=", "rule": "ADD_ASSIGN"},

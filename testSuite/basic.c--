@@ -1,7 +1,7 @@
-var _global = 32;
+let _global = 32;
 
 fn dogFunction( a: i32, b: f32 ) {
-  var ned = 79;
+  let ned = 79;
 
   if ( true ) {
     a = 32;
@@ -13,7 +13,17 @@ fn dogFunction( a: i32, b: f32 ) {
     ned -= 10;
   }
 
-  var string = "Something bitchin";
-  var aba = "Something bitchin %f32 -> %d %s" % (0.4, ned * 3, "Funny");
+  let string = "Something bitchin";
+  let aba = "Something bitchin %f32 -> %d %s" % (0.4, ned * 3, "Funny");
   string = "Something bitchin #{ned} %f32" % (44.3);
+}
+
+class Poop 
+{
+    let PubVar = 0:i64;
+
+    fn bob( self, mult: i64 ) => i64
+    {
+        return self.PubVar * mult;
+    }
 }

@@ -58,6 +58,12 @@ const char* tokenStr( int token )
         case BREAK:
             return "BREAK";
 
+        case FOR:
+            return "FOR";
+
+        case FOREACH:
+            return "FOREACH";
+
         case CONTINUE:
             return "CONTINUE";
 
@@ -72,6 +78,9 @@ const char* tokenStr( int token )
 
         case TRUE:
             return "TRUE";
+
+        case SELF:
+            return "SELF";
 
         case ADD_ASSIGN:
             return "ADD_ASSIGN";
