@@ -46,15 +46,6 @@
     s->stringValue = "if";
     return IF;
 }
-"else" {
-    lineNo = yylineno;
-    LexToken * s = new LexToken;
-    yylval.tokInfo = s;
-    s->code = ELSE;
-    s->line = yylineno;
-    s->stringValue = "else";
-    return ELSE;
-}
 "elif" {
     lineNo = yylineno;
     LexToken * s = new LexToken;
@@ -64,14 +55,32 @@
     s->stringValue = "elif";
     return ELIF;
 }
-"var" {
+"else" {
     lineNo = yylineno;
     LexToken * s = new LexToken;
     yylval.tokInfo = s;
-    s->code = VAR;
+    s->code = ELSE;
     s->line = yylineno;
-    s->stringValue = "var";
-    return VAR;
+    s->stringValue = "else";
+    return ELSE;
+}
+"let" {
+    lineNo = yylineno;
+    LexToken * s = new LexToken;
+    yylval.tokInfo = s;
+    s->code = LET;
+    s->line = yylineno;
+    s->stringValue = "let";
+    return LET;
+}
+"in" {
+    lineNo = yylineno;
+    LexToken * s = new LexToken;
+    yylval.tokInfo = s;
+    s->code = IN;
+    s->line = yylineno;
+    s->stringValue = "in";
+    return IN;
 }
 "fn" {
     lineNo = yylineno;
@@ -108,6 +117,42 @@
     s->line = yylineno;
     s->stringValue = "while";
     return WHILE;
+}
+"switch" {
+    lineNo = yylineno;
+    LexToken * s = new LexToken;
+    yylval.tokInfo = s;
+    s->code = SWITCH;
+    s->line = yylineno;
+    s->stringValue = "switch";
+    return SWITCH;
+}
+"match" {
+    lineNo = yylineno;
+    LexToken * s = new LexToken;
+    yylval.tokInfo = s;
+    s->code = MATCH;
+    s->line = yylineno;
+    s->stringValue = "match";
+    return MATCH;
+}
+"case" {
+    lineNo = yylineno;
+    LexToken * s = new LexToken;
+    yylval.tokInfo = s;
+    s->code = CASE;
+    s->line = yylineno;
+    s->stringValue = "case";
+    return CASE;
+}
+"default" {
+    lineNo = yylineno;
+    LexToken * s = new LexToken;
+    yylval.tokInfo = s;
+    s->code = DEFAULT;
+    s->line = yylineno;
+    s->stringValue = "default";
+    return DEFAULT;
 }
 "do" {
     lineNo = yylineno;
@@ -253,23 +298,14 @@
     s->stringValue = "-";
     return SUB;
 }
-"->" {
+"=>" {
     lineNo = yylineno;
     LexToken * s = new LexToken;
     yylval.tokInfo = s;
     s->code = ARROW_RIGHT;
     s->line = yylineno;
-    s->stringValue = "->";
+    s->stringValue = "=>";
     return ARROW_RIGHT;
-}
-"<-" {
-    lineNo = yylineno;
-    LexToken * s = new LexToken;
-    yylval.tokInfo = s;
-    s->code = ARROW_LEFT;
-    s->line = yylineno;
-    s->stringValue = "<-";
-    return ARROW_LEFT;
 }
 "&&" {
     lineNo = yylineno;
@@ -522,6 +558,24 @@
     s->line = yylineno;
     s->stringValue = strdup(yytext);
     return NUMBER;
+}
+\"([^\\\"]|\\.)*\" {
+    lineNo = yylineno;
+    LexToken * s = new LexToken;
+    yylval.tokInfo = s;
+    s->code = STRING_DBL;
+    s->line = yylineno;
+    s->stringValue = strdup(yytext);
+    return STRING_DBL;
+}
+\'(?:\\.|[^'\\])*\' {
+    lineNo = yylineno;
+    LexToken * s = new LexToken;
+    yylval.tokInfo = s;
+    s->code = STRING_TICK;
+    s->line = yylineno;
+    s->stringValue = strdup(yytext);
+    return STRING_TICK;
 }
 "\r\n" { lineNo++;}
 "\n" { lineNo++;}

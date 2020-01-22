@@ -6,9 +6,14 @@ fn dogFunction( a: i32, b: f32 ) {
   if ( true ) {
     a = 32;
   }
-  else if ( ned >= 32 ) {
+  elif ( ned >= 32 ) {
     b = ned * 2;
   }
-  else
+  else {
     ned -= 10;
+  }
+
+  var string = "Something bitchin";
+  var aba = "Something bitchin %f32 -> %d %s" % (0.4, ned * 3, "Funny");
+  string = "Something bitchin #{ned} %f32" % (44.3);
 }

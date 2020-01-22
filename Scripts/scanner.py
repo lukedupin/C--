@@ -10,13 +10,18 @@ def data():
         {"raw": "}", "rule": "RIGHT_CURLY"},
 
         {"rule": "IF"},
-        {"rule": "ELSE"},
         {"rule": "ELIF"},
-        {"rule": "VAR"},
+        {"rule": "ELSE"},
+        {"rule": "LET"},
+        {"rule": "IN"},
         {"rule": "FN"},
         {"rule": "CLASS"},
         {"rule": "RETURN"},
         {"rule": "WHILE"},
+        {"rule": "SWITCH"},
+        {"rule": "MATCH"},
+        {"rule": "CASE"},
+        {"rule": "DEFAULT"},
         {"rule": "DO"},
         {"rule": "BREAK"},
         {"rule": "CONTINUE"},
@@ -39,8 +44,7 @@ def data():
         {"raw": "-", "rule": "SUB"},
 
         # Arrows
-        {"raw": "->", "rule": "ARROW_RIGHT"},
-        {"raw": "<-", "rule": "ARROW_LEFT"},
+        {"raw": "=>", "rule": "ARROW_RIGHT"},
 
         # Logic
         {"raw": "&&", "rule": "AND"},
@@ -83,6 +87,16 @@ def data():
         {
             "rule": "NUMBER",
             "reg": "[+-]?([0-9]*)(\.([0-9]+))?",
+            "str": "strdup(yytext)",
+        },
+        {
+            "rule": "STRING_DBL",
+            "reg": '\\"([^\\\\\\"]|\\\\.)*\\"',
+            "str": "strdup(yytext)",
+        },
+        {
+            "rule": "STRING_TICK",
+            "reg": "\\'(?:\\\\.|[^'\\\\])*\\'",
             "str": "strdup(yytext)",
         },
 

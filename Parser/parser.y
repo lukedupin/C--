@@ -40,13 +40,18 @@
 %token <tokInfo> LEFT_CURLY
 %token <tokInfo> RIGHT_CURLY
 %token <tokInfo> IF
-%token <tokInfo> ELSE
 %token <tokInfo> ELIF
-%token <tokInfo> VAR
+%token <tokInfo> ELSE
+%token <tokInfo> LET
+%token <tokInfo> IN
 %token <tokInfo> FN
 %token <tokInfo> CLASS
 %token <tokInfo> RETURN
 %token <tokInfo> WHILE
+%token <tokInfo> SWITCH
+%token <tokInfo> MATCH
+%token <tokInfo> CASE
+%token <tokInfo> DEFAULT
 %token <tokInfo> DO
 %token <tokInfo> BREAK
 %token <tokInfo> CONTINUE
@@ -64,7 +69,6 @@
 %token <tokInfo> ADD
 %token <tokInfo> SUB
 %token <tokInfo> ARROW_RIGHT
-%token <tokInfo> ARROW_LEFT
 %token <tokInfo> AND
 %token <tokInfo> OR
 %token <tokInfo> NEQ
@@ -93,6 +97,8 @@
 %token <tokInfo> HASH
 %token <tokInfo> IDENT
 %token <tokInfo> NUMBER
+%token <tokInfo> STRING_DBL
+%token <tokInfo> STRING_TICK
 %token <tokInfo> ERROR
 
 //Setup the symbol tree
@@ -122,6 +128,9 @@
 %type <nodeInfo> unaryop
 %type <nodeInfo> fact
 %type <nodeInfo> constant
+%type <nodeInfo> str_form
+%type <nodeInfo> str_params
+%type <nodeInfo> str_literal
 %type <nodeInfo> brkstmt
 %type <nodeInfo> retstmt
 %type <tokInfo> primative_type
@@ -148,7 +157,7 @@ decl        :   var_dec
             ;
 
 // Declare variables
-var_dec      :  VAR IDENT ASSIGN expression ';'
+var_dec      :  LET IDENT ASSIGN expression ';'
                 {
                     $$ = new Node( IDENT, $IDENT->line, $IDENT->stringValue );
                     $$->Children.push_back( $expression );
@@ -251,29 +260,55 @@ stmtlst     :   stmt stmtlst
 
 stmt        :   IF '(' expression ')' block
                 {
-                    $$ = new Node( IF, $1->line, "If" );
+                    $$ = new Node( $1->code, $1->line, $1->stringValue );
                     $$->Children.push_back( $3);
                     $$->Children.push_back( $5);
                 }
 
-            |   IF '(' expression ')' block ELSE stmt
+            |   ELIF '(' expression ')' block
                 {
-                    $$ = new Node( IF, $1->line, "If" );
+                    $$ = new Node( $1->code, $1->line, $1->stringValue );
                     $$->Children.push_back( $expression);
-                    $$->Children.push_back( $5 );
-                    $$->Sibling = $7;
+                    $$->Children.push_back( $block );
+                }
+
+            |   ELSE block
+                {
+                    $$ = new Node( $1->code, $1->line, $1->stringValue );
+                    $$->Children.push_back( $block );
                 }
 
             |   WHILE '(' expression ')' block
                 {
-                    $$ = new Node( WHILE, $1->line, "While" );
+                    $$ = new Node( $1->code, $1->line, $1->stringValue );
+                    $$->Children.push_back( $3);
+                    $$->Children.push_back( $5);
+                }
+
+                FOREACH '(' IDENT IN expression ')' block
+                {
+                    $$ = new Node( $1->code, $1->line, $1->stringValue );
                     $$->Children.push_back( $3);
                     $$->Children.push_back( $5);
                 }
 
             |   DO '(' expression ')' block
                 {
-                    $$ = new Node( WHILE, $1->line, "do" );
+                    $$ = new Node( $1->code, $1->line, $1->stringValue );
+                    $$->Children.push_back( $3);
+                    $$->Children.push_back( $5);
+                }
+
+            |   SWITCH '(' expression ')' switch_block
+                {
+                    $$ = new Node( $1->code, $1->line, $1->stringValue );
+                    $$->Children.push_back( $3);
+                    $$->Children.push_back( $5);
+                }
+
+            |   MATCH '(' expression ')' match_block
+                {
+                    $$ = new Node( $1->code, $1->line, $1->stringValue );
                     $$->Children.push_back( $3);
                     $$->Children.push_back( $5);
                 }
@@ -513,6 +548,9 @@ fact        :   '(' expression ')'
 
             |   constant
                 { $$ = $1; }
+
+            |   str_form
+                { $$ = $1; }
             ;
 
 constant    :   NUMBER
@@ -528,6 +566,38 @@ constant    :   NUMBER
                     $$ = new Node( $1->code, $1->line, $1->stringValue );
                 }
             |   FALSE
+                {
+                    $$ = new Node( $1->code, $1->line, $1->stringValue );
+                }
+            ;
+
+str_form    :   str_literal MOD simpexp
+                {
+                    $str_literal->Children.append( $simpexp );
+                    $$ = $str_literal;
+                }
+            |   str_literal MOD '(' str_params ')'
+                {
+                    $str_literal->Children.append( $str_params );
+                    $$ = $str_literal;
+                }
+            |   str_literal
+                {
+                    $$ = $str_literal;
+                }
+            ;
+
+str_params  :   simpexp ',' str_params
+                { $1->Sibling = $3; }
+            |   simpexp
+                { $$ = $1; }
+            ;
+
+str_literal :   STRING_DBL
+                {
+                    $$ = new Node( $1->code, $1->line, $1->stringValue );
+                }
+            |   STRING_TICK
                 {
                     $$ = new Node( $1->code, $1->line, $1->stringValue );
                 }

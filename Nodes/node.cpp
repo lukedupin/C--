@@ -91,9 +91,8 @@ void Node::codePrint( QVector<Node*>* stack, int depth )
 
     //Print the kids
     stack->push_back( this );
-    auto c_depth = depth + (increaseScopeDepth()? 1: 0);
     for ( auto& node : Children )
-        node->codePrint( stack, c_depth );
+        node->codePrint( stack, depth + 1 );
     stack->pop_back();
 
     //Test the sibling

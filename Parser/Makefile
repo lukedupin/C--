@@ -1,4 +1,4 @@
-BISON_OPTS = -v -t -d
+BISON_OPTS = -v -t -d -Wconflicts-sr
 
 all:	 lex.yy.c parser.tab.c
 

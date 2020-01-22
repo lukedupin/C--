@@ -16,14 +16,17 @@ const char* tokenStr( int token )
         case IF:
             return "IF";
 
-        case ELSE:
-            return "ELSE";
-
         case ELIF:
             return "ELIF";
 
-        case VAR:
-            return "VAR";
+        case ELSE:
+            return "ELSE";
+
+        case LET:
+            return "LET";
+
+        case IN:
+            return "IN";
 
         case FN:
             return "FN";
@@ -36,6 +39,18 @@ const char* tokenStr( int token )
 
         case WHILE:
             return "WHILE";
+
+        case SWITCH:
+            return "SWITCH";
+
+        case MATCH:
+            return "MATCH";
+
+        case CASE:
+            return "CASE";
+
+        case DEFAULT:
+            return "DEFAULT";
 
         case DO:
             return "DO";
@@ -87,9 +102,6 @@ const char* tokenStr( int token )
 
         case ARROW_RIGHT:
             return "ARROW_RIGHT";
-
-        case ARROW_LEFT:
-            return "ARROW_LEFT";
 
         case AND:
             return "AND";
@@ -174,6 +186,12 @@ const char* tokenStr( int token )
 
         case NUMBER:
             return "NUMBER";
+
+        case STRING_DBL:
+            return "STRING_DBL";
+
+        case STRING_TICK:
+            return "STRING_TICK";
 
         case ERROR:
             return "ERROR";
