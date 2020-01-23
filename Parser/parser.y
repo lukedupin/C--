@@ -7,6 +7,7 @@
     #include "lex_token.h"
     #include <node.h>
     #include <program_node.h>
+    #include <declare_variable.h>
 
     #ifdef CPLUSPLUS
     extern int yylex();
@@ -172,7 +173,7 @@ decl        :   let_dec
 // Declare variables
 let_dec      :  LET IDENT ASSIGN expression ';'
                 {
-                    $$ = new Node( LET, $IDENT->line, $IDENT->stringValue );
+                    $$ = new DeclareVariable( LET, $IDENT->line, $IDENT->stringValue );
                     $$->Children.push_back( $expression );
                 }
             ;
