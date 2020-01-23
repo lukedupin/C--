@@ -125,6 +125,7 @@
 %type <nodeInfo> stmt
 %type <nodeInfo> noncond
 %type <nodeInfo> expression
+%type <nodeInfo> expression_list
 %type <nodeInfo> var
 %type <nodeInfo> simpexp
 %type <nodeInfo> logop
@@ -171,7 +172,7 @@ decl        :   let_dec
 // Declare variables
 let_dec      :  LET IDENT ASSIGN expression ';'
                 {
-                    $$ = new Node( IDENT, $IDENT->line, $IDENT->stringValue );
+                    $$ = new Node( LET, $IDENT->line, $IDENT->stringValue );
                     $$->Children.push_back( $expression );
                 }
             ;
@@ -400,14 +401,21 @@ stmt        :   IF '(' expression ')' block
                 { $$ = $1; }
             ;
 
-noncond     :   brkstmt
+noncond     :   block ';'
                 { $$ = $1; }
 
-            |   retstmt
+            |   retstmt ';'
                 { $$ = $1; }
 
-            |   block
+            |   brkstmt ';'
                 { $$ = $1; }
+
+            |   var '(' expression_list ')' ';'
+                {
+                    $$ = new Node( FN, $1->lineNumber(), $1->label() );
+                    $$->Children.push_back( $var );
+                    $$->Children.push_back( $expression_list );
+                }
 
             |   expression ';'
                 { $$ = $1; }
@@ -416,6 +424,13 @@ noncond     :   brkstmt
                 {
                     $$ = new Node( 0, lineNo, "Empty" );
                 }
+            ;
+
+expression_list :  expression ',' expression_list
+                { $1->Sibling = $3; }
+
+            |   expression
+                { $$ = $1; }
             ;
 
 expression  :   var ASSIGN expression
@@ -456,42 +471,6 @@ expression  :   var ASSIGN expression
 
             |   simpexp
                 { $$ = $1; }
-            ;
-
-primative_type :   I8
-            |   I16
-            |   I32
-            |   I64
-            |   I128
-            |   F32
-            |   F64
-            |   STR
-            |   VEC
-            |   HASH
-                {
-                      $$ = $1;
-                }
-            ;
-
-var         :   IDENT
-                { $$ = new Node( $1->code, $1->line, $1->stringValue ); }
-
-            |   var DOT IDENT
-                {
-                    $$ = new Node( $2->code, $2->line, $2->stringValue );
-                    $$->Children.push_back( $1 );
-                    $$->Children.push_back( new Node( $3->code, $3->line, $3->stringValue ) );
-                }
-
-            |   SELF
-                { $$ = new Node( $1->code, $1->line, $1->stringValue ); }
-
-            |   SELF DOT IDENT
-                {
-                    $$ = new Node( $2->code, $2->line, $2->stringValue );
-                    $$->Children.push_back( new Node( $1->code, $1->line, $1->stringValue ) );
-                    $$->Children.push_back( new Node( $3->code, $3->line, $3->stringValue ) );
-                }
             ;
 
 simpexp     :   simpexp logop relexp
@@ -643,6 +622,42 @@ fact        :   '(' expression ')'
                 { $$ = $1; }
             ;
 
+primative_type :   I8
+            |   I16
+            |   I32
+            |   I64
+            |   I128
+            |   F32
+            |   F64
+            |   STR
+            |   VEC
+            |   HASH
+                {
+                      $$ = $1;
+                }
+            ;
+
+var         :   IDENT
+                { $$ = new Node( $1->code, $1->line, $1->stringValue ); }
+
+            |   var DOT IDENT
+                {
+                    $$ = new Node( $2->code, $2->line, $2->stringValue );
+                    $$->Children.push_back( $1 );
+                    $$->Children.push_back( new Node( $3->code, $3->line, $3->stringValue ) );
+                }
+
+            |   SELF
+                { $$ = new Node( $1->code, $1->line, $1->stringValue ); }
+
+            |   SELF DOT IDENT
+                {
+                    $$ = new Node( $2->code, $2->line, $2->stringValue );
+                    $$->Children.push_back( new Node( $1->code, $1->line, $1->stringValue ) );
+                    $$->Children.push_back( new Node( $3->code, $3->line, $3->stringValue ) );
+                }
+            ;
+
 constant    :   NUMBER
                 {
                     $$ = new Node( NUMBER, $1->line, $1->stringValue );
@@ -693,14 +708,14 @@ str_literal :   STRING_DBL
                 }
             ;
 
-brkstmt     :   BREAK ';'
+brkstmt     :   BREAK
                 { $$ = new Node( $1->code, $1->line, $1->stringValue ); }
             ;
 
-retstmt     :   RETURN ';'
+retstmt     :   RETURN
                 { $$ = new Node( $1->code, $1->line, $1->stringValue ); }
 
-            |   RETURN expression ';'
+            |   RETURN expression
                 {
                     $$ = new Node( $1->code, $1->line, $1->stringValue );
                     $$->Children.push_back( $expression );

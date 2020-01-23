@@ -16,6 +16,9 @@ fn dogFunction( a: i32, b: f32 ) {
   let string = "Something bitchin";
   let aba = "Something bitchin %f32 -> %d %s" % (0.4, ned * 3, "Funny");
   string = "Something bitchin #{ned} %f32" % (44.3);
+
+  let poo = Poop;
+  poo.bob( 39483:i64 );
 }
 
 class Poop 

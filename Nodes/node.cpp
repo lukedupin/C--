@@ -25,7 +25,7 @@ bool Node::codeGen( QTextStream* stream, QVector<Node*>* stack, int depth )
     if ( stack == nullptr )
     {
         ptr.reset( new QVector<Node*>() );
-        stack = ptr.get();
+        stack = ptr.data();
     }
 
     //Pre child call
@@ -56,7 +56,7 @@ bool Node::detectErrors( Error* err, QVector<Node*>* stack )
     if ( stack == nullptr )
     {
         ptr.reset( new QVector<Node*>() );
-        stack = ptr.get();
+        stack = ptr.data();
     }
 
     //Pre child call
@@ -83,7 +83,7 @@ void Node::codePrint( QVector<Node*>* stack, int depth )
     if ( stack == nullptr )
     {
         ptr.reset( new QVector<Node*>() );
-        stack = ptr.get();
+        stack = ptr.data();
     }
 
     //Pre child call
