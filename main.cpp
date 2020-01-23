@@ -39,13 +39,19 @@ int qt_main( int argc, char** argv, ProgramNode** parse_tree, FILE** yyin, int* 
         return -1;
     }
 
+    Context context;
+
     //Detect any and all errors
     Error err;
-    (*parse_tree)->detectErrors( &err );
+    context.reset();
+    (*parse_tree)->detectErrors( &err, &context );
 
     //Print out the parse tree
     if (print_tree)
-        (*parse_tree)->codePrint();
+    {
+        context.reset();
+        (*parse_tree)->codePrint( &context );
+    }
 
     //Dump out the number of errors and warnings
     qDebug("Number of warnings: 0");
@@ -60,7 +66,9 @@ int qt_main( int argc, char** argv, ProgramNode** parse_tree, FILE** yyin, int* 
     //Compile the program
     QString result;
     QTextStream stream( &result );
-    (*parse_tree)->codeGen( &stream );
+
+    context.reset();
+    (*parse_tree)->codeGen( &stream, &context );
 
     //Temp, should write to file
     qDebug("Program Dump:\n%s", result.toUtf8().data());

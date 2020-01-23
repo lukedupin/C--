@@ -12,114 +12,107 @@ Node::Node( int token, int lineNo, QString label )
 {
 }
 
+Node::~Node()
+{}
+
 //Get some info
 int Node::lineNumber() { return _lineNumber; }
 int Node::tokenType() { return _token; }
 QString Node::label() { return _label; }
 
   //Dump the code
-bool Node::codeGen( QTextStream* stream, QVector<Node*>* stack, int depth )
+bool Node::codeGen( QTextStream* stream, Context* context )
 {
-    //Alloc a pointer?
-    QScopedPointer<QVector<Node*>> ptr;
-    if ( stack == nullptr )
-    {
-        ptr.reset( new QVector<Node*>() );
-        stack = ptr.data();
-    }
-
     //Pre child call
-    codeGenPreChild( stream, stack, depth );
+    codeGenPreChild( stream, context );
 
-    //Test the kids
-    stack->push_back( this );
-    auto c_depth = depth + (increaseScopeDepth()? 1: 0);
-    for ( auto& node : Children )
-        node->codeGen( stream, stack, c_depth );
-    stack->pop_back();
+    //Iterate through the children, calling code gen
+    iterateChildren( context,
+                     [=](Node* node) {
+                        node->codeGen( stream, context );
+                     });
 
     //Post child call
-    codeGenPostChild( stream, stack, depth );
+    codeGenPostChild( stream, context );
 
     //Test the sibling
     if ( Sibling != nullptr )
-        Sibling->codeGen( stream, stack, depth );
+        Sibling->codeGen( stream, context );
 
     return true;
 }
 
   //Detect errors
-bool Node::detectErrors( Error* err, QVector<Node*>* stack )
+bool Node::detectErrors( Error* err, Context* context )
 {
-    //Alloc a pointer?
-    QScopedPointer<QVector<Node*>> ptr;
-    if ( stack == nullptr )
-    {
-        ptr.reset( new QVector<Node*>() );
-        stack = ptr.data();
-    }
-
     //Pre child call
-    calculateErrors( err, stack );
+    calculateErrors( err, context );
 
-    //Test the kids
-    stack->push_back( this );
-    for ( auto& node : Children )
-        node->detectErrors( err, stack );
-    stack->pop_back();
+    //Iterate through the children, calling code gen
+    iterateChildren( context,
+                     [=](Node* node) {
+                        node->detectErrors( err, context );
+                     });
 
     //Test the sibling
     if ( Sibling != nullptr )
-        Sibling->detectErrors( err, stack );
+        Sibling->detectErrors( err, context );
 
     return true;
 }
 
   //Print out my nodes
-void Node::codePrint( QVector<Node*>* stack, int depth )
+void Node::codePrint( Context* context )
 {
-    //Alloc a pointer?
-    QScopedPointer<QVector<Node*>> ptr;
-    if ( stack == nullptr )
-    {
-        ptr.reset( new QVector<Node*>() );
-        stack = ptr.data();
-    }
-
     //Pre child call
-    print( depth );
+    print( context->NodeStack.count() );
 
-    //Print the kids
-    stack->push_back( this );
-    for ( auto& node : Children )
-        node->codePrint( stack, depth + 1 );
-    stack->pop_back();
+    //Iterate through the children, calling code gen
+    iterateChildren( context,
+                     [=](Node* node) {
+                        node->codePrint( context );
+                     });
 
     //Test the sibling
     if ( Sibling != nullptr )
-        Sibling->codePrint( stack, depth );
+        Sibling->codePrint( context );
 }
 
-bool Node::calculateErrors( Error* err, QVector<Node*>* stack )
+void Node::iterateChildren( Context* context, std::function<void (Node*)> callback )
+{
+    //Push onto the stack
+    auto c_depth = (increaseScopeDepth()? 1: 0);
+    context->NodeStack.push_back( this );
+    context->Depth += c_depth;
+
+    //Go through my children
+    for ( auto& node : Children )
+        if ( node != nullptr )
+            callback( node );
+
+    //Pop off the stack
+    context->NodeStack.pop_back();
+    context->Depth -= c_depth;
+}
+
+bool Node::calculateErrors( Error* err, Context* context )
 {
     Q_UNUSED(err)
-    Q_UNUSED(stack)
+    Q_UNUSED(context)
     return true;
 }
 
-bool Node::codeGenPreChild( QTextStream* stream, QVector<Node*>* stack, int depth )
+bool Node::codeGenPreChild( QTextStream* stream, Context* context )
 {
     Q_UNUSED(stream)
-    Q_UNUSED(stack)
-    Q_UNUSED(depth)
+    Q_UNUSED(context)
     return true;
 }
 
-bool Node::codeGenPostChild( QTextStream* stream, QVector<Node*>* stack, int depth )
+bool Node::codeGenPostChild( QTextStream* stream, Context* context )
 {
     Q_UNUSED(stream)
-    Q_UNUSED(stack)
-    Q_UNUSED(depth)
+    Q_UNUSED(context)
     return true;
 }
 

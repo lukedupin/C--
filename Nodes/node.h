@@ -1,10 +1,11 @@
-#ifndef __NODE_H__
-#define __NODE_H__
+#ifndef NODE_H
+#define NODE_H
 
 #include <QTextStream>
 #include <QVector>
 
 #include "error.h"
+#include "context.h"
 
 class Node
 {
@@ -22,6 +23,8 @@ class Node
     // Init my node
     Node( int tokenValue, int lineNo, QString label = QString() );
 
+    virtual ~Node();
+
     //Read only for my data
     int tokenType();
     int lineNumber();
@@ -30,25 +33,28 @@ class Node
     //*** Common functions the node uses to call into the child object
 
     // generate code for this node
-    bool codeGen( QTextStream* stream, QVector<Node*>* stack = nullptr, int scope_depth = 0 );
+    bool codeGen( QTextStream* stream, Context* context );
 
     // Detects errors in the code
-    bool detectErrors( Error* err, QVector<Node*>* stack = nullptr );
+    bool detectErrors( Error* err, Context* context );
 
     //Dup the symbol tree for debug
-    void codePrint( QVector<Node*>* stack = nullptr, int scope_depth = 0 );
+    void codePrint( Context* context );
+
+    //Iterate over children with custom callback on each
+    void iterateChildren( Context* context, std::function<void (Node*)> callback );
 
     //*** Child specific implementions
     protected:
 
     //Detect errors
-    virtual bool calculateErrors( Error* err, QVector<Node*>* stack = nullptr );
+    virtual bool calculateErrors( Error* err, Context* context );
 
     // Pre child code gen
-    virtual bool codeGenPreChild( QTextStream* stream, QVector<Node*>* stack, int scope_depth );
+    virtual bool codeGenPreChild( QTextStream* stream, Context* context );
 
     // Pre child code gen
-    virtual bool codeGenPostChild( QTextStream* stream, QVector<Node*>* stack, int scope_depth );
+    virtual bool codeGenPostChild( QTextStream* stream, Context* context );
 
     // Return true if we are increasing scope depth
     virtual bool increaseScopeDepth();

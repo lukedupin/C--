@@ -32,7 +32,8 @@ SOURCES += \
     Nodes/program_node.cpp \
     Parser/lex.yy.c \
     Parser/parser.tab.c \
-    main.cpp
+    main.cpp \
+    Nodes/context.cpp
 
 HEADERS += \
     Helpers/util.h \
@@ -41,4 +42,5 @@ HEADERS += \
     Nodes/node.h \
     Nodes/program_node.h \
     Parser/lex_token.h \
-    Parser/parser.tab.h
+    Parser/parser.tab.h \
+    Nodes/context.h
