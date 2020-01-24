@@ -6,7 +6,7 @@
 class DeclareVariable : public Node
 {
     public:
-    DeclareVariable( int code, int line, char* name );
+    DeclareVariable( int code, int line, QString name );
 
     bool codeGenPreChild( QTextStream* stream, Context* context ) override;
 };

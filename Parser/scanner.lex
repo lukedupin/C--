@@ -541,6 +541,15 @@
     s->stringValue = "f64";
     return F64;
 }
+"bool" {
+    lineNo = yylineno;
+    LexToken * s = new LexToken;
+    yylval.tokInfo = s;
+    s->code = BOOL;
+    s->line = yylineno;
+    s->stringValue = "bool";
+    return BOOL;
+}
 "str" {
     lineNo = yylineno;
     LexToken * s = new LexToken;

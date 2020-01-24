@@ -77,6 +77,7 @@ def data():
         {"rule": "U128"},
         {"rule": "F32"},
         {"rule": "F64"},
+        {"rule": "BOOL"},
         {"rule": "STR"},
         {"rule": "VEC"},
         {"rule": "HASH"},

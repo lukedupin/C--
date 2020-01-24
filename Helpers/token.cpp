@@ -181,6 +181,9 @@ const char* tokenStr( int token )
         case F64:
             return "F64";
 
+        case BOOL:
+            return "BOOL";
+
         case STR:
             return "STR";
 

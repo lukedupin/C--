@@ -27,7 +27,9 @@ MOC_DIR = moc
 SOURCES += \
     Helpers/util.cpp \
     Helpers/token.cpp \
+    Nodes/constant_node.cpp \
     Nodes/error.cpp \
+    Nodes/expression_node.cpp \
     Nodes/node.cpp \
     Nodes/program_node.cpp \
     Parser/lex.yy.c \
@@ -39,7 +41,9 @@ SOURCES += \
 HEADERS += \
     Helpers/util.h \
     Helpers/token.h \
+    Nodes/constant_node.h \
     Nodes/error.h \
+    Nodes/expression_node.h \
     Nodes/node.h \
     Nodes/program_node.h \
     Parser/lex_token.h \

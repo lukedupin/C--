@@ -8,6 +8,8 @@
     #include <node.h>
     #include <program_node.h>
     #include <declare_variable.h>
+    #include <expression_node.h>
+    #include <constant_node.h>
 
     #ifdef CPLUSPLUS
     extern int yylex();
@@ -96,6 +98,7 @@
 %token <tokInfo> U128
 %token <tokInfo> F32
 %token <tokInfo> F64
+%token <tokInfo> BOOL
 %token <tokInfo> STR
 %token <tokInfo> VEC
 %token <tokInfo> HASH
@@ -437,41 +440,44 @@ expression_list :  expression ',' expression_list
 expression  :   var ASSIGN expression
                 {
                     //Create my node
-                    $$ = new Node( $2->code, $1->lineNumber(), $2->stringValue );
+                    $$ = new ExpressionNode( $2->code, $1->lineNumber(), $2->stringValue );
                     $$->Children.push_back( $1);
                     $$->Children.push_back( $3);
                 }
 
             |   var ADD_ASSIGN expression
                 {
-                    $$ = new Node( $2->code, $1->lineNumber(), $2->stringValue );
+                    $$ = new ExpressionNode( $2->code, $1->lineNumber(), $2->stringValue );
                     $$->Children.push_back( $1);
                     $$->Children.push_back( $3);
                 }
 
             |   var SUB_ASSIGN expression
                 {
-                    $$ = new Node( $2->code, $1->lineNumber(), $2->stringValue );
+                    $$ = new ExpressionNode( $2->code, $1->lineNumber(), $2->stringValue );
                     $$->Children.push_back( $1);
                     $$->Children.push_back( $3);
                 }
 
             |   var MUL_ASSIGN expression
                 {
-                    $$ = new Node( $2->code, $1->lineNumber(), $2->stringValue );
+                    $$ = new ExpressionNode( $2->code, $1->lineNumber(), $2->stringValue );
                     $$->Children.push_back( $1);
                     $$->Children.push_back( $3);
                 }
 
             |   var DIV_ASSIGN expression
                 {
-                    $$ = new Node( $2->code, $1->lineNumber(), $2->stringValue );
+                    $$ = new ExpressionNode( $2->code, $1->lineNumber(), $2->stringValue );
                     $$->Children.push_back( $1);
                     $$->Children.push_back( $3);
                 }
 
             |   simpexp
-                { $$ = $1; }
+                {
+                    $$ = new ExpressionNode( $1->tokenType(), $1->lineNumber(), $1->label() );
+                    $$->Children.push_back( $1 );
+                }
             ;
 
 simpexp     :   simpexp logop relexp
@@ -661,19 +667,19 @@ var         :   IDENT
 
 constant    :   NUMBER
                 {
-                    $$ = new Node( NUMBER, $1->line, $1->stringValue );
+                    $$ = new ConstantNode( NUMBER, $1->line, $1->stringValue );
                 }
             |   NUMBER ':' primative_type
                 {
-                    $$ = new Node( NUMBER, $1->line, $1->stringValue );
+                    $$ = new ConstantNode( NUMBER, $1->line, $1->stringValue, $primative_type->code );
                 }
             |   TRUE
                 {
-                    $$ = new Node( $1->code, $1->line, $1->stringValue );
+                    $$ = new ConstantNode( $1->code, $1->line, $1->stringValue, BOOL );
                 }
             |   FALSE
                 {
-                    $$ = new Node( $1->code, $1->line, $1->stringValue );
+                    $$ = new ConstantNode( $1->code, $1->line, $1->stringValue, BOOL );
                 }
             ;
 
@@ -701,11 +707,11 @@ str_params  :   simpexp ',' str_params
 
 str_literal :   STRING_DBL
                 {
-                    $$ = new Node( $1->code, $1->line, $1->stringValue );
+                    $$ = new ConstantNode( $1->code, $1->line, $1->stringValue, STR );
                 }
             |   STRING_TICK
                 {
-                    $$ = new Node( $1->code, $1->line, $1->stringValue );
+                    $$ = new ConstantNode( $1->code, $1->line, $1->stringValue, STR );
                 }
             ;
 
