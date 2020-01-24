@@ -30,7 +30,9 @@ SOURCES += \
     Nodes/constant_node.cpp \
     Nodes/error.cpp \
     Nodes/expression_node.cpp \
+    Nodes/function_node.cpp \
     Nodes/node.cpp \
+    Nodes/param_node.cpp \
     Nodes/program_node.cpp \
     Parser/lex.yy.c \
     Parser/parser.tab.c \
@@ -44,7 +46,9 @@ HEADERS += \
     Nodes/constant_node.h \
     Nodes/error.h \
     Nodes/expression_node.h \
+    Nodes/function_node.h \
     Nodes/node.h \
+    Nodes/param_node.h \
     Nodes/program_node.h \
     Parser/lex_token.h \
     Parser/parser.tab.h \

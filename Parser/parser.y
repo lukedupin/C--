@@ -252,16 +252,15 @@ meth_dec    :   FN IDENT '(' fn_ret_parm block
 
 fn_dec      :   FN IDENT '(' fn_ret_parm block
                 {
-                    $$ = new Node( FN, $2->line, $2->stringValue );
+                    $$ = new FunctionNode( FN, $IDENT->line, $IDENT->stringValue );
                     if ( $fn_ret_parm != nullptr )
                         $block->Children.push_front( $fn_ret_parm );
-                    $$->Children.push_back( $block);
+                    $$->Children.push_back( $block );
                 }
 
             |   FN IDENT '(' param_list fn_ret_parm block
                 {
-                    $$ = new Node( FN, $2->line, $2->stringValue );
-                    $block->Children.push_front( $param_list );
+                    $$ = new FunctionNode( FN, $IDENT->line, $IDENT->stringValue, $param_list );
                     if ( $fn_ret_parm != nullptr )
                         $block->Children.push_front( $fn_ret_parm );
                     $$->Children.push_back( $block);
@@ -269,7 +268,7 @@ fn_dec      :   FN IDENT '(' fn_ret_parm block
             ;
 
 fn_ret_parm :   ')' ARROW_RIGHT primative_type
-                { $$ = new Node( $3->code, $3->line, $3->stringValue ); }
+                { $$ = new ParamNode( $3->code, $3->line, $3->stringValue, context->primitiveToNative( $primative_type->code ) ); }
 
             |   ')' ARROW_RIGHT IDENT
                 { $$ = new Node( $3->code, $3->line, $3->stringValue ); }
@@ -294,11 +293,11 @@ param_list  :   param ',' param_list
 
 param       :   IDENT ':' primative_type
                 {
-                    $$ = new Node( $3->code, $1->line, $1->stringValue );
+                    $$ = new ParamNode( $1->code, $1->line, $1->stringValue, context.primitiveToNative( $primative_type->code ) );
                 }
             |   IDENT ':' IDENT
                 {
-                    $$ = new Node( $3->code, $1->line, $1->stringValue );
+                    $$ = new ParamNode( $1->code, $1->line, $1->stringValue, $3->stringValue );
                 }
             ;
 

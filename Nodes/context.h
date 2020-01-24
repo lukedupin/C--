@@ -21,6 +21,10 @@ class Context
     Context();
 
     void reset();
+
+    QString nameToType( QString variable_name );
+
+    QString primativeToNative( int type_code );
 };
 
 #endif // CONTEXT_H

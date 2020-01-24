@@ -19,7 +19,8 @@ class ExpressionNode : public Node
 
     int getTypeCode( Context* context );
 
-    void calculateType( Context* context, Node* node );
+    private:
+    void calcualteType( Context* context );
 };
 
 #endif // EXPRESSIONNODE_H
