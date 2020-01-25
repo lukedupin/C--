@@ -9,6 +9,7 @@
     #include <program_node.h>
     #include <declare_variable.h>
     #include <expression_node.h>
+    #include <function_node.h>
     #include <constant_node.h>
 
     #ifdef CPLUSPLUS
@@ -29,7 +30,8 @@
     }
 
       //Holds my entire program
-    ProgramNode* ParseTree = new ProgramNode();
+    ProgramNode* ParseTree = nullptr;
+    Context* ParseContext = nullptr;
 %}
 
 %define parse.error verbose
@@ -730,11 +732,11 @@ retstmt     :   RETURN
 %%
 
 //The actual main
-int qt_main( int argc, char** argv, ProgramNode** parse_tree, FILE** yyin, int* yydebug );
+int qt_main( int argc, char** argv, ProgramNode** parse_tree, Context** context,  FILE** yyin, int* yydebug );
 
 
 //Pass through main
 int main( int argc, char** argv )
 {
-  return qt_main( argc, argv, &ParseTree, &yyin, &yydebug );
+  return qt_main( argc, argv, &ParseTree, &ParseContext, &yyin, &yydebug );
 }

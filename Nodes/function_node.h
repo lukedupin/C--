@@ -1,4 +1,5 @@
 #ifndef FUNCTIONNODE_H
+//Dump out the code
 #define FUNCTIONNODE_H
 
 #include "node.h"

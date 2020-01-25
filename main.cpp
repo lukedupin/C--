@@ -1,10 +1,11 @@
 #include <program_node.h>
+#include <context.h>
 
 #include <QCoreApplication>
 
 void yyparse();
 
-int qt_main( int argc, char** argv, ProgramNode** parse_tree, FILE** yyin, int* yydebug )
+int qt_main( int argc, char** argv, ProgramNode** parse_tree, Context** context, FILE** yyin, int* yydebug )
 {
     QCoreApplication app( argc, argv );
 
@@ -31,6 +32,13 @@ int qt_main( int argc, char** argv, ProgramNode** parse_tree, FILE** yyin, int* 
     //Setup the input
     *yyin = fopen(argv[argc - 1], "r");
 
+    //Setup some parse related items
+    *parse_tree = new ProgramNode();
+    *context = new Context();
+
+    //Fill out the context
+    //****
+
     //Parse out my try
     yyparse();
     if ( *parse_tree == nullptr) //No parse errors
@@ -39,18 +47,16 @@ int qt_main( int argc, char** argv, ProgramNode** parse_tree, FILE** yyin, int* 
         return -1;
     }
 
-    Context context;
-
     //Detect any and all errors
     Error err;
-    context.reset();
-    (*parse_tree)->detectErrors( &err, &context );
+    (*context)->reset();
+    (*parse_tree)->detectErrors( &err, *context );
 
     //Print out the parse tree
     if (print_tree)
     {
-        context.reset();
-        (*parse_tree)->codePrint( &context );
+        (*context)->reset();
+        (*parse_tree)->codePrint( *context );
     }
 
     //Dump out the number of errors and warnings
@@ -67,8 +73,9 @@ int qt_main( int argc, char** argv, ProgramNode** parse_tree, FILE** yyin, int* 
     QString result;
     QTextStream stream( &result );
 
-    context.reset();
-    (*parse_tree)->codeGen( &stream, &context );
+    //Dump out the code
+    (*context)->reset();
+    (*parse_tree)->codeGen( &stream, *context );
 
     //Temp, should write to file
     qDebug("Program Dump:\n%s", result.toUtf8().data());
