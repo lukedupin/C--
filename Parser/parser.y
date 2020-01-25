@@ -5,12 +5,16 @@
 
     //Custom includes
     #include "lex_token.h"
+    #include <Helpers/token.h>
     #include <node.h>
-    #include <program_node.h>
+
+    #include <block_node.h>
+    #include <constant_node.h>
     #include <declare_variable.h>
     #include <expression_node.h>
     #include <function_node.h>
-    #include <constant_node.h>
+    #include <if_node.h>
+    #include <program_node.h>
 
     #ifdef CPLUSPLUS
     extern int yylex();
@@ -150,7 +154,7 @@
 %type <nodeInfo> str_literal
 %type <nodeInfo> brkstmt
 %type <nodeInfo> retstmt
-%type <tokInfo> primative_type
+%type <tokInfo> primitive_type
 
 %%
 // Productions
@@ -254,7 +258,7 @@ meth_dec    :   FN IDENT '(' fn_ret_parm block
 
 fn_dec      :   FN IDENT '(' fn_ret_parm block
                 {
-                    $$ = new FunctionNode( FN, $IDENT->line, $IDENT->stringValue );
+                    $$ = new FunctionNode( FN, $IDENT->line, $IDENT->stringValue, nullptr, $fn_ret_parm );
                     if ( $fn_ret_parm != nullptr )
                         $block->Children.push_front( $fn_ret_parm );
                     $$->Children.push_back( $block );
@@ -262,21 +266,23 @@ fn_dec      :   FN IDENT '(' fn_ret_parm block
 
             |   FN IDENT '(' param_list fn_ret_parm block
                 {
-                    $$ = new FunctionNode( FN, $IDENT->line, $IDENT->stringValue, $param_list );
+                    $$ = new FunctionNode( FN, $IDENT->line, $IDENT->stringValue, $param_list, $fn_ret_parm );
                     if ( $fn_ret_parm != nullptr )
                         $block->Children.push_front( $fn_ret_parm );
                     $$->Children.push_back( $block);
                 }
             ;
 
-fn_ret_parm :   ')' ARROW_RIGHT primative_type
-                { $$ = new ParamNode( $3->code, $3->line, $3->stringValue, context->primitiveToNative( $primative_type->code ) ); }
+fn_ret_parm :   ')' ARROW_RIGHT primitive_type
+                {
+                    $$ = new ParamNode( $3->code, $3->line, $3->stringValue, ParseContext->primitiveToNative( $primitive_type->code ) );
+                }
 
             |   ')' ARROW_RIGHT IDENT
-                { $$ = new Node( $3->code, $3->line, $3->stringValue ); }
+                { $$ = new ParamNode( $3->code, $3->line, $3->stringValue, $IDENT->stringValue ); }
 
             |   ')' ARROW_RIGHT '(' param_list ')'
-                { $$ = $4; }
+                { $$ = $param_list; }
 
             |   ')'
                 { $$ = nullptr; }
@@ -293,9 +299,9 @@ param_list  :   param ',' param_list
                 }
             ;
 
-param       :   IDENT ':' primative_type
+param       :   IDENT ':' primitive_type
                 {
-                    $$ = new ParamNode( $1->code, $1->line, $1->stringValue, context.primitiveToNative( $primative_type->code ) );
+                    $$ = new ParamNode( $1->code, $1->line, $1->stringValue, ParseContext->primitiveToNative( $primitive_type->code ) );
                 }
             |   IDENT ':' IDENT
                 {
@@ -303,59 +309,56 @@ param       :   IDENT ':' primative_type
                 }
             ;
 
-block    :   LEFT_CURLY stmtlst  RIGHT_CURLY
+block       :   LEFT_CURLY stmtlst  RIGHT_CURLY
                 {
-                    $$ = new Node( $1->code, $1->line );
+                    $$ = new BlockNode( $1->code, $1->line );
                     $$->Children.push_back( $2);
                 }
 
             |   LEFT_CURLY RIGHT_CURLY
                 {
-                    $$ = new Node( $1->code, $1->line );
+                    $$ = new BlockNode( $1->code, $1->line );
                 }
             ;
 
 switch_block :  LEFT_CURLY RIGHT_CURLY
                 {
-                    $$ = new Node( $1->code, $1->line );
+                    $$ = new BlockNode( $1->code, $1->line );
                 }
             ;
 
 match_block :   LEFT_CURLY RIGHT_CURLY
                 {
-                    $$ = new Node( $1->code, $1->line );
+                    $$ = new BlockNode( $1->code, $1->line );
                 }
             ;
 
 stmtlst     :   stmt stmtlst
                 {
-                      if ($1 != NULL)
-                          $1->Sibling = $2;
-                      else
-                          $$ = $2;
+                    $1->Sibling = $2;
                 }
 
             |   stmt
                 { $$ = $1; }
             ;
 
-stmt        :   IF '(' expression ')' block
+stmt        :   IF expression block
                 {
-                    $$ = new Node( $1->code, $1->line, $1->stringValue );
-                    $$->Children.push_back( $3);
-                    $$->Children.push_back( $5);
+                    $$ = new IfNode( $1->code, $1->line );
+                    $$->Children.push_back( $expression );
+                    $$->Children.push_back( $block );
                 }
 
-            |   ELIF '(' expression ')' block
+            |   ELIF expression block
                 {
-                    $$ = new Node( $1->code, $1->line, $1->stringValue );
-                    $$->Children.push_back( $expression);
+                    $$ = new IfNode( $1->code, $1->line );
+                    $$->Children.push_back( $expression );
                     $$->Children.push_back( $block );
                 }
 
             |   ELSE block
                 {
-                    $$ = new Node( $1->code, $1->line, $1->stringValue );
+                    $$ = new IfNode( $1->code, $1->line );
                     $$->Children.push_back( $block );
                 }
 
@@ -630,7 +633,7 @@ fact        :   '(' expression ')'
                 { $$ = $1; }
             ;
 
-primative_type :   I8
+primitive_type :   I8
             |   I16
             |   I32
             |   I64
@@ -670,9 +673,9 @@ constant    :   NUMBER
                 {
                     $$ = new ConstantNode( NUMBER, $1->line, $1->stringValue );
                 }
-            |   NUMBER ':' primative_type
+            |   NUMBER ':' primitive_type
                 {
-                    $$ = new ConstantNode( NUMBER, $1->line, $1->stringValue, $primative_type->code );
+                    $$ = new ConstantNode( NUMBER, $1->line, $1->stringValue, $primitive_type->code );
                 }
             |   TRUE
                 {

@@ -31,7 +31,20 @@ void ExpressionNode::calcualteType( Context* context )
         return;
     _calculated = true;
 
+    //Grab the node and pull the type
     auto node = Children.last();
-    _typeCode = node->tokenType();
-    _typeName = context->primativeToNative( node->tokenType() );
+    switch ( node->tokenType() )
+    {
+        case TRUE:
+        case FALSE:
+        case NUMBER:
+        case STRING_DBL:
+        case STRING_TICK: {
+            auto const_node = dynamic_cast<ConstantNode*>( node );
+            _typeCode = const_node->typeCode();
+            _typeName = context->primitiveToNative( const_node->typeCode() );
+        } break;
+
+        default: break;
+    }
 }

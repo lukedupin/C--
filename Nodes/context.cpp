@@ -4,6 +4,7 @@
 
 #include <Parser/lex_token.h>
 #include <Parser/parser.tab.h>
+#include <Helpers/token.h>
 
 Context::Context()
 {
@@ -18,6 +19,13 @@ void Context::reset()
     Variables.clear();
 }
 
+QString Context::padding()
+{
+    QString pad;
+    pad.resize( Depth * 4 );
+    return pad;
+}
+
 QString Context::nameToType( QString variable_name )
 {
     if ( Variables.contains(variable_name) )
@@ -27,7 +35,7 @@ QString Context::nameToType( QString variable_name )
 }
 
 
-QString Context::primativeToNative(int type_code)
+QString Context::primitiveToNative(int type_code)
 {
     //Primitive type
     switch ( type_code )

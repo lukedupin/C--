@@ -1,4 +1,4 @@
-let _global = 32;
+let _global = 32.2 :f32;
 
 fn dogFunction( a: i32, b: f32 ) {
   let ned = 79;

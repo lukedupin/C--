@@ -20,11 +20,17 @@ class Context
     public:
     Context();
 
+    //Clear out context info, not settings data
     void reset();
 
+    //Return white space padding based on depth
+    QString padding();
+
+    //Convert a variable name into a user defined type based on scope
     QString nameToType( QString variable_name );
 
-    QString primativeToNative( int type_code );
+    //Convert a code into target language type
+    QString primitiveToNative( int type_code );
 };
 
 #endif // CONTEXT_H

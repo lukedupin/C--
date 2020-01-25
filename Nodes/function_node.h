@@ -1,17 +1,17 @@
 #ifndef FUNCTIONNODE_H
-//Dump out the code
 #define FUNCTIONNODE_H
 
 #include "node.h"
-#include "declare_variable.h"
+#include "param_node.h"
 
 class FunctionNode : public Node
 {
     private:
-    DeclareVariable* _params = nullptr;
+    ParamNode* _params = nullptr;
+    ParamNode* _ret = nullptr;
 
     public:
-    FunctionNode( int code, int line, QString name, DeclareVariable* params );
+    FunctionNode( int code, int line, QString name, Node* params, Node* ret );
 
     bool codeGenPreChild( QTextStream* stream, Context* context ) override;
 };

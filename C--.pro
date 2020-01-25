@@ -27,10 +27,12 @@ MOC_DIR = moc
 SOURCES += \
     Helpers/util.cpp \
     Helpers/token.cpp \
+    Nodes/block_node.cpp \
     Nodes/constant_node.cpp \
     Nodes/error.cpp \
     Nodes/expression_node.cpp \
     Nodes/function_node.cpp \
+    Nodes/if_node.cpp \
     Nodes/node.cpp \
     Nodes/param_node.cpp \
     Nodes/program_node.cpp \
@@ -43,10 +45,12 @@ SOURCES += \
 HEADERS += \
     Helpers/util.h \
     Helpers/token.h \
+    Nodes/block_node.h \
     Nodes/constant_node.h \
     Nodes/error.h \
     Nodes/expression_node.h \
     Nodes/function_node.h \
+    Nodes/if_node.h \
     Nodes/node.h \
     Nodes/param_node.h \
     Nodes/program_node.h \

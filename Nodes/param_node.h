@@ -11,6 +11,8 @@ class ParamNode : public Node
     public:
     ParamNode( int type_code, int line, QString name, QString ident );
 
+    QString getType();
+
     bool codeGenPreChild(QTextStream *stream, Context *context) override;
 };
 

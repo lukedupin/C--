@@ -14,9 +14,7 @@ bool DeclareVariable::codeGenPreChild( QTextStream* stream, Context* context )
 
     auto expression = dynamic_cast<ExpressionNode*>(Children.last());
 
-    QString pad;
-    pad.resize( context->Depth * 4, ' ');
-    (*stream) << expression->getTypeName( context ) << " "
+    (*stream) << context->padding() << expression->getTypeName( context ) << " "
               << _label << " = "
               << expression->label() << ";\r\n";
 

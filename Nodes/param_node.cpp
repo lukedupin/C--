@@ -1,13 +1,23 @@
 #include "param_node.h"
 
+#include <Parser/lex_token.h>
+#include <Parser/parser.tab.h>
+
 ParamNode::ParamNode( int type_code, int line, QString name, QString ident ) :
     Node( type_code, line, name ),
     _ident( ident )
 {
 }
 
+QString ParamNode::getType()
+{
+    return _ident;
+}
+
 bool ParamNode::codeGenPreChild(QTextStream *stream, Context *context)
 {
+    Q_UNUSED(context)
+
     QStringList ary;
     ParamNode* node = this;
 
