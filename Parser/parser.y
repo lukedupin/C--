@@ -479,8 +479,7 @@ expression  :   var ASSIGN expression
 
             |   simpexp
                 {
-                    $$ = new ExpressionNode( $1->tokenType(), $1->lineNumber(), $1->label() );
-                    $$->Children.push_back( $1 );
+                    $$ = $1;
                 }
             ;
 
@@ -671,11 +670,11 @@ var         :   IDENT
 
 constant    :   NUMBER
                 {
-                    $$ = new ConstantNode( NUMBER, $1->line, $1->stringValue );
+                    $$ = new ConstantNode( $1->code, $1->line, $1->stringValue );
                 }
             |   NUMBER ':' primitive_type
                 {
-                    $$ = new ConstantNode( NUMBER, $1->line, $1->stringValue, $primitive_type->code );
+                    $$ = new ConstantNode( $1->code, $1->line, $1->stringValue, $primitive_type->code );
                 }
             |   TRUE
                 {

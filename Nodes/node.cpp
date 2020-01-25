@@ -27,9 +27,11 @@ bool Node::codeGen( QTextStream* stream, Context* context )
     codeGenPreChild( stream, context );
 
     //Iterate through the children, calling code gen
+    codeGenBetweenChild( stream, context, -1 );
     iterateChildren( context,
-                     [=](Node* node) {
+                     [=](Node* node, int idx) {
                         node->codeGen( stream, context );
+                        codeGenBetweenChild( stream, context, idx );
                      });
 
     //Post child call
@@ -50,7 +52,7 @@ bool Node::detectErrors( Error* err, Context* context )
 
     //Iterate through the children, calling code gen
     iterateChildren( context,
-                     [=](Node* node) {
+                     [=](Node* node, int) {
                         node->detectErrors( err, context );
                      });
 
@@ -69,7 +71,7 @@ void Node::codePrint( Context* context )
 
     //Iterate through the children, calling code gen
     iterateChildren( context,
-                     [=](Node* node) {
+                     [=](Node* node, int) {
                         node->codePrint( context );
                      });
 
@@ -78,7 +80,7 @@ void Node::codePrint( Context* context )
         Sibling->codePrint( context );
 }
 
-void Node::iterateChildren( Context* context, std::function<void (Node*)> callback )
+void Node::iterateChildren( Context* context, std::function<void (Node*, int)> callback )
 {
     //Push onto the stack
     auto c_depth = (increaseScopeDepth()? 1: 0);
@@ -86,9 +88,10 @@ void Node::iterateChildren( Context* context, std::function<void (Node*)> callba
     context->Depth += c_depth;
 
     //Go through my children
+    int idx = 0;
     for ( auto& node : Children )
         if ( node != nullptr )
-            callback( node );
+            callback( node, idx++ );
 
     //Pop off the stack
     context->NodeStack.pop_back();
@@ -106,6 +109,14 @@ bool Node::codeGenPreChild( QTextStream* stream, Context* context )
 {
     Q_UNUSED(stream)
     Q_UNUSED(context)
+    return true;
+}
+
+bool Node::codeGenBetweenChild( QTextStream* stream, Context* context, int child_idx )
+{
+    Q_UNUSED(stream)
+    Q_UNUSED(context)
+    Q_UNUSED(child_idx)
     return true;
 }
 

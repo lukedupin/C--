@@ -42,7 +42,7 @@ class Node
     void codePrint( Context* context );
 
     //Iterate over children with custom callback on each
-    void iterateChildren( Context* context, std::function<void (Node*)> callback );
+    void iterateChildren( Context* context, std::function<void (Node*, int)> callback );
 
     //*** Child specific implementions
     protected:
@@ -53,7 +53,10 @@ class Node
     // Pre child code gen
     virtual bool codeGenPreChild( QTextStream* stream, Context* context );
 
-    // Pre child code gen
+    // Between child code gen
+    virtual bool codeGenBetweenChild( QTextStream* stream, Context* context, int child_idx );
+
+    // Post child code gen
     virtual bool codeGenPostChild( QTextStream* stream, Context* context );
 
     // Return true if we are increasing scope depth

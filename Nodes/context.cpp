@@ -22,7 +22,7 @@ void Context::reset()
 QString Context::padding()
 {
     QString pad;
-    pad.resize( Depth * 4 );
+    pad.resize( Depth * 4, ' ' );
     return pad;
 }
 

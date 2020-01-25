@@ -19,6 +19,8 @@ class ExpressionNode : public Node
 
     int getTypeCode( Context* context );
 
+    bool codeGenBetweenChild( QTextStream* stream, Context* context, int child_idx );
+
     private:
     void calcualteType( Context* context );
 };

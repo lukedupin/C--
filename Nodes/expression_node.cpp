@@ -25,6 +25,19 @@ int ExpressionNode::getTypeCode( Context* context )
     return _typeCode;
 }
 
+bool ExpressionNode::codeGenBetweenChild( QTextStream* stream, Context* context, int child_idx )
+{
+    //Only bost after the first child
+    if ( child_idx != 0 )
+        return true;
+
+    //Write out the operator for the expression
+    (*stream) << context->padding() << " " << _label << " ";
+    qDebug("This was called");
+
+    return true;
+}
+
 void ExpressionNode::calcualteType( Context* context )
 {
     if ( _calculated || Children.count() <= 0 )
