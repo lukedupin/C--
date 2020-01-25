@@ -9,6 +9,12 @@
 
 class Node
 {
+    public:
+    struct SemanticType {
+        QString TargetType;
+        int TypeCode = -1;
+    };
+
     protected:
     //Facts about this node
     int _token = -1;
@@ -29,6 +35,7 @@ class Node
     int tokenType();
     int lineNumber();
     QString label();
+    virtual SemanticType semanticType( Context* context );
 
     //*** Common functions the node uses to call into the child object
 

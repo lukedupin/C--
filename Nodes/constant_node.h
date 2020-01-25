@@ -12,9 +12,9 @@ class ConstantNode : public Node
     public:
     ConstantNode( int code, int line, QString value, int type_code = -1, int base = 10 );
 
-    int typeCode();
+    SemanticType semanticType( Context* context ) override;
 
-    int base();
+    bool codeGenPreChild( QTextStream* stream, Context* context ) override;
 };
 
 #endif // CONSTANTNODE_H

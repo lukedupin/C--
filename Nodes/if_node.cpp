@@ -16,9 +16,19 @@ bool IfNode::codeGenPreChild( QTextStream* stream, Context* context )
     else if ( _token == ELIF )
         (*stream) << context->padding() << "else if ";
     else if ( _token == ELSE )
-        (*stream) << context->padding() << "else";
+        (*stream) << context->padding() << "else\r\n";
     else
         qDebug("***%s", tokenStr(_token));
+
+    return true;
+}
+
+bool IfNode::codeGenBetweenChild( QTextStream* stream, Context* context, int idx )
+{
+    Q_UNUSED(context)
+
+    if ( idx == 0 && (_token == IF || _token == ELIF) )
+        (*stream) << "\r\n";
 
     return true;
 }

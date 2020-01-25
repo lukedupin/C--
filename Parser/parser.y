@@ -6,15 +6,16 @@
     //Custom includes
     #include "lex_token.h"
     #include <Helpers/token.h>
-    #include <node.h>
+    #include <Nodes/node.h>
 
-    #include <block_node.h>
-    #include <constant_node.h>
-    #include <declare_variable.h>
-    #include <expression_node.h>
-    #include <function_node.h>
-    #include <if_node.h>
-    #include <program_node.h>
+    #include <Nodes/block_node.h>
+    #include <Nodes/constant_node.h>
+    #include <Nodes/declare_variable.h>
+    #include <Nodes/expression_node.h>
+    #include <Nodes/function_node.h>
+    #include <Nodes/if_node.h>
+    #include <Nodes/program_node.h>
+    #include <Nodes/simple_node.h>
 
     #ifdef CPLUSPLUS
     extern int yylex();
@@ -444,35 +445,35 @@ expression_list :  expression ',' expression_list
 expression  :   var ASSIGN expression
                 {
                     //Create my node
-                    $$ = new ExpressionNode( $2->code, $1->lineNumber(), $2->stringValue );
+                    $$ = new AssignNode( $2->code, $1->lineNumber(), $2->stringValue );
                     $$->Children.push_back( $1);
                     $$->Children.push_back( $3);
                 }
 
             |   var ADD_ASSIGN expression
                 {
-                    $$ = new ExpressionNode( $2->code, $1->lineNumber(), $2->stringValue );
+                    $$ = new AssignNode( $2->code, $1->lineNumber(), $2->stringValue );
                     $$->Children.push_back( $1);
                     $$->Children.push_back( $3);
                 }
 
             |   var SUB_ASSIGN expression
                 {
-                    $$ = new ExpressionNode( $2->code, $1->lineNumber(), $2->stringValue );
+                    $$ = new AssignNode( $2->code, $1->lineNumber(), $2->stringValue );
                     $$->Children.push_back( $1);
                     $$->Children.push_back( $3);
                 }
 
             |   var MUL_ASSIGN expression
                 {
-                    $$ = new ExpressionNode( $2->code, $1->lineNumber(), $2->stringValue );
+                    $$ = new AssignNode( $2->code, $1->lineNumber(), $2->stringValue );
                     $$->Children.push_back( $1);
                     $$->Children.push_back( $3);
                 }
 
             |   var DIV_ASSIGN expression
                 {
-                    $$ = new ExpressionNode( $2->code, $1->lineNumber(), $2->stringValue );
+                    $$ = new AssignNode( $2->code, $1->lineNumber(), $2->stringValue );
                     $$->Children.push_back( $1);
                     $$->Children.push_back( $3);
                 }
@@ -507,32 +508,32 @@ relexp      :   addexp relop addexp
 
 relop       :   LEQ
                 {
-                    $$ = new Node( LEQ, $1->line, $1->stringValue );
+                    $$ = new SimpleNode( LEQ, $1->line, $1->stringValue, 0 );
                 }
 
             |   LT
                 {
-                    $$ = new Node( LT, $1->line, $1->stringValue );
+                    $$ = new SimpleNode( LT, $1->line, $1->stringValue, 0 );
                 }
 
             |   GT
                 {
-                    $$ = new Node( GT, $1->line, $1->stringValue );
+                    $$ = new SimpleNode( GT, $1->line, $1->stringValue, 0 );
                 }
 
             |   GEQ
                 {
-                    $$ = new Node( GEQ, $1->line, $1->stringValue );
+                    $$ = new SimpleNode( GEQ, $1->line, $1->stringValue, 0 );
                 }
 
             |   EQ
                 {
-                    $$ = new Node( EQ, $1->line, $1->stringValue );
+                    $$ = new SimpleNode( EQ, $1->line, $1->stringValue, 0 );
                 }
 
             |   NEQ
                 {
-                    $$ = new Node( NEQ, $1->line, $1->stringValue );
+                    $$ = new SimpleNode( NEQ, $1->line, $1->stringValue, 0 );
                 }
             ;
 
@@ -549,23 +550,23 @@ addexp      :   addexp addop term
 
 addop       :   ADD
                 {
-                    $$ = new Node( ADD, $1->line, $1->stringValue );
+                    $$ = new SimpleNode( ADD, $1->line, $1->stringValue, 0 );
                 }
 
             |   SUB
                 {
-                    $$ = new Node( SUB, $1->line, $1->stringValue );
+                    $$ = new SimpleNode( SUB, $1->line, $1->stringValue, 0 );
                 }
             ;
 
 logop       :   OR
                 {
-                    $$ = new Node( OR, $1->line, $1->stringValue );
+                    $$ = new SimpleNode( OR, $1->line, $1->stringValue, 0 );
                 }
 
             |   AND
                 {
-                    $$ = new Node( AND, $1->line, $1->stringValue );
+                    $$ = new SimpleNode( AND, $1->line, $1->stringValue, 0 );
                 }
             ;
 
@@ -582,22 +583,22 @@ term        :   term mulop unary
 
 mulop       :   MUL
                 {
-                    $$ = new Node( MUL, $1->line, $1->stringValue );
+                    $$ = new SimpleNode( MUL, $1->line, $1->stringValue, 0 );
                 }
 
             |   DIV
                 {
-                    $$ = new Node( DIV, $1->line, $1->stringValue );
+                    $$ = new SimpleNode( DIV, $1->line, $1->stringValue, 0 );
                 }
 
             |   MOD
                 {
-                    $$ = new Node( MOD, $1->line, $1->stringValue );
+                    $$ = new SimpleNode( MOD, $1->line, $1->stringValue, 0 );
                 }
 
             |   NOT
                 {
-                    $$ = new Node( NOT, $1->line, $1->stringValue );
+                    $$ = new SimpleNode( NOT, $1->line, $1->stringValue, 0 );
                 }
             ;
 
@@ -610,12 +611,12 @@ unary       :   unaryop unary
 
 unaryop     :   NOT
                 {
-                    $$ = new Node( NOT, $1->line, $1->stringValue );
+                    $$ = new SimpleNode( NOT, $1->line, $1->stringValue );
                 }
 
             |   SUB
                 {
-                    $$ = new Node( SUB, $1->line, $1->stringValue );
+                    $$ = new SimpleNode( SUB, $1->line, $1->stringValue );
                 }
             ;
 
@@ -648,23 +649,23 @@ primitive_type :   I8
             ;
 
 var         :   IDENT
-                { $$ = new Node( $1->code, $1->line, $1->stringValue ); }
+                { $$ = new SimpleNode( $1->code, $1->line, $1->stringValue ); }
 
             |   var DOT IDENT
                 {
-                    $$ = new Node( $2->code, $2->line, $2->stringValue );
+                    $$ = new SimpleNode( $2->code, $2->line, $2->stringValue, 0 );
                     $$->Children.push_back( $1 );
-                    $$->Children.push_back( new Node( $3->code, $3->line, $3->stringValue ) );
+                    $$->Children.push_back( new SimpleNode( $3->code, $3->line, $3->stringValue ) );
                 }
 
             |   SELF
-                { $$ = new Node( $1->code, $1->line, $1->stringValue ); }
+                { $$ = new SimpleNode( $1->code, $1->line, $1->stringValue ); }
 
             |   SELF DOT IDENT
                 {
-                    $$ = new Node( $2->code, $2->line, $2->stringValue );
-                    $$->Children.push_back( new Node( $1->code, $1->line, $1->stringValue ) );
-                    $$->Children.push_back( new Node( $3->code, $3->line, $3->stringValue ) );
+                    $$ = new SimpleNode( $2->code, $2->line, $2->stringValue, 0 );
+                    $$->Children.push_back( new SimpleNode( $1->code, $1->line, $1->stringValue ) );
+                    $$->Children.push_back( new SimpleNode( $3->code, $3->line, $3->stringValue ) );
                 }
             ;
 
@@ -719,15 +720,15 @@ str_literal :   STRING_DBL
             ;
 
 brkstmt     :   BREAK
-                { $$ = new Node( $1->code, $1->line, $1->stringValue ); }
+                { $$ = new SimpleNode( $1->code, $1->line, $1->stringValue ); }
             ;
 
 retstmt     :   RETURN
-                { $$ = new Node( $1->code, $1->line, $1->stringValue ); }
+                { $$ = new SimpleNode( $1->code, $1->line, $1->stringValue ); }
 
             |   RETURN expression
                 {
-                    $$ = new Node( $1->code, $1->line, $1->stringValue );
+                    $$ = new SimpleNode( $1->code, $1->line, $1->stringValue );
                     $$->Children.push_back( $expression );
                 }
             ;

@@ -6,23 +6,17 @@
 #include "parser.tab.h"
 
 ExpressionNode::ExpressionNode( int code, int line, QString label ) :
-    Node( code, line, label ),
-    _typeName("Unknown")
+    Node( code, line, label )
 {
 }
 
-QString ExpressionNode::getTypeName( Context* context )
+Node::SemanticType ExpressionNode::semanticType(Context *context)
 {
-    calcualteType(context);
+    //Calculate the types?
+    if ( _semanticType.TypeCode < 0 )
+        _semanticType = Children.last()->semanticType( context );
 
-    return _typeName;
-}
-
-int ExpressionNode::getTypeCode( Context* context )
-{
-    calcualteType(context);
-
-    return _typeCode;
+    return _semanticType;
 }
 
 bool ExpressionNode::codeGenBetweenChild( QTextStream* stream, Context* context, int child_idx )
@@ -33,31 +27,6 @@ bool ExpressionNode::codeGenBetweenChild( QTextStream* stream, Context* context,
 
     //Write out the operator for the expression
     (*stream) << context->padding() << " " << _label << " ";
-    qDebug("This was called");
 
     return true;
-}
-
-void ExpressionNode::calcualteType( Context* context )
-{
-    if ( _calculated || Children.count() <= 0 )
-        return;
-    _calculated = true;
-
-    //Grab the node and pull the type
-    auto node = Children.last();
-    switch ( node->tokenType() )
-    {
-        case TRUE:
-        case FALSE:
-        case NUMBER:
-        case STRING_DBL:
-        case STRING_TICK: {
-            auto const_node = dynamic_cast<ConstantNode*>( node );
-            _typeCode = const_node->typeCode();
-            _typeName = context->primitiveToNative( const_node->typeCode() );
-        } break;
-
-        default: break;
-    }
 }

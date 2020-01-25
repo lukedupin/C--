@@ -14,13 +14,21 @@ bool DeclareVariable::codeGenPreChild( QTextStream* stream, Context* context )
     if ( Children.count() < 1 )
         return false;
 
-    qDebug("Found a %s in expression", tokenStr( Children.last()->tokenType() ));
+    auto node = Children.last();
+    auto semantics = node->semanticType( context );
 
-    auto expression = dynamic_cast<ConstantNode*>(Children.last());
+    (*stream) << context->padding()
+              << semantics.TargetType << " "
+              << _label << " = ";
 
-    (*stream) << context->padding() << context->primitiveToNative( expression->typeCode() ) << " "
-              << _label << " = "
-              << expression->label() << ";\r\n";
+    return true;
+}
+
+bool DeclareVariable::codeGenPostChild( QTextStream* stream, Context* context )
+{
+    Q_UNUSED(context)
+
+    (*stream) << ";\r\n";
 
     return true;
 }

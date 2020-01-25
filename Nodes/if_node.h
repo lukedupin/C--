@@ -9,6 +9,8 @@ class IfNode : public Node
     IfNode( int code, int line );
 
     bool codeGenPreChild( QTextStream* stream, Context* context ) override;
+
+    bool codeGenBetweenChild( QTextStream* stream, Context* context, int idx ) override;
 };
 
 #endif // IFNODE_H

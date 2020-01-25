@@ -9,6 +9,8 @@ class DeclareVariable : public Node
     DeclareVariable( int code, int line, QString name );
 
     bool codeGenPreChild( QTextStream* stream, Context* context ) override;
+
+    bool codeGenPostChild( QTextStream* stream, Context* context ) override;
 };
 
 #endif // DECLARE_VARIABLE_H

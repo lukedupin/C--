@@ -8,21 +8,14 @@
 class ExpressionNode : public Node
 {
     private:
-    bool _calculated = false;
-    int _typeCode = -1;
-    QString _typeName;
+    Node::SemanticType _semanticType;
 
     public:
     ExpressionNode( int code, int line, QString label );
 
-    QString getTypeName( Context* context );
+    SemanticType semanticType( Context* context ) override;
 
-    int getTypeCode( Context* context );
-
-    bool codeGenBetweenChild( QTextStream* stream, Context* context, int child_idx );
-
-    private:
-    void calcualteType( Context* context );
+    bool codeGenBetweenChild( QTextStream* stream, Context* context, int child_idx ) override;
 };
 
 #endif // EXPRESSIONNODE_H

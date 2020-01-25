@@ -17,12 +17,20 @@ ConstantNode::ConstantNode( int code, int line, QString value, int type_code, in
     }
 }
 
-int ConstantNode::typeCode()
+Node::SemanticType ConstantNode::semanticType(Context *context)
 {
-    return _typeCode;
+    SemanticType sem;
+    {
+        sem.TypeCode = _typeCode;
+        sem.TargetType = context->primitiveToNative( _typeCode );
+    }
+
+    return sem;
 }
 
-int ConstantNode::base()
+bool ConstantNode::codeGenPreChild( QTextStream* stream, Context* context )
 {
-    return _base;
+    (*stream) << _label;
+
+    return true;
 }

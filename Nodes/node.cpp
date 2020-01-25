@@ -1,8 +1,8 @@
 #include "node.h"
 #include <Helpers/token.h>
 #include <Helpers/util.h>
-
-#include <QScopedPointer>
+#include <Parser/lex_token.h>
+#include <parser.tab.h>
 
   //Define my node
 Node::Node( int token, int lineNo, QString label )
@@ -19,6 +19,20 @@ Node::~Node()
 int Node::lineNumber() { return _lineNumber; }
 int Node::tokenType() { return _token; }
 QString Node::label() { return _label; }
+
+
+Node::SemanticType Node::semanticType( Context* context )
+{
+    Q_UNUSED(context)
+
+    Node::SemanticType sem;
+    {
+        sem.TypeCode = ERROR;
+        sem.TargetType = "Unknown";
+    }
+
+    return sem;
+}
 
   //Dump the code
 bool Node::codeGen( QTextStream* stream, Context* context )
