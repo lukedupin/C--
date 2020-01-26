@@ -5,11 +5,27 @@ SimpleNode::SimpleNode( int code, int line, QString label ) :
 {
 }
 
+Node::NodeType SimpleNode::nodeType()
+{
+    return SIMPLE_NODE;
+}
+
 bool SimpleNode::codeGenPreChild(QTextStream *stream, Context *context)
+{
+    if ( CompleteStatement )
+        (*stream) << context->padding() << _label << " ";
+    else
+        (*stream) << _label << " ";
+
+    return true;
+}
+
+bool SimpleNode::codeGenPostChild(QTextStream *stream, Context *context)
 {
     Q_UNUSED(context)
 
-    (*stream) << _label << " ";
+    if ( CompleteStatement )
+        (*stream) << ";\r\n";
 
     return true;
 }

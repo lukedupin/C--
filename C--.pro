@@ -27,11 +27,11 @@ MOC_DIR = moc
 SOURCES += \
     Helpers/util.cpp \
     Helpers/token.cpp \
+    Nodes/klass_node.cpp \
     Nodes/op_node.cpp \
     Nodes/block_node.cpp \
     Nodes/constant_node.cpp \
     Nodes/error.cpp \
-    Nodes/expression_node.cpp \
     Nodes/function_node.cpp \
     Nodes/if_node.cpp \
     Nodes/node.cpp \
@@ -42,16 +42,16 @@ SOURCES += \
     Parser/parser.tab.c \
     main.cpp \
     Nodes/context.cpp \
-    Nodes/declare_variable.cpp
+    Nodes/declare_node.cpp
 
 HEADERS += \
     Helpers/util.h \
     Helpers/token.h \
+    Nodes/klass_node.h \
     Nodes/op_node.h \
     Nodes/block_node.h \
     Nodes/constant_node.h \
     Nodes/error.h \
-    Nodes/expression_node.h \
     Nodes/function_node.h \
     Nodes/if_node.h \
     Nodes/node.h \
@@ -61,4 +61,4 @@ HEADERS += \
     Parser/lex_token.h \
     Parser/parser.tab.h \
     Nodes/context.h \
-    Nodes/declare_variable.h
+    Nodes/declare_node.h

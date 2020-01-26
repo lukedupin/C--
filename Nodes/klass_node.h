@@ -1,12 +1,12 @@
-#ifndef BLOCKNODE_H
-#define BLOCKNODE_H
+#ifndef KLASSNODE_H
+#define KLASSNODE_H
 
 #include "node.h"
 
-class BlockNode : public Node
+class KlassNode : public Node
 {
     public:
-    BlockNode( int code, int line );
+    KlassNode( int code, int line, QString name );
 
     NodeType nodeType() override;
 
@@ -17,4 +17,4 @@ class BlockNode : public Node
     bool codeGenPostChild( QTextStream* stream, Context* context ) override;
 };
 
-#endif // BLOCKNODE_H
+#endif // KLASSNODE_H

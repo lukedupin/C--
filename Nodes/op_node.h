@@ -8,6 +8,8 @@ class OpNode : public Node
     public:
     OpNode( int code, int line, QString value );
 
+    NodeType nodeType() override;
+
     bool codeGenPreChild( QTextStream* stream, Context* context ) override;
 
     bool codeGenPostChildWrapper( QTextStream* stream, Context* context, int idx ) override;

@@ -26,10 +26,21 @@ QString Context::padding()
     return pad;
 }
 
+QString Context::typeToNative(int type_code, QString variable_name)
+{
+    if ( type_code == IDENT || type_code == SELF )
+        return nameToType( variable_name );
+    else
+        return primitiveToNative( type_code );
+}
+
 QString Context::nameToType( QString variable_name )
 {
     if ( Variables.contains(variable_name) )
-        return Variables[variable_name]->label();
+        return Variables[variable_name];
+
+    if ( variable_name == "self" && KlassStack.count() > 0 )
+        return KlassStack.last();
 
     return "Error";
 }

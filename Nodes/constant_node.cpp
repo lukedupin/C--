@@ -17,6 +17,11 @@ ConstantNode::ConstantNode( int code, int line, QString value, int type_code, in
     }
 }
 
+Node::NodeType ConstantNode::nodeType()
+{
+    return CONSTANT_NODE;
+}
+
 Node::SemanticType ConstantNode::semanticType(Context *context)
 {
     SemanticType sem;

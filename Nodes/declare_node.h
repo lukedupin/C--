@@ -1,16 +1,18 @@
-#ifndef DECLARE_VARIABLE_H
-#define DECLARE_VARIABLE_H
+#ifndef DECLARE_NODE_H
+#define DECLARE_NODE_H
 
 #include "node.h"
 
-class DeclareVariable : public Node
+class DeclareNode : public Node
 {
     public:
-    DeclareVariable( int code, int line, QString name );
+    DeclareNode( int code, int line, QString name );
+
+    NodeType nodeType() override;
 
     bool codeGenPreChild( QTextStream* stream, Context* context ) override;
 
     bool codeGenPostChild( QTextStream* stream, Context* context ) override;
 };
 
-#endif // DECLARE_VARIABLE_H
+#endif

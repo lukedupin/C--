@@ -8,6 +8,8 @@ class IfNode : public Node
     public:
     IfNode( int code, int line );
 
+    NodeType nodeType() override;
+
     bool codeGenPreChild( QTextStream* stream, Context* context ) override;
 
     bool codeGenPostChildWrapper( QTextStream* stream, Context* context, int idx ) override;

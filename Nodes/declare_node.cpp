@@ -1,15 +1,19 @@
-#include "declare_variable.h"
+#include "declare_node.h"
 
 #include <Helpers/token.h>
-#include "expression_node.h"
 #include "constant_node.h"
 
-DeclareVariable::DeclareVariable( int code, int line, QString name ) :
+DeclareNode::DeclareNode( int code, int line, QString name ) :
     Node( code, line, name )
 {
 }
 
-bool DeclareVariable::codeGenPreChild( QTextStream* stream, Context* context )
+Node::NodeType DeclareNode::nodeType()
+{
+    return DECLARE_NODE;
+}
+
+bool DeclareNode::codeGenPreChild( QTextStream* stream, Context* context )
 {
     if ( Children.count() < 1 )
         return false;
@@ -24,7 +28,7 @@ bool DeclareVariable::codeGenPreChild( QTextStream* stream, Context* context )
     return true;
 }
 
-bool DeclareVariable::codeGenPostChild( QTextStream* stream, Context* context )
+bool DeclareNode::codeGenPostChild( QTextStream* stream, Context* context )
 {
     Q_UNUSED(context)
 

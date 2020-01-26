@@ -6,6 +6,11 @@ ProgramNode::ProgramNode() :
 {
 }
 
+Node::NodeType ProgramNode::nodeType()
+{
+    return PROGRAM_NODE;
+}
+
 void ProgramNode::print( int depth )
 {
     Q_UNUSED(depth)

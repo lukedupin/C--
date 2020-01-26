@@ -8,6 +8,8 @@ class ProgramNode : public Node
     public:
     ProgramNode();
 
+    NodeType nodeType() override;
+
     protected:
     void print( int depth ) override;
 };

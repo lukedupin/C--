@@ -10,10 +10,10 @@
 
     #include <Nodes/block_node.h>
     #include <Nodes/constant_node.h>
-    #include <Nodes/declare_variable.h>
-    #include <Nodes/expression_node.h>
+    #include <Nodes/declare_node.h>
     #include <Nodes/function_node.h>
     #include <Nodes/if_node.h>
+    #include <Nodes/klass_node.h>
     #include <Nodes/op_node.h>
     #include <Nodes/program_node.h>
     #include <Nodes/simple_node.h>
@@ -125,11 +125,12 @@
 %type <nodeInfo> fn_ret_parm
 %type <nodeInfo> meth_dec
 %type <nodeInfo> param_list
+%type <nodeInfo> ret_param_list
 %type <nodeInfo> param
-%type <nodeInfo> class_dec
-%type <nodeInfo> class_block
-%type <nodeInfo> class_body
-%type <nodeInfo> class_def
+%type <nodeInfo> ret_param
+%type <nodeInfo> klass_dec
+%type <nodeInfo> klass_body
+%type <nodeInfo> klass_def
 %type <nodeInfo> block
 /*
 %type <nodeInfo> switch_block
@@ -174,58 +175,47 @@ declist     :   decl declist
                 { $$ = $1; }
             ;
 
-// Declaration of class, functions etc
+// Declaration of klass, functions etc
 decl        :   let_dec
                 { $$ = $1; }
             |   fn_dec
                 { $$ = $1; }
-            |   class_dec
+            |   klass_dec
                 { $$ = $1; }
             ;
 
 // Declare variables
 let_dec      :  LET IDENT ASSIGN expression ';'
                 {
-                    $$ = new DeclareVariable( LET, $IDENT->line, $IDENT->stringValue );
+                    $$ = new DeclareNode( LET, $IDENT->line, $IDENT->stringValue );
                     $$->Children.push_back( $expression );
                 }
             ;
 
-class_dec   :   CLASS IDENT class_block
+klass_dec   :   CLASS IDENT LEFT_CURLY klass_body RIGHT_CURLY
                 {
-                    $$ = new Node( $1->code, $1->line, $IDENT->stringValue );
-                    if ( $class_block != nullptr )
-                        $$->Children.push_back( $class_block );
+                    $$ = new KlassNode( $1->code, $1->line, $IDENT->stringValue );
+                    $$->Children.push_back( $klass_body );
                 }
             ;
 
-class_block :   LEFT_CURLY class_body RIGHT_CURLY
-                {
-                    $$ = $class_body;
-                }
-            |   LEFT_CURLY RIGHT_CURLY
-                {
-                    $$ = nullptr;
-                }
-            ;
-
-class_body  :   class_def class_body
+klass_body  :   klass_def klass_body
                 { $1->Sibling = $2; }
-            |   class_def
+            |   klass_def
                 { $$ = $1; }
             ;
 
-class_def   :   let_dec
+klass_def   :   let_dec
                 { $$ = $1; }
             |   meth_dec
                 { $$ = $1; }
-            |   class_dec
+            |   klass_dec
                 { $$ = $1; }
             ;
 
 meth_dec    :   FN IDENT '(' fn_ret_parm block
                 {
-                    $$ = new Node( FN, $2->line, $2->stringValue );
+                    $$ = new FunctionNode( FN, $2->line, $2->stringValue, nullptr, $fn_ret_parm );
                     if ( $fn_ret_parm != nullptr )
                         $block->Children.push_front( $fn_ret_parm );
                     $$->Children.push_back( $block);
@@ -233,8 +223,7 @@ meth_dec    :   FN IDENT '(' fn_ret_parm block
 
             |   FN IDENT '(' param_list fn_ret_parm block
                 {
-                    $$ = new Node( FN, $2->line, $2->stringValue );
-                    $block->Children.push_front( $param_list );
+                    $$ = new FunctionNode( FN, $2->line, $2->stringValue, $param_list, $fn_ret_parm );
                     if ( $fn_ret_parm != nullptr )
                         $block->Children.push_front( $fn_ret_parm );
                     $$->Children.push_back( $block);
@@ -242,8 +231,9 @@ meth_dec    :   FN IDENT '(' fn_ret_parm block
 
             |   FN IDENT '(' SELF fn_ret_parm block
                 {
-                    $$ = new Node( FN, $2->line, $2->stringValue );
-                    $block->Children.push_front( new Node( SELF, $SELF->line, $SELF->stringValue ));
+                    auto self = new Node( SELF, $SELF->line, $SELF->stringValue );
+
+                    $$ = new FunctionNode( FN, $2->line, $2->stringValue, self, $fn_ret_parm );
                     if ( $fn_ret_parm != nullptr )
                         $block->Children.push_front( $fn_ret_parm );
                     $$->Children.push_back( $block);
@@ -251,9 +241,10 @@ meth_dec    :   FN IDENT '(' fn_ret_parm block
 
             |   FN IDENT '(' SELF ',' param_list fn_ret_parm block
                 {
-                    $$ = new Node( FN, $2->line, $2->stringValue );
-                    $block->Children.push_front( new Node( SELF, $SELF->line, $SELF->stringValue ));
-                    $block->Children.push_front( $param_list );
+                    auto self = new Node( SELF, $SELF->line, $SELF->stringValue );
+                    self->Sibling = $param_list;
+
+                    $$ = new FunctionNode( FN, $2->line, $2->stringValue, self, $fn_ret_parm );
                     if ( $fn_ret_parm != nullptr )
                         $block->Children.push_front( $fn_ret_parm );
                     $$->Children.push_back( $block);
@@ -279,14 +270,17 @@ fn_dec      :   FN IDENT '(' fn_ret_parm block
 
 fn_ret_parm :   ')' ARROW_RIGHT primitive_type
                 {
-                    $$ = new ParamNode( $3->code, $3->line, $3->stringValue, ParseContext->primitiveToNative( $primitive_type->code ) );
+                    $$ = new ParamNode( $3->code, $3->line, ParamNode::FUNC_RETURN, "", ParseContext->primitiveToNative( $primitive_type->code ) );
                 }
 
             |   ')' ARROW_RIGHT IDENT
-                { $$ = new ParamNode( $3->code, $3->line, $3->stringValue, $IDENT->stringValue ); }
+                { $$ = new ParamNode( $3->code, $3->line, ParamNode::FUNC_RETURN, "", $IDENT->stringValue ); }
 
             |   ')' ARROW_RIGHT '(' param_list ')'
                 { $$ = $param_list; }
+
+            |   ')' ARROW_RIGHT '(' ret_param_list ')'
+                { $$ = $ret_param_list; }
 
             |   ')'
                 { $$ = nullptr; }
@@ -305,11 +299,32 @@ param_list  :   param ',' param_list
 
 param       :   IDENT ':' primitive_type
                 {
-                    $$ = new ParamNode( $1->code, $1->line, $1->stringValue, ParseContext->primitiveToNative( $primitive_type->code ) );
+                    $$ = new ParamNode( $3->code, $1->line, ParamNode::FUNC_PARAM, $1->stringValue, ParseContext->primitiveToNative( $3->code ) );
                 }
             |   IDENT ':' IDENT
                 {
-                    $$ = new ParamNode( $1->code, $1->line, $1->stringValue, $3->stringValue );
+                    $$ = new ParamNode( $3->code, $1->line, ParamNode::FUNC_PARAM, $1->stringValue, $3->stringValue );
+                }
+            ;
+
+
+ret_param_list  :   ret_param ',' ret_param_list
+                {
+                  $1->Sibling = $3;
+                }
+            |   ret_param
+                {
+                  $$ = $1;
+                }
+            ;
+
+ret_param   :   primitive_type
+                {
+                    $$ = new ParamNode( $1->code, $1->line, ParamNode::FUNC_RETURN, "", ParseContext->primitiveToNative( $1->code ) );
+                }
+            |   IDENT
+                {
+                    $$ = new ParamNode( $1->code, $1->line, ParamNode::FUNC_RETURN, "", $1->stringValue );
                 }
             ;
 
@@ -620,9 +635,6 @@ primitive_type :   I8
             |   STR
             |   VEC
             |   HASH
-                {
-                      $$ = $1;
-                }
             ;
 
 var         :   IDENT
@@ -640,8 +652,8 @@ var         :   IDENT
 
             |   SELF DOT IDENT
                 {
-                    $$ = new OpNode( $2->code, $2->line, $2->stringValue );
-                    $$->Children.push_back( new SimpleNode( $1->code, $1->line, $1->stringValue ) );
+                    $$ = new OpNode( $2->code, $2->line, "->" );
+                    $$->Children.push_back( new SimpleNode( $1->code, $1->line, "this" ) );
                     $$->Children.push_back( new SimpleNode( $3->code, $3->line, $3->stringValue ) );
                 }
             ;
@@ -691,15 +703,22 @@ str_literal :   STRING_DBL
             ;
 
 brkstmt     :   BREAK
-                { $$ = new SimpleNode( $1->code, $1->line, $1->stringValue ); }
+                {
+                    $$ = new SimpleNode( $1->code, $1->line, $1->stringValue );
+                    $$->CompleteStatement = true;
+                }
             ;
 
 retstmt     :   RETURN
-                { $$ = new SimpleNode( $1->code, $1->line, $1->stringValue ); }
+                {
+                    $$ = new SimpleNode( $1->code, $1->line, $1->stringValue );
+                    $$->CompleteStatement = true;
+                }
 
             |   RETURN simpexp
                 {
                     $$ = new SimpleNode( $1->code, $1->line, $1->stringValue );
+                    $$->CompleteStatement = true;
                     $$->Children.push_back( $simpexp );
                 }
             ;

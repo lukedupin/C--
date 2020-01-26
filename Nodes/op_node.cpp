@@ -5,6 +5,10 @@ OpNode::OpNode( int code, int line, QString value ) :
 {
 }
 
+Node::NodeType OpNode::nodeType()
+{
+    return OP_NODE;
+}
 
 bool OpNode::codeGenPreChild( QTextStream* stream, Context* context )
 {

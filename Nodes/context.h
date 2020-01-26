@@ -12,8 +12,9 @@ class Context
     public:
     QVector<Node*> NodeStack;
     QVector<QVector<QString>> ScopedVariables;
+    QVector<QString> KlassStack;
 
-    QHash<QString, Node*> Variables;
+    QHash<QString, QString> Variables;
 
     int Depth = 0;
 
@@ -25,6 +26,9 @@ class Context
 
     //Return white space padding based on depth
     QString padding();
+
+    //Convert a variable name into a user defined type based on scope
+    QString typeToNative( int type_code, QString variable_name );
 
     //Convert a variable name into a user defined type based on scope
     QString nameToType( QString variable_name );

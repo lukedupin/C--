@@ -7,24 +7,28 @@
 
 FunctionNode::FunctionNode( int code, int line, QString name, Node* params, Node* ret ) :
     Node( code, line, name ),
-    _params( dynamic_cast<ParamNode*>( params ) ),
-    _ret( dynamic_cast<ParamNode*>( ret ) )
+    _params( params ),
+    _ret( ret )
 {
+}
+
+Node::NodeType FunctionNode::nodeType()
+{
+    return FUNCTION_NODE;
 }
 
 bool FunctionNode::codeGenPreChild(QTextStream *stream, Context *context)
 {
-    QStringList params;
-    QStringList rets;
-
     //Go through the param nodes
-    for ( ParamNode* node = _params;  node != nullptr;
-          node = dynamic_cast<ParamNode*>(node->Sibling) )
-        params.append( QString("%1 %2").arg(node->getType()).arg(node->label()) );
+    QStringList params;
+    for ( Node* node = _params;  node != nullptr; node = node->Sibling )
+        if ( node->tokenType() != SELF )
+            params.append( QString("%1 %2").arg(context->typeToNative(node->tokenType(), node->label()))
+                                           .arg(node->label()) );
 
-    for ( ParamNode* node = _ret;  node != nullptr;
-          node = dynamic_cast<ParamNode*>(node->Sibling) )
-        rets.append( node->getType() );
+    QStringList rets;
+    for ( Node* node = _ret;  node != nullptr; node = node->Sibling )
+        rets.append( dynamic_cast<ParamNode*>(node)->getNativeType() );
 
     //Calculate the return string
     QString return_sig = "";
@@ -36,7 +40,8 @@ bool FunctionNode::codeGenPreChild(QTextStream *stream, Context *context)
         return_sig = QString("std::tuple<%1>").arg(rets.join(", "));
 
     //Write out the function
-    (*stream) << context->padding() << return_sig << " " << _label << "( " << params.join(", ") << " )" << "\r\n";
+    (*stream) << context->padding() << return_sig << " "
+              << _label << "( " << params.join(", ") << " )" << "\r\n";
 
     return true;
 }

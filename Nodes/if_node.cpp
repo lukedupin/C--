@@ -9,6 +9,11 @@ IfNode::IfNode( int code, int line ) :
 {
 }
 
+Node::NodeType IfNode::nodeType()
+{
+    return IF_NODE;
+}
+
 bool IfNode::codeGenPreChild( QTextStream* stream, Context* context )
 {
     if ( _token == IF )

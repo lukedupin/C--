@@ -19,7 +19,7 @@ Node::~Node()
 int Node::lineNumber() { return _lineNumber; }
 int Node::tokenType() { return _token; }
 QString Node::label() { return _label; }
-
+Node::NodeType Node::nodeType() { return INVALID; }
 
 Node::SemanticType Node::semanticType( Context* context )
 {

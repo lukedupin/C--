@@ -7,11 +7,13 @@
 class FunctionNode : public Node
 {
     private:
-    ParamNode* _params = nullptr;
-    ParamNode* _ret = nullptr;
+    Node* _params = nullptr;
+    Node* _ret = nullptr;
 
     public:
     FunctionNode( int code, int line, QString name, Node* params, Node* ret );
+
+    NodeType nodeType() override;
 
     bool codeGenPreChild( QTextStream* stream, Context* context ) override;
 };

@@ -5,6 +5,11 @@ BlockNode::BlockNode( int code, int line ) :
 {
 }
 
+Node::NodeType BlockNode::nodeType()
+{
+    return BLOCK_NODE;
+}
+
 bool BlockNode::increaseScopeDepth()
 {
     return true;

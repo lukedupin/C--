@@ -15,6 +15,21 @@ class Node
         int TypeCode = -1;
     };
 
+    enum NodeType {
+        BLOCK_NODE,
+        CONSTANT_NODE,
+        DECLARE_NODE,
+        FUNCTION_NODE,
+        IF_NODE,
+        KLASS_NODE,
+        OP_NODE,
+        PARAM_NODE,
+        PROGRAM_NODE,
+        SIMPLE_NODE,
+
+        INVALID,
+    };
+
     protected:
     //Facts about this node
     int _token = -1;
@@ -39,6 +54,7 @@ class Node
     int tokenType();
     int lineNumber();
     QString label();
+    virtual NodeType nodeType();
     virtual SemanticType semanticType( Context* context );
 
     //*** Common functions the node uses to call into the child object
