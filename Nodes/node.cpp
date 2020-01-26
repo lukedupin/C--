@@ -41,11 +41,11 @@ bool Node::codeGen( QTextStream* stream, Context* context )
     codeGenPreChild( stream, context );
 
     //Iterate through the children, calling code gen
-    codeGenBetweenChild( stream, context, -1 );
     iterateChildren( context,
                      [=](Node* node, int idx) {
+                        codeGenPreChildWrapper( stream, context, idx );
                         node->codeGen( stream, context );
-                        codeGenBetweenChild( stream, context, idx );
+                        codeGenPostChildWrapper( stream, context, idx );
                      });
 
     //Post child call
@@ -94,6 +94,25 @@ void Node::codePrint( Context* context )
         Sibling->codePrint( context );
 }
 
+int Node::addSiblingsAsChildren( Node* node )
+{
+    int count = 0;
+
+    while ( node != nullptr )
+    {
+        //Store this node, and update sibling
+        auto ptr = node;
+        node = node->Sibling;
+
+        //Reset the sibling, and add this as a child
+        ptr->Sibling = nullptr;
+        Children.push_back( ptr );
+        count++;
+    }
+
+    return count;
+}
+
 void Node::iterateChildren( Context* context, std::function<void (Node*, int)> callback )
 {
     //Push onto the stack
@@ -126,7 +145,15 @@ bool Node::codeGenPreChild( QTextStream* stream, Context* context )
     return true;
 }
 
-bool Node::codeGenBetweenChild( QTextStream* stream, Context* context, int child_idx )
+bool Node::codeGenPreChildWrapper( QTextStream* stream, Context* context, int child_idx )
+{
+    Q_UNUSED(stream)
+    Q_UNUSED(context)
+    Q_UNUSED(child_idx)
+    return true;
+}
+
+bool Node::codeGenPostChildWrapper( QTextStream* stream, Context* context, int child_idx )
 {
     Q_UNUSED(stream)
     Q_UNUSED(context)

@@ -36,7 +36,7 @@ bool FunctionNode::codeGenPreChild(QTextStream *stream, Context *context)
         return_sig = QString("std::tuple<%1>").arg(rets.join(", "));
 
     //Write out the function
-    (*stream) << context->padding() << return_sig << " " << _label << "( " << params.join(", ") << ")" << "\r\n";
+    (*stream) << context->padding() << return_sig << " " << _label << "( " << params.join(", ") << " )" << "\r\n";
 
     return true;
 }

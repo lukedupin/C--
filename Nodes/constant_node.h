@@ -15,6 +15,10 @@ class ConstantNode : public Node
     SemanticType semanticType( Context* context ) override;
 
     bool codeGenPreChild( QTextStream* stream, Context* context ) override;
+
+    bool codeGenPreChildWrapper( QTextStream* stream, Context* context, int idx ) override;
+
+    bool codeGenPostChildWrapper( QTextStream* stream, Context* context, int idx ) override;
 };
 
 #endif // CONSTANTNODE_H

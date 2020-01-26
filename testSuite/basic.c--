@@ -7,7 +7,7 @@ fn dogFunction( a: i32, b: f32 ) {
     a = 32;
   }
   elif ( ned >= 32 ) {
-    b = ned * 2;
+    b = (ned + 1) * 2;
   }
   else {
     ned -= 10;

@@ -25,6 +25,10 @@ class Node
     QVector<Node*> Children;
     Node* Sibling = nullptr;
 
+    //Flags for code generation
+    bool CompleteStatement = false;
+    bool Parenthesis = false;
+
     public:
     // Init my node
     Node( int tokenValue, int lineNo, QString label = QString() );
@@ -48,11 +52,13 @@ class Node
     //Dup the symbol tree for debug
     void codePrint( Context* context );
 
-    //Iterate over children with custom callback on each
-    void iterateChildren( Context* context, std::function<void (Node*, int)> callback );
+    //Add siblings as children
+    int addSiblingsAsChildren( Node* node );
 
     //*** Child specific implementions
     protected:
+    //Iterate over children with custom callback on each
+    void iterateChildren( Context* context, std::function<void (Node*, int)> callback );
 
     //Detect errors
     virtual bool calculateErrors( Error* err, Context* context );
@@ -60,11 +66,14 @@ class Node
     // Pre child code gen
     virtual bool codeGenPreChild( QTextStream* stream, Context* context );
 
-    // Between child code gen
-    virtual bool codeGenBetweenChild( QTextStream* stream, Context* context, int child_idx );
-
     // Post child code gen
     virtual bool codeGenPostChild( QTextStream* stream, Context* context );
+
+    // Between child code gen
+    virtual bool codeGenPreChildWrapper( QTextStream* stream, Context* context, int child_idx );
+
+    // Between child code gen
+    virtual bool codeGenPostChildWrapper( QTextStream* stream, Context* context, int child_idx );
 
     // Return true if we are increasing scope depth
     virtual bool increaseScopeDepth();

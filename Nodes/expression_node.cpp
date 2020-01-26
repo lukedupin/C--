@@ -19,14 +19,36 @@ Node::SemanticType ExpressionNode::semanticType(Context *context)
     return _semanticType;
 }
 
-bool ExpressionNode::codeGenBetweenChild( QTextStream* stream, Context* context, int child_idx )
+bool ExpressionNode::codeGenPreChild(QTextStream *stream, Context *context)
 {
+    Q_UNUSED(context)
+
+    //Write out the operator for the expression
+    if ( Parenthesis )
+        (*stream) << '(';
+    return true;
+}
+
+bool ExpressionNode::codeGenPostChild(QTextStream *stream, Context *context)
+{
+    Q_UNUSED(context)
+
+    //Write out the operator for the expression
+    if ( Parenthesis )
+        (*stream) << ')';
+    return true;
+}
+
+bool ExpressionNode::codeGenPostChildWrapper(QTextStream *stream, Context *context, int child_idx)
+{
+    Q_UNUSED(context)
+
     //Only bost after the first child
     if ( child_idx != 0 )
         return true;
 
     //Write out the operator for the expression
-    (*stream) << context->padding() << " " << _label << " ";
+    (*stream) << _label << " ";
 
     return true;
 }

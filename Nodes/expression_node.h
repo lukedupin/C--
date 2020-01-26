@@ -15,7 +15,11 @@ class ExpressionNode : public Node
 
     SemanticType semanticType( Context* context ) override;
 
-    bool codeGenBetweenChild( QTextStream* stream, Context* context, int child_idx ) override;
+    bool codeGenPreChild( QTextStream* stream, Context* context ) override;
+
+    bool codeGenPostChild( QTextStream* stream, Context* context ) override;
+
+    bool codeGenPostChildWrapper( QTextStream* stream, Context* context, int child_idx ) override;
 };
 
 #endif // EXPRESSIONNODE_H

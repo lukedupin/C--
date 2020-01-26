@@ -30,7 +30,35 @@ Node::SemanticType ConstantNode::semanticType(Context *context)
 
 bool ConstantNode::codeGenPreChild( QTextStream* stream, Context* context )
 {
-    (*stream) << _label;
+    Q_UNUSED(context)
+
+    if ( _typeCode == STR )
+        (*stream) << "QString(" << _label << ')';
+    else
+        (*stream) << _label;
+
+    return true;
+}
+
+bool ConstantNode::codeGenPreChildWrapper( QTextStream* stream, Context* context, int idx )
+{
+    Q_UNUSED(context)
+    Q_UNUSED(idx)
+
+    if ( _typeCode == STR )
+        (*stream) << ".arg(";
+
+    return true;
+}
+
+
+bool ConstantNode::codeGenPostChildWrapper( QTextStream* stream, Context* context, int idx )
+{
+    Q_UNUSED(context)
+    Q_UNUSED(idx)
+
+    if ( _typeCode == STR )
+        (*stream) << ')';
 
     return true;
 }

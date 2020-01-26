@@ -14,6 +14,7 @@
     #include <Nodes/expression_node.h>
     #include <Nodes/function_node.h>
     #include <Nodes/if_node.h>
+    #include <Nodes/op_node.h>
     #include <Nodes/program_node.h>
     #include <Nodes/simple_node.h>
 
@@ -130,8 +131,10 @@
 %type <nodeInfo> class_body
 %type <nodeInfo> class_def
 %type <nodeInfo> block
+/*
 %type <nodeInfo> switch_block
 %type <nodeInfo> match_block
+*/
 %type <nodeInfo> stmtlst
 %type <nodeInfo> stmt
 %type <nodeInfo> noncond
@@ -139,6 +142,7 @@
 %type <nodeInfo> expression_list
 %type <nodeInfo> var
 %type <nodeInfo> simpexp
+%type <nodeInfo> assign_exp
 %type <nodeInfo> logop
 %type <nodeInfo> relexp
 %type <nodeInfo> relop
@@ -151,7 +155,6 @@
 %type <nodeInfo> fact
 %type <nodeInfo> constant
 %type <nodeInfo> str_form
-%type <nodeInfo> str_params
 %type <nodeInfo> str_literal
 %type <nodeInfo> brkstmt
 %type <nodeInfo> retstmt
@@ -322,6 +325,7 @@ block       :   LEFT_CURLY stmtlst  RIGHT_CURLY
                 }
             ;
 
+            /*
 switch_block :  LEFT_CURLY RIGHT_CURLY
                 {
                     $$ = new BlockNode( $1->code, $1->line );
@@ -333,6 +337,7 @@ match_block :   LEFT_CURLY RIGHT_CURLY
                     $$ = new BlockNode( $1->code, $1->line );
                 }
             ;
+            */
 
 stmtlst     :   stmt stmtlst
                 {
@@ -389,6 +394,7 @@ stmt        :   IF expression block
                     $$->Children.push_back( $5);
                 }
 
+                /*
             |   SWITCH '(' expression ')' switch_block
                 {
                     $$ = new Node( $1->code, $1->line, $1->stringValue );
@@ -402,12 +408,19 @@ stmt        :   IF expression block
                     $$->Children.push_back( $3);
                     $$->Children.push_back( $5);
                 }
+                */
 
             |   let_dec
-                { $$ = $1; }
+                {
+                    $$ = $1;
+                    $$->CompleteStatement = true;
+                }
 
             |   noncond
-                { $$ = $1; }
+                {
+                    $$ = $1;
+                    $$->CompleteStatement = true;
+                }
             ;
 
 noncond     :   block ';'
@@ -442,38 +455,9 @@ expression_list :  expression ',' expression_list
                 { $$ = $1; }
             ;
 
-expression  :   var ASSIGN expression
+expression  :   var assign_exp expression
                 {
-                    //Create my node
-                    $$ = new AssignNode( $2->code, $1->lineNumber(), $2->stringValue );
-                    $$->Children.push_back( $1);
-                    $$->Children.push_back( $3);
-                }
-
-            |   var ADD_ASSIGN expression
-                {
-                    $$ = new AssignNode( $2->code, $1->lineNumber(), $2->stringValue );
-                    $$->Children.push_back( $1);
-                    $$->Children.push_back( $3);
-                }
-
-            |   var SUB_ASSIGN expression
-                {
-                    $$ = new AssignNode( $2->code, $1->lineNumber(), $2->stringValue );
-                    $$->Children.push_back( $1);
-                    $$->Children.push_back( $3);
-                }
-
-            |   var MUL_ASSIGN expression
-                {
-                    $$ = new AssignNode( $2->code, $1->lineNumber(), $2->stringValue );
-                    $$->Children.push_back( $1);
-                    $$->Children.push_back( $3);
-                }
-
-            |   var DIV_ASSIGN expression
-                {
-                    $$ = new AssignNode( $2->code, $1->lineNumber(), $2->stringValue );
+                    $$ = $2;
                     $$->Children.push_back( $1);
                     $$->Children.push_back( $3);
                 }
@@ -482,6 +466,22 @@ expression  :   var ASSIGN expression
                 {
                     $$ = $1;
                 }
+            ;
+
+assign_exp  :   ASSIGN
+                { $$ = new OpNode( $1->code, $1->line, $1->stringValue ); }
+
+            |   ADD_ASSIGN
+                { $$ = new OpNode( $1->code, $1->line, $1->stringValue ); }
+
+            |   SUB_ASSIGN
+                { $$ = new OpNode( $1->code, $1->line, $1->stringValue ); }
+
+            |   MUL_ASSIGN
+                { $$ = new OpNode( $1->code, $1->line, $1->stringValue ); }
+
+            |   DIV_ASSIGN
+                { $$ = new OpNode( $1->code, $1->line, $1->stringValue ); }
             ;
 
 simpexp     :   simpexp logop relexp
@@ -507,34 +507,22 @@ relexp      :   addexp relop addexp
             ;
 
 relop       :   LEQ
-                {
-                    $$ = new SimpleNode( LEQ, $1->line, $1->stringValue, 0 );
-                }
+                { $$ = new OpNode( LEQ, $1->line, $1->stringValue ); }
 
             |   LT
-                {
-                    $$ = new SimpleNode( LT, $1->line, $1->stringValue, 0 );
-                }
+                { $$ = new OpNode( LT, $1->line, $1->stringValue ); }
 
             |   GT
-                {
-                    $$ = new SimpleNode( GT, $1->line, $1->stringValue, 0 );
-                }
+                { $$ = new OpNode( GT, $1->line, $1->stringValue ); }
 
             |   GEQ
-                {
-                    $$ = new SimpleNode( GEQ, $1->line, $1->stringValue, 0 );
-                }
+                { $$ = new OpNode( GEQ, $1->line, $1->stringValue ); }
 
             |   EQ
-                {
-                    $$ = new SimpleNode( EQ, $1->line, $1->stringValue, 0 );
-                }
+                { $$ = new OpNode( EQ, $1->line, $1->stringValue ); }
 
             |   NEQ
-                {
-                    $$ = new SimpleNode( NEQ, $1->line, $1->stringValue, 0 );
-                }
+                { $$ = new OpNode( NEQ, $1->line, $1->stringValue ); }
             ;
 
 addexp      :   addexp addop term
@@ -549,25 +537,17 @@ addexp      :   addexp addop term
             ;
 
 addop       :   ADD
-                {
-                    $$ = new SimpleNode( ADD, $1->line, $1->stringValue, 0 );
-                }
+                { $$ = new OpNode( ADD, $1->line, $1->stringValue ); }
 
             |   SUB
-                {
-                    $$ = new SimpleNode( SUB, $1->line, $1->stringValue, 0 );
-                }
+                { $$ = new OpNode( SUB, $1->line, $1->stringValue ); }
             ;
 
 logop       :   OR
-                {
-                    $$ = new SimpleNode( OR, $1->line, $1->stringValue, 0 );
-                }
+                { $$ = new OpNode( OR, $1->line, $1->stringValue ); }
 
             |   AND
-                {
-                    $$ = new SimpleNode( AND, $1->line, $1->stringValue, 0 );
-                }
+                { $$ = new OpNode( AND, $1->line, $1->stringValue ); }
             ;
 
 term        :   term mulop unary
@@ -582,24 +562,18 @@ term        :   term mulop unary
             ;
 
 mulop       :   MUL
-                {
-                    $$ = new SimpleNode( MUL, $1->line, $1->stringValue, 0 );
-                }
+                { $$ = new OpNode( MUL, $1->line, $1->stringValue ); }
 
             |   DIV
-                {
-                    $$ = new SimpleNode( DIV, $1->line, $1->stringValue, 0 );
-                }
+                { $$ = new OpNode( DIV, $1->line, $1->stringValue ); }
 
             |   MOD
-                {
-                    $$ = new SimpleNode( MOD, $1->line, $1->stringValue, 0 );
-                }
+                { $$ = new OpNode( MOD, $1->line, $1->stringValue ); }
 
+                /*
             |   NOT
-                {
-                    $$ = new SimpleNode( NOT, $1->line, $1->stringValue, 0 );
-                }
+                { $$ = new OpNode( NOT, $1->line, $1->stringValue ); }
+                */
             ;
 
 unary       :   unaryop unary
@@ -621,7 +595,10 @@ unaryop     :   NOT
             ;
 
 fact        :   '(' expression ')'
-                { $$ = $2; }
+                {
+                    $$ = $2;
+                    $$->Parenthesis = true;
+                }
 
             |   var
                 { $$ = $1; }
@@ -653,7 +630,7 @@ var         :   IDENT
 
             |   var DOT IDENT
                 {
-                    $$ = new SimpleNode( $2->code, $2->line, $2->stringValue, 0 );
+                    $$ = new OpNode( $2->code, $2->line, $2->stringValue );
                     $$->Children.push_back( $1 );
                     $$->Children.push_back( new SimpleNode( $3->code, $3->line, $3->stringValue ) );
                 }
@@ -663,7 +640,7 @@ var         :   IDENT
 
             |   SELF DOT IDENT
                 {
-                    $$ = new SimpleNode( $2->code, $2->line, $2->stringValue, 0 );
+                    $$ = new OpNode( $2->code, $2->line, $2->stringValue );
                     $$->Children.push_back( new SimpleNode( $1->code, $1->line, $1->stringValue ) );
                     $$->Children.push_back( new SimpleNode( $3->code, $3->line, $3->stringValue ) );
                 }
@@ -692,21 +669,15 @@ str_form    :   str_literal MOD simpexp
                     $str_literal->Children.append( $simpexp );
                     $$ = $str_literal;
                 }
-            |   str_literal MOD '(' str_params ')'
+            |   str_literal MOD '(' expression_list ')'
                 {
-                    $str_literal->Children.append( $str_params );
+                    $str_literal->addSiblingsAsChildren( $expression_list );
                     $$ = $str_literal;
                 }
             |   str_literal
                 {
                     $$ = $str_literal;
                 }
-            ;
-
-str_params  :   simpexp ',' str_params
-                { $1->Sibling = $3; }
-            |   simpexp
-                { $$ = $1; }
             ;
 
 str_literal :   STRING_DBL
@@ -726,10 +697,10 @@ brkstmt     :   BREAK
 retstmt     :   RETURN
                 { $$ = new SimpleNode( $1->code, $1->line, $1->stringValue ); }
 
-            |   RETURN expression
+            |   RETURN simpexp
                 {
                     $$ = new SimpleNode( $1->code, $1->line, $1->stringValue );
-                    $$->Children.push_back( $expression );
+                    $$->Children.push_back( $simpexp );
                 }
             ;
 %%
