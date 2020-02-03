@@ -9,23 +9,47 @@ F.O.O is a programming paradigm that accepts the use cases for objects while pro
 # C-- Features
 
 * 100% backwards compatible C++ code, libraries. C-- can directly call C++, and C++ can call C--.
-* Customizable STL implementation as first class citizens
+* STL implementation as first class citizens
+* Compile time reflections
 * Touring complete preprocessor.
-* Fun syntax
+* Functional programming syntax
+* First class concurrent programming
 * No speed reduction from native C++
 * Embraces the best parts of python and rust
-* Functional programming focus with OO support for context
 * Built to help IDEs easily implement syntax highlighting, auto-complete, real-time compiling
 * Customizable style for company preferences. Code style is required to compile
 * Native multi language support
-* First calls concurrent programming
 * Scope based memory management with safe borrow checking
-* Python style module system.
-* Compile managed package system
+* Compiler managed package system
+* Friendly syntax - Switch, match, enums, loop
 
 ## 100% backwards compatible with C++
 
-C-- uses code target hooks to target a language to compile into. These target hooks (written in Lua) generate basic C++ code. C-- functions are just C++ functions. C-- classes are just C-- classes. Because the hooks are easily editable, targeting complete STL's like QT or boost is a simple as selecting a different target hook.
+C-- compiles into C++ code which is callable by C++ and compatible with the STL your code already uses. C-- can also include C++ headers and use them without any wrappers.
+
+How? C-- uses code uses "target hooks" to write out a native language to compile into. These target hooks (written in Lua) generate basic C++ code. C-- functions are just C++ functions. C-- classes are just C++ classes. 
+
+## STL as first class citizens
+
+String, array, tuple, hash, regex, threads, message passing are all first class citizens. C-- has built in syntax around the most commonly used language tools. The actual implementation of the STL is customizable by changing the lua which selects the STL implementation. 
+
+The hooks are easily editable; targeting complete STL's like QT or boost is a simple as selecting a different target hook.
+
+## Compile time reflections
+
+C-- provides reflections for classes, methods, members, and functions. The reflections are written at compile-time and accessible during run-time for all C-- objects.
+
+## Touring complete preprocessor
+
+Perhaps the most interesting part of C-- is the preprocessor. The C-- language realizes there are many programming cases where the default syntax isn't the best expression method possible. To get around this issue, C-- provides a runtime inside the compiler itself which writes out repetitive code. A few common programming cases are: ORMs, APIs.
+
+## Functional programming syntax
+
+C-- defaults all variables to be immutable. C-- defaults all functions/methods to be stateless. Stateless functions cannot call stateful functions (without explicitly overriding this behavior). 
+
+## First class concurrent programming
+
+C-- provides single word thread and channel creation. Since the language knows which threads have access to which objects, concurrent variable usage without proper protections are built-in. C-- by default applies mutexs of shared data, or allows the user to clearly defined explicit behavior outside the default safety system.
 
 ## Default types with no guessing
 
