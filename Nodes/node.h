@@ -17,7 +17,9 @@ class Node
 
     enum NodeType {
         BLOCK_NODE,
+        CALL_NODE,
         CONSTANT_NODE,
+        CONSTRUCT_NODE,
         DECLARE_NODE,
         FUNCTION_NODE,
         IF_NODE,
@@ -54,6 +56,7 @@ class Node
     int tokenType();
     int lineNumber();
     QString label();
+    QString nodeTypeStr();
     virtual NodeType nodeType();
     virtual SemanticType semanticType( Context* context );
 

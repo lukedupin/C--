@@ -9,7 +9,9 @@
     #include <Nodes/node.h>
 
     #include <Nodes/block_node.h>
+    #include <Nodes/call_node.h>
     #include <Nodes/constant_node.h>
+    #include <Nodes/construct_node.h>
     #include <Nodes/declare_node.h>
     #include <Nodes/function_node.h>
     #include <Nodes/if_node.h>
@@ -141,6 +143,7 @@
 %type <nodeInfo> noncond
 %type <nodeInfo> expression
 %type <nodeInfo> expression_list
+%type <nodeInfo> construct
 %type <nodeInfo> var
 %type <nodeInfo> simpexp
 %type <nodeInfo> assign_exp
@@ -159,6 +162,7 @@
 %type <nodeInfo> str_literal
 %type <nodeInfo> brkstmt
 %type <nodeInfo> retstmt
+%type <nodeInfo> call_stmt
 %type <tokInfo> primitive_type
 
 %%
@@ -255,7 +259,11 @@ fn_dec      :   FN IDENT '(' fn_ret_parm block
                 {
                     $$ = new FunctionNode( FN, $IDENT->line, $IDENT->stringValue, nullptr, $fn_ret_parm );
                     if ( $fn_ret_parm != nullptr )
+                    {
+                        for ( auto node = $fn_ret_parm; node != nullptr; node = node->Sibling )
+                            node->CompleteStatement = true;
                         $block->Children.push_front( $fn_ret_parm );
+                    }
                     $$->Children.push_back( $block );
                 }
 
@@ -263,21 +271,29 @@ fn_dec      :   FN IDENT '(' fn_ret_parm block
                 {
                     $$ = new FunctionNode( FN, $IDENT->line, $IDENT->stringValue, $param_list, $fn_ret_parm );
                     if ( $fn_ret_parm != nullptr )
+                    {
+                        for ( auto node = $fn_ret_parm; node != nullptr; node = node->Sibling )
+                            node->CompleteStatement = true;
                         $block->Children.push_front( $fn_ret_parm );
+                    }
                     $$->Children.push_back( $block);
                 }
             ;
 
 fn_ret_parm :   ')' ARROW_RIGHT primitive_type
                 {
-                    $$ = new ParamNode( $3->code, $3->line, ParamNode::FUNC_RETURN, "", ParseContext->primitiveToNative( $primitive_type->code ) );
+                    $$ = new ParamNode( $3->code, $3->line, ParamNode::FUNC_RETURN_SIMPLE, "", ParseContext->primitiveToNative( $primitive_type->code ) );
                 }
 
             |   ')' ARROW_RIGHT IDENT
-                { $$ = new ParamNode( $3->code, $3->line, ParamNode::FUNC_RETURN, "", $IDENT->stringValue ); }
+                { $$ = new ParamNode( $3->code, $3->line, ParamNode::FUNC_RETURN_SIMPLE, "", $IDENT->stringValue ); }
 
             |   ')' ARROW_RIGHT '(' param_list ')'
-                { $$ = $param_list; }
+                {
+                    $$ = $param_list;
+                    for ( auto node = $$; node != nullptr; node = node->Sibling )
+                        dynamic_cast<ParamNode*>(node)->DeclareType = ParamNode::FUNC_RETURN;
+                }
 
             |   ')' ARROW_RIGHT '(' ret_param_list ')'
                 { $$ = $ret_param_list; }
@@ -320,11 +336,11 @@ ret_param_list  :   ret_param ',' ret_param_list
 
 ret_param   :   primitive_type
                 {
-                    $$ = new ParamNode( $1->code, $1->line, ParamNode::FUNC_RETURN, "", ParseContext->primitiveToNative( $1->code ) );
+                    $$ = new ParamNode( $1->code, $1->line, ParamNode::FUNC_RETURN_SIMPLE, "", ParseContext->primitiveToNative( $1->code ) );
                 }
             |   IDENT
                 {
-                    $$ = new ParamNode( $1->code, $1->line, ParamNode::FUNC_RETURN, "", $1->stringValue );
+                    $$ = new ParamNode( $1->code, $1->line, ParamNode::FUNC_RETURN_SIMPLE, "", $1->stringValue );
                 }
             ;
 
@@ -447,20 +463,11 @@ noncond     :   block ';'
             |   brkstmt ';'
                 { $$ = $1; }
 
-            |   var '(' expression_list ')' ';'
-                {
-                    $$ = new Node( FN, $1->lineNumber(), $1->label() );
-                    $$->Children.push_back( $var );
-                    $$->Children.push_back( $expression_list );
-                }
-
             |   expression ';'
                 { $$ = $1; }
 
             |   ';'
-                {
-                    $$ = new Node( 0, lineNo, "Empty" );
-                }
+                { $$ = new Node( 0, lineNo, "Empty" ); }
             ;
 
 expression_list :  expression ',' expression_list
@@ -477,10 +484,21 @@ expression  :   var assign_exp expression
                     $$->Children.push_back( $3);
                 }
 
+            |   call_stmt
+                { $$ = $1; }
+
             |   simpexp
-                {
-                    $$ = $1;
-                }
+                { $$ = $1; }
+
+            |   construct
+                { $$ = $1; }
+            ;
+
+construct   :   LEFT_CURLY expression_list RIGHT_CURLY
+                { $$ = new ConstructNode( ConstructNode::TUPLE, $expression_list, $1->line ); }
+
+            |   '[' expression_list ']'
+                { $$ = new ConstructNode( ConstructNode::ARRAY, $expression_list, $2->lineNumber() ); }
             ;
 
 assign_exp  :   ASSIGN
@@ -715,13 +733,27 @@ retstmt     :   RETURN
                     $$->CompleteStatement = true;
                 }
 
-            |   RETURN simpexp
+            |   RETURN expression
                 {
                     $$ = new SimpleNode( $1->code, $1->line, $1->stringValue );
                     $$->CompleteStatement = true;
-                    $$->Children.push_back( $simpexp );
+                    $$->Children.push_back( $expression );
                 }
             ;
+
+call_stmt   :   var '(' ')'
+                {
+                    $$ = new CallNode( FN, $1->lineNumber(), $1->label() );
+                    $$->Children.push_back( $var );
+                }
+            |   var '(' expression_list ')'
+                {
+                    $$ = new CallNode( FN, $1->lineNumber(), $1->label() );
+                    $$->Children.push_back( $var );
+                    $$->addSiblingsAsChildren( $expression_list );
+                }
+            ;
+
 %%
 
 //The actual main

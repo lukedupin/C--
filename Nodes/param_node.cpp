@@ -3,10 +3,10 @@
 #include <Parser/lex_token.h>
 #include <Parser/parser.tab.h>
 
-ParamNode::ParamNode( int type_code, int line, DeclareType type, QString name, QString ident ) :
+ParamNode::ParamNode( int type_code, int line, Type type, QString name, QString ident ) :
     Node( type_code, line, name ),
     _ident( ident ),
-    _type(type )
+    DeclareType( type )
 {
 }
 
@@ -24,21 +24,28 @@ bool ParamNode::codeGenPreChild(QTextStream *stream, Context *context)
 {
     Q_UNUSED(context)
 
-    if ( _type == FUNC_RETURN )
-        return true;
-
-    QStringList ary;
-    ParamNode* node = this;
-
-    //Loop while we have nodes
-    while ( node != nullptr )
+    switch ( DeclareType )
     {
-        ary.append( QString("%1 %2").arg(node->_ident).arg(node->_label) );
-        node = dynamic_cast<ParamNode*>( node->Sibling );
-    }
+        case FUNC_PARAM: {
+            QStringList ary;
 
-    //Write out the param list with types defined in C++ style
-    (*stream) << ary.join(", ");
+            //Loop while we have nodes
+            for ( auto node = this;
+                  node != nullptr;
+                  node = dynamic_cast<ParamNode*>( node->Sibling ) )
+                ary.append( QString("%1 %2").arg(node->_ident).arg(node->_label) );
+
+            (*stream) << ary.join(", ");
+        } break;
+
+        case FUNC_RETURN: {
+            (*stream) << context->padding()
+                      << QString("%1 %2").arg(_ident).arg(_label)
+                      << ";\r\n";
+        } break;
+
+        default: break;
+    }
 
     return true;
 }

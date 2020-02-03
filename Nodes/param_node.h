@@ -6,23 +6,24 @@
 class ParamNode : public Node
 {
     public:
-    enum DeclareType {
+    enum Type {
         FUNC_PARAM,
         FUNC_RETURN,
+        FUNC_RETURN_SIMPLE,
 
         UNKNOWN
     };
 
     private:
     QString _ident;
-    DeclareType _type = UNKNOWN;
 
     public:
-    ParamNode( int type_code, int line, DeclareType type, QString name, QString ident );
+    Type DeclareType = UNKNOWN;
+
+    public:
+    ParamNode( int type_code, int line, Type type, QString name, QString ident );
 
     NodeType nodeType() override;
-
-    DeclareType declareType();
 
     QString getNativeType();
 

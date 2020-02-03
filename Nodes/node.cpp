@@ -21,6 +21,31 @@ int Node::tokenType() { return _token; }
 QString Node::label() { return _label; }
 Node::NodeType Node::nodeType() { return INVALID; }
 
+QString Node::nodeTypeStr()
+{
+#define xcase( x ) case x: return #x
+
+    switch ( nodeType() )
+    {
+        xcase( BLOCK_NODE );
+        xcase( CALL_NODE );
+        xcase( CONSTANT_NODE );
+        xcase( CONSTRUCT_NODE );
+        xcase( DECLARE_NODE );
+        xcase( FUNCTION_NODE );
+        xcase( IF_NODE );
+        xcase( KLASS_NODE );
+        xcase( OP_NODE );
+        xcase( PARAM_NODE );
+        xcase( PROGRAM_NODE );
+        xcase( SIMPLE_NODE );
+
+        default:
+            return "INVALID";
+    }
+#undef xcase
+}
+
 Node::SemanticType Node::semanticType( Context* context )
 {
     Q_UNUSED(context)
@@ -178,5 +203,5 @@ void Node::print( int depth )
 {
     QString padding;
     padding.resize( depth * 4, ' ');
-    qDebug( "%s%s on line %d -> %s", padding.toUtf8().data(), tokenStr( _token ), _lineNumber, _label.toUtf8().data() );
+    qDebug( "%s%s: %s on line %d -> %s", padding.toUtf8().data(), nodeTypeStr().toUtf8().data(), tokenStr( _token ), _lineNumber, _label.toUtf8().data() );
 }

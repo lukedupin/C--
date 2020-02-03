@@ -27,6 +27,8 @@ MOC_DIR = moc
 SOURCES += \
     Helpers/util.cpp \
     Helpers/token.cpp \
+    Nodes/call_node.cpp \
+    Nodes/construct_node.cpp \
     Nodes/klass_node.cpp \
     Nodes/op_node.cpp \
     Nodes/block_node.cpp \
@@ -47,6 +49,8 @@ SOURCES += \
 HEADERS += \
     Helpers/util.h \
     Helpers/token.h \
+    Nodes/call_node.h \
+    Nodes/construct_node.h \
     Nodes/klass_node.h \
     Nodes/op_node.h \
     Nodes/block_node.h \
