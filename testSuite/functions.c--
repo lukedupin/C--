@@ -1,0 +1,57 @@
+fn doubleVoid() 
+{
+    print("Double void");
+}
+
+fn oneArg( info: i32 )
+{
+    print('Single arg #{info}');
+}
+
+fn twoArg( info: i32, darg: i32 )
+{
+    print('Single arg #{info} %1' % darg );
+}
+
+fn singleRet() => i32
+{
+    return 37;
+}
+
+fn singleNamedRet() => (ret: i32)
+{
+    ret = 917;
+}
+
+fn doubleRet() => ( i32 , f64)
+{
+    return {917, 32.3};
+}
+
+fn doubleNamedRet() => ( paul: i32, sal: f32 )
+{
+    paul = 92 * 48;
+    sal = 32.1 + 8;
+}
+
+fn doubleNamedRet( ned: i32, pen: f32 ) => ( paul: i32, sal: f32 )
+{
+    paul = ned + 9;
+    sal = pen * 2;
+}
+
+fn main( argc: i32, argv: str ) => i32
+{
+    doubleVoid();
+
+    oneArg( 2 );
+    oneArg( info=32 );
+
+    twoArg( 45, 22 );
+    twoArg( darg=78, info=99 );
+
+    let x = singleRet();
+    let y = singleNamedRet();
+
+    return 0;
+}
