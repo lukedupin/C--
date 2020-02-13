@@ -12,7 +12,7 @@ class OpNode : public Node
 
     bool codeGenPreChild( QTextStream* stream, Context* context ) override;
 
-    bool codeGenPostChildWrapper( QTextStream* stream, Context* context, int idx ) override;
+    bool codeGenPostChildWrapper( QTextStream* stream, Context* context, Node* node, int idx, int len ) override;
 
     bool codeGenPostChild( QTextStream* stream, Context* context ) override;
 };

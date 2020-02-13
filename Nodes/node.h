@@ -28,6 +28,7 @@ class Node
         PARAM_NODE,
         PROGRAM_NODE,
         SIMPLE_NODE,
+        RETURN_NODE,
 
         INVALID,
     };
@@ -89,10 +90,10 @@ class Node
     virtual bool codeGenPostChild( QTextStream* stream, Context* context );
 
     // Between child code gen
-    virtual bool codeGenPreChildWrapper( QTextStream* stream, Context* context, int child_idx );
+    virtual bool codeGenPreChildWrapper( QTextStream* stream, Context* context, Node* node, int child_idx, int len );
 
     // Between child code gen
-    virtual bool codeGenPostChildWrapper( QTextStream* stream, Context* context, int child_idx );
+    virtual bool codeGenPostChildWrapper( QTextStream* stream, Context* context, Node* node, int child_idx, int len );
 
     // Return true if we are increasing scope depth
     virtual bool increaseScopeDepth();

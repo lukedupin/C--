@@ -14,6 +14,8 @@ Node::NodeType ConstructNode::nodeType()
 
 bool ConstructNode::codeGenPreChild( QTextStream* stream, Context* context )
 {
+    Q_UNUSED(context)
+
     QStringList list;
 
     for ( auto node = _decl;

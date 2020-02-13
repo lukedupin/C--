@@ -21,13 +21,13 @@ bool FunctionNode::codeGenPreChild(QTextStream *stream, Context *context)
 {
     //Go through the param nodes
     QStringList params;
-    for ( Node* node = _params;  node != nullptr; node = node->Sibling )
+    for ( Node* node = _params; node != nullptr; node = node->Sibling )
         if ( node->tokenType() != SELF )
             params.append( QString("%1 %2").arg(context->typeToNative(node->tokenType(), node->label()))
                                            .arg(node->label()) );
 
     QStringList rets;
-    for ( Node* node = _ret;  node != nullptr; node = node->Sibling )
+    for ( Node* node = _ret; node != nullptr; node = node->Sibling )
         rets.append( dynamic_cast<ParamNode*>(node)->getNativeType() );
 
     //Calculate the return string

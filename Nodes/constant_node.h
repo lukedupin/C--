@@ -18,9 +18,9 @@ class ConstantNode : public Node
 
     bool codeGenPreChild( QTextStream* stream, Context* context ) override;
 
-    bool codeGenPreChildWrapper( QTextStream* stream, Context* context, int idx ) override;
+    bool codeGenPreChildWrapper( QTextStream* stream, Context* context, Node* node, int idx, int len ) override;
 
-    bool codeGenPostChildWrapper( QTextStream* stream, Context* context, int idx ) override;
+    bool codeGenPostChildWrapper( QTextStream* stream, Context* context, Node* node, int idx, int len ) override;
 };
 
 #endif // CONSTANTNODE_H

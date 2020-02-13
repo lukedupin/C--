@@ -66,11 +66,12 @@ bool Node::codeGen( QTextStream* stream, Context* context )
     codeGenPreChild( stream, context );
 
     //Iterate through the children, calling code gen
+    auto len = Children.count();
     iterateChildren( context,
                      [=](Node* node, int idx) {
-                        codeGenPreChildWrapper( stream, context, idx );
+                        codeGenPreChildWrapper( stream, context, node, idx, len );
                         node->codeGen( stream, context );
-                        codeGenPostChildWrapper( stream, context, idx );
+                        codeGenPostChildWrapper( stream, context, node, idx, len );
                      });
 
     //Post child call
@@ -170,19 +171,23 @@ bool Node::codeGenPreChild( QTextStream* stream, Context* context )
     return true;
 }
 
-bool Node::codeGenPreChildWrapper( QTextStream* stream, Context* context, int child_idx )
+bool Node::codeGenPreChildWrapper( QTextStream* stream, Context* context, Node* node, int child_idx, int len )
 {
     Q_UNUSED(stream)
     Q_UNUSED(context)
+    Q_UNUSED(node)
     Q_UNUSED(child_idx)
+    Q_UNUSED(len)
     return true;
 }
 
-bool Node::codeGenPostChildWrapper( QTextStream* stream, Context* context, int child_idx )
+bool Node::codeGenPostChildWrapper( QTextStream* stream, Context* context, Node* node, int child_idx, int len )
 {
     Q_UNUSED(stream)
     Q_UNUSED(context)
+    Q_UNUSED(node)
     Q_UNUSED(child_idx)
+    Q_UNUSED(len)
     return true;
 }
 

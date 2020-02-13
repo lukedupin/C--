@@ -28,9 +28,11 @@ bool IfNode::codeGenPreChild( QTextStream* stream, Context* context )
     return true;
 }
 
-bool IfNode::codeGenPostChildWrapper( QTextStream* stream, Context* context, int idx )
+bool IfNode::codeGenPostChildWrapper( QTextStream* stream, Context* context, Node* node, int idx, int len )
 {
     Q_UNUSED(context)
+    Q_UNUSED(node)
+    Q_UNUSED(len)
 
     if ( idx == 0 )
         (*stream) << "\r\n";

@@ -37,6 +37,7 @@ SOURCES += \
     Nodes/function_node.cpp \
     Nodes/if_node.cpp \
     Nodes/node.cpp \
+    Nodes/return_node.cpp \
     Nodes/param_node.cpp \
     Nodes/program_node.cpp \
     Nodes/simple_node.cpp \
@@ -61,6 +62,7 @@ HEADERS += \
     Nodes/node.h \
     Nodes/param_node.h \
     Nodes/program_node.h \
+    Nodes/return_node.h \
     Nodes/simple_node.h \
     Parser/lex_token.h \
     Parser/parser.tab.h \

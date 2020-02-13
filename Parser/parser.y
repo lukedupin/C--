@@ -263,6 +263,10 @@ fn_dec      :   FN IDENT '(' fn_ret_parm block
                         for ( auto node = $fn_ret_parm; node != nullptr; node = node->Sibling )
                             node->CompleteStatement = true;
                         $block->Children.push_front( $fn_ret_parm );
+
+                        auto ret = new ReturnNode( RETURN, $block->line, "return", $fn_ret_parm );
+                        ret->CompleteStatement = true;
+                        $block->Children.push_back( ret );
                     }
                     $$->Children.push_back( $block );
                 }
@@ -275,6 +279,10 @@ fn_dec      :   FN IDENT '(' fn_ret_parm block
                         for ( auto node = $fn_ret_parm; node != nullptr; node = node->Sibling )
                             node->CompleteStatement = true;
                         $block->Children.push_front( $fn_ret_parm );
+
+                        auto ret = new ReturnNode( RETURN, $block->line, "return", $fn_ret_parm );
+                        ret->CompleteStatement = true;
+                        $block->Children.push_back( ret );
                     }
                     $$->Children.push_back( $block);
                 }
@@ -729,13 +737,13 @@ brkstmt     :   BREAK
 
 retstmt     :   RETURN
                 {
-                    $$ = new SimpleNode( $1->code, $1->line, $1->stringValue );
+                    $$ = new ReturnNode( $1->code, $1->line, $1->stringValue );
                     $$->CompleteStatement = true;
                 }
 
             |   RETURN expression
                 {
-                    $$ = new SimpleNode( $1->code, $1->line, $1->stringValue );
+                    $$ = new ReturnNode( $1->code, $1->line, $1->stringValue );
                     $$->CompleteStatement = true;
                     $$->Children.push_back( $expression );
                 }

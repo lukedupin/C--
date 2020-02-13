@@ -45,10 +45,12 @@ bool ConstantNode::codeGenPreChild( QTextStream* stream, Context* context )
     return true;
 }
 
-bool ConstantNode::codeGenPreChildWrapper( QTextStream* stream, Context* context, int idx )
+bool ConstantNode::codeGenPreChildWrapper( QTextStream* stream, Context* context, Node* node, int idx, int len )
 {
     Q_UNUSED(context)
+    Q_UNUSED(node)
     Q_UNUSED(idx)
+    Q_UNUSED(len)
 
     if ( _typeCode == STR )
         (*stream) << ".arg(";
@@ -57,10 +59,12 @@ bool ConstantNode::codeGenPreChildWrapper( QTextStream* stream, Context* context
 }
 
 
-bool ConstantNode::codeGenPostChildWrapper( QTextStream* stream, Context* context, int idx )
+bool ConstantNode::codeGenPostChildWrapper( QTextStream* stream, Context* context, Node* node, int idx, int len )
 {
     Q_UNUSED(context)
+    Q_UNUSED(node)
     Q_UNUSED(idx)
+    Q_UNUSED(len)
 
     if ( _typeCode == STR )
         (*stream) << ')';

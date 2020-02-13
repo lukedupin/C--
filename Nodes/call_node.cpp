@@ -24,9 +24,11 @@ bool CallNode::codeGenPreChild(QTextStream *stream, Context *context)
     return true;
 }
 
-bool CallNode::codeGenPreChildWrapper(QTextStream *stream, Context *context, int idx )
+bool CallNode::codeGenPreChildWrapper(QTextStream *stream, Context *context, Node* node, int idx, int len )
 {
     Q_UNUSED(context)
+    Q_UNUSED(node)
+    Q_UNUSED(len)
 
     //Must be comma argument list
     if ( idx > 1 )
@@ -35,9 +37,11 @@ bool CallNode::codeGenPreChildWrapper(QTextStream *stream, Context *context, int
     return true;
 }
 
-bool CallNode::codeGenPostChildWrapper(QTextStream *stream, Context *context, int idx )
+bool CallNode::codeGenPostChildWrapper(QTextStream *stream, Context *context, Node* node, int idx, int len )
 {
     Q_UNUSED(context)
+    Q_UNUSED(node)
+    Q_UNUSED(len)
 
     //This is after the name of the function/method call
     if ( idx == 0 )
