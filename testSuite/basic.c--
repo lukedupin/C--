@@ -1,9 +1,13 @@
+from folder.folder.file import dockBob
+
 let _global = 32.2 :f32;
+
+signal bobAdam( x: i32 );
 
 fn dogFunction( a: i32, b: f32 ) {
   let ned = 79;
 
-  if ( true ) {
+  if true {
     a = 32;
   }
   elif ( ned >= 32 ) {
@@ -11,6 +15,7 @@ fn dogFunction( a: i32, b: f32 ) {
   }
   else {
     ned -= 10;
+    return;
   }
 
   let string = "Something bitchin";
@@ -19,14 +24,47 @@ fn dogFunction( a: i32, b: f32 ) {
 
   let poo = Poop;
   poo.bob( 39483:i64 );
+
+  let nut = 3232 ** 4
+
+  let handle = async { bob(ned) };
+  let nut = timer(100,500) { bob(ned) };
+
+  (x: i32) => i64 {
+        return i64(x);
+  }
+
+  let reg = /afdsfasdfefefe/ =~ "adfsfad"
+
+  dockBob(reg, nut)
+
+
+  final:
+  let x = 2;
 }
 
-class Poop 
+fn onDockBob( x: i32, y:i32 )
+{
+}
+
+class Poop
 {
     let PubVar = 0:i64;
+
+    fn onDockBob( mut self, x:i32, y:i32)
+    {
+        println("Got a {0} {1}" % (x, y));
+        dirty { self.stateful( 12 ) }
+    }
 
     fn bob( self, mult: i64 ) => i64
     {
         return self.PubVar * mult;
     }
+
+    fn stateful( mut self, mult: mut i64 )
+    {
+        self.PubVar++
+    }
+
 }
