@@ -4,6 +4,78 @@ let _global = 32.2 :f32;
 
 signal bobAdam( x: i32 );
 
+enum Ez
+{
+    ONE,
+    TWO,
+    THREE,
+}
+
+fn test( y: Ez )
+{
+    let x = match ( y )
+    {
+        Ez.ONE => 4,
+        Ez.TWO => 8,
+        Ez.THREE => { println("First message"); 12 },
+        default => 5,
+    }
+
+    switch ( y )
+    {
+        Ez.ONE =>
+            println("One"),
+
+        Ez.TWO => {
+            println("Two")
+
+            //Run the next statement
+            continue
+        },
+
+        default =>
+            println("Default value"),
+    }
+}
+
+fn nuts()
+{
+    let net  = Poop {
+        PubVar = 12,
+    };
+
+    net.methods[2]
+    net.members[0]
+
+    dogFunction( b=31, a=42 )
+
+    for i in 10..5 `top
+    {
+        for mut r in 0..20 `middle
+        {
+            if r == 10 && i == 12 {
+                break top
+            }
+
+            if r == 15 {
+                break
+            }
+        }
+    }
+
+    for x in 0..12 `name
+    {
+        if ( name.first )
+            println("First entry")
+        if ( name.last )
+            println("Last entry")
+        if ( name.index == 4 )
+            continue
+        if ( name.index == 14 )
+            break
+    }
+}
+
 fn dogFunction( a: i32, b: f32 ) {
   let ned = 79;
 
@@ -30,6 +102,7 @@ fn dogFunction( a: i32, b: f32 ) {
   let handle = async { bob(ned) };
   let nut = timer(100,500) { bob(ned) };
 
+  //Lambda
   (x: i32) => i64 {
         return i64(x);
   }
@@ -43,13 +116,22 @@ fn dogFunction( a: i32, b: f32 ) {
   let x = 2;
 }
 
+//Signal
 fn onDockBob( x: i32, y:i32 )
 {
 }
 
 class Poop
 {
-    let PubVar = 0:i64;
+    mut PubVar = 0:i64 {
+        get { return PubVar }
+        set( x:i64 ) { PubVar = x }
+    };
+
+    fn op=( mut self, y:i64 )
+    {
+        self.PubVar = y
+    }
 
     fn onDockBob( mut self, x:i32, y:i32)
     {
