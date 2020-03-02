@@ -74,6 +74,12 @@ fn nuts()
         if ( name.index == 14 )
             break
     }
+
+    final {
+
+    }
+
+    return 0
 }
 
 fn dogFunction( a: i32, b: f32 ) {
