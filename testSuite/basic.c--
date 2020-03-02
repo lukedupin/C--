@@ -97,6 +97,7 @@ fn dogFunction( a: i32, b: f32 ) {
   let poo = Poop;
   poo.bob( 39483:i64 );
 
+  //Power operator
   let nut = 3232 ** 4
 
   let handle = async { bob(ned) };
@@ -117,22 +118,42 @@ fn dogFunction( a: i32, b: f32 ) {
 }
 
 //Signal
+@signal(dockBob)
 fn onDockBob( x: i32, y:i32 )
 {
 }
 
+fn wrapIt( func: fn, *args: [], *kwargs: {} )
+{
+    //Do stuff
+    func( args )
+    //Do stuff
+}
+
 class Poop
 {
+    //Member variables without getter/setter
+    mut _item = 13:i32;
+
+    //Member variable, that implements getter and setter
     mut PubVar = 0:i64 {
         get { return PubVar }
         set( x:i64 ) { PubVar = x }
     };
 
-    fn op=( mut self, y:i64 )
+    //Assing op
+    fn op=( mut self, y:i64 ) => i64
     {
-        self.PubVar = y
+        return self.PubVar = y
     }
 
+    // implement a == operator
+    fn op==( self, x:i64 ) => bool
+    {
+        return self.PubVar == x
+    }
+
+    @signal(dockBob)
     fn onDockBob( mut self, x:i32, y:i32)
     {
         println("Got a {0} {1}" % (x, y));
