@@ -13,19 +13,19 @@ fn twoArg( info: i32, darg: i32 )
     print('Single arg #{info} %1' % darg );
 }
 
-fn singleRet() => i32
+fn singleRet() => i32 ? str
 {
     return 37;
 }
 
-fn singleNamedRet() => (ret: i32)
+fn singleNamedRet() => (ret: i32) ? ErrEnum
 {
     ret = 917;
 }
 
 fn doubleRet() => ( i32 , f64)
 {
-    return {917, 32.3};
+    return (917, 32.3);
 }
 
 fn doubleNamedRet() => ( paul: i32, sal: f32 )
@@ -50,7 +50,15 @@ fn main( argc: i32, argv: str ) => i32
     twoArg( 45, 22 );
     twoArg( darg=78, info=99 );
 
-    let x = singleRet();
+    let x0 = singleRet() else return -1;
+    let x1 = singleRet() else pass 0;
+    let x2 = singleRet() else {
+        print("Recovery")
+        pass 0;
+    }
+
+    let x3 = singleRet() // Error
+
     let y = singleNamedRet();
 
     return 0;
